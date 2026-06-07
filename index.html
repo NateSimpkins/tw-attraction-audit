@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TW Attraction Audit — Weekly Mix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #13161b;
+    --surface2: #1a1e25;
+    --border: #252a33;
+    --border2: #2f3540;
+    --text: #e8eaed;
+    --muted: #6b7280;
+    --subtle: #3d4450;
+    --accent: #3b82f6;
+    --accent-dim: rgba(59,130,246,0.12);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --font-mono: 'DM Mono', monospace;
+    --font-sans: 'DM Sans', sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .header-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .btn:hover { background: var(--border); border-color: var(--subtle); }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
+
+  .btn-sm {
+    padding: 3px 10px;
+    font-size: 12px;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .upload-zone {
+    border: 1.5px dashed var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface);
+    margin-bottom: 2rem;
+  }
+
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 22px;
+  }
+
+  .upload-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .upload-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  #fileInput { display: none; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .stat-value.green { color: var(--green); }
+  .stat-value.amber { color: var(--amber); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.purple { color: var(--purple); }
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .toolbar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 7px 12px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .toolbar input[type="text"]::placeholder { color: var(--muted); }
+  .toolbar input[type="text"]:focus { border-color: var(--accent); }
+
+  .filter-group {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+  }
+
+  .filter-btn {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover { color: var(--text); }
+  .filter-btn.active { background: var(--surface2); color: var(--text); }
+  .filter-btn.active.all { color: var(--text); }
+  .filter-btn.active.linked { color: var(--green); }
+  .filter-btn.active.unlinked { color: var(--red); }
+  .filter-btn.active.junk { color: var(--purple); }
+
+  .region-group {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+  }
+
+  .region-btn {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .region-btn:hover { color: var(--text); }
+  .region-btn.active { background: var(--surface2); color: var(--text); }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+
+  .table-count {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--text); }
+  thead th.sort-asc::after { content: ' ↑'; }
+  thead th.sort-desc::after { content: ' ↓'; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  td {
+    padding: 10px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .attraction-name {
+    font-weight: 500;
+    color: var(--text);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .venue-count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .venue-bar {
+    width: 60px;
+    height: 3px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+
+  .venue-bar-fill {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .date-range {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .region-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  .status-badge .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .badge-linked { background: var(--green-dim); color: var(--green); }
+  .badge-linked .dot { background: var(--green); }
+  .badge-unlinked { background: var(--red-dim); color: var(--red); }
+  .badge-unlinked .dot { background: var(--red); }
+  .badge-checking { background: var(--amber-dim); color: var(--amber); }
+  .badge-checking .dot { background: var(--amber); animation: pulse 1s infinite; }
+  .badge-pending { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
+  .badge-pending .dot { background: var(--muted); }
+  .badge-junk { background: var(--purple-dim); color: var(--purple); }
+  .badge-junk .dot { background: var(--purple); }
+
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .tm-match {
+    font-size: 12px;
+    color: var(--text);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tm-match.none { color: var(--muted); font-style: italic; }
+
+  .action-cell {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  .icon-btn:hover { color: var(--text); border-color: var(--subtle); background: var(--border); }
+
+  .run-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .run-label {
+    font-size: 13px;
+    color: var(--muted);
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .progress-track {
+    flex: 1;
+    min-width: 200px;
+    height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  .empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .empty-text { font-size: 14px; }
+
+  .junk-row td { opacity: 0.5; }
+
+  .note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  #toastContainer {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn { from { transform: translateY(8px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">TW</div>
+    <div>
+      <div class="header-title">Attraction Audit</div>
+    </div>
+    <div class="header-sub" id="reportDate"></div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-sm" onclick="exportCSV()" id="exportBtn" style="display:none;">Export CSV</button>
+    <button class="btn btn-sm btn-primary" onclick="runTMCheck()" id="checkBtn" style="display:none;">Check TM attractions ↗</button>
+  </div>
+</header>
+
+<main>
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📋</div>
+    <div class="upload-title">Upload weekly TW tour report</div>
+    <div class="upload-sub">Drop the HTML file from your weekly TicketWeb email, or click to browse</div>
+    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Choose file</button>
+    <input type="file" id="fileInput" accept=".html,.htm" onchange="handleFile(event)">
+    <div class="note" style="margin-top:1rem;">Accepts the standard TicketWeb Attraction/Tour Report HTML export</div>
+  </div>
+
+  <div id="appContent" style="display:none;">
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="run-bar" id="runBar" style="display:none;">
+      <div class="run-label" id="runLabel">Ready to check attractions against Ticketmaster...</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search attraction name..." oninput="renderTable()">
+      <div class="filter-group">
+        <button class="filter-btn active all" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" data-filter="linked" onclick="setFilter('linked', this)">TM linked</button>
+        <button class="filter-btn" data-filter="unlinked" onclick="setFilter('unlinked', this)">Not linked</button>
+        <button class="filter-btn" data-filter="junk" onclick="setFilter('junk', this)">Junk / test</button>
+      </div>
+      <div class="region-group">
+        <button class="region-btn active" data-region="all" onclick="setRegion('all', this)">US + CA</button>
+        <button class="region-btn" data-region="us" onclick="setRegion('us', this)">US</button>
+        <button class="region-btn" data-region="ca" onclick="setRegion('ca', this)">CA</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header-row">
+        <span class="table-count" id="tableCount"></span>
+        <button class="btn btn-sm" onclick="runTMCheckVisible()" id="checkVisibleBtn" style="display:none;">Check visible attractions</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortBy('name')">Attraction</th>
+            <th class="sortable" onclick="sortBy('venues')" style="width:80px;">Venues</th>
+            <th style="width:160px;">Date range</th>
+            <th style="width:50px;">Region</th>
+            <th style="width:130px;">TM status</th>
+            <th style="width:180px;">TM attraction match</th>
+            <th style="width:90px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>Linked to TM Official Attraction</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No TM attraction found</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Checking...</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--muted)"></span>Not yet checked</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>Junk / test entry</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="emptyState" style="display:none;" class="empty-state">
+    <div class="empty-icon">🔍</div>
+    <div class="empty-text">No attractions match the current filters</div>
+  </div>
+</main>
+
+<div id="toastContainer"></div>
+
+<script>
+const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
+
+const JUNK_PATTERNS = [
+  /^test/i, /do not purchase/i, /rigor monitoring/i,
+  /test attraction/i, /test event/i, /test act/i,
+  /ram v'?\d/i, /test act and support/i
+];
+
+function isJunk(name) {
+  return JUNK_PATTERNS.some(p => p.test(name));
+}
+
+let allAttractions = [];
+let currentFilter = 'all';
+let currentRegion = 'all';
+let sortKey = 'venues';
+let sortDir = 'desc';
+let maxVenues = 1;
+
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) parseFile(file);
+});
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (file) parseFile(file);
+}
+
+function parseFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const html = e.target.result;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const rows = doc.querySelectorAll('tr');
+    const attractions = [];
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length === 4) {
+        const name = cells[0].textContent.trim();
+        const venues = parseInt(cells[1].textContent.trim()) || 0;
+        const dates = cells[2].textContent.trim();
+        const url = cells[3].textContent.trim();
+        const region = url.includes('ticketweb.ca') ? 'ca' : 'us';
+        if (name && venues > 0) {
+          attractions.push({
+            name, venues, dates, url, region,
+            junk: isJunk(name),
+            tmStatus: 'pending',
+            tmName: null,
+            tmId: null,
+            tmUrl: null
+          });
+        }
+      }
+    });
+
+    if (attractions.length === 0) {
+      showToast('Could not parse file — make sure it is the standard TW tour report HTML');
+      return;
+    }
+
+    allAttractions = attractions;
+    maxVenues = Math.max(...attractions.map(a => a.venues));
+
+    document.getElementById('uploadZone').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    document.getElementById('exportBtn').style.display = '';
+    document.getElementById('checkBtn').style.display = '';
+    document.getElementById('checkVisibleBtn').style.display = '';
+
+    const dateMatch = file.name.match(/\d{4}[-_]\d{2}[-_]\d{2}/);
+    document.getElementById('reportDate').textContent = dateMatch ? dateMatch[0] : file.name;
+
+    renderStats();
+    renderTable();
+    showToast(`Loaded ${attractions.length} attractions`);
+  };
+  reader.readAsText(file);
+}
+
+function renderStats() {
+  const total = allAttractions.length;
+  const linked = allAttractions.filter(a => a.tmStatus === 'linked').length;
+  const unlinked = allAttractions.filter(a => a.tmStatus === 'unlinked').length;
+  const junk = allAttractions.filter(a => a.junk).length;
+  const checked = allAttractions.filter(a => a.tmStatus === 'linked' || a.tmStatus === 'unlinked').length;
+  const us = allAttractions.filter(a => a.region === 'us').length;
+  const ca = allAttractions.filter(a => a.region === 'ca').length;
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total attractions</div>
+      <div class="stat-value">${total}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">US / CA split</div>
+      <div class="stat-value">${us}<span style="font-size:14px;color:var(--muted);font-weight:400;"> / ${ca}</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TM linked</div>
+      <div class="stat-value green">${linked}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Not linked</div>
+      <div class="stat-value red">${unlinked}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Junk / test entries</div>
+      <div class="stat-value purple">${junk}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Checked</div>
+      <div class="stat-value">${checked}<span style="font-size:14px;color:var(--muted);font-weight:400;"> / ${total}</span></div>
+    </div>
+  `;
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active', f);
+  renderTable();
+}
+
+function setRegion(r, el) {
+  currentRegion = r;
+  document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
+}
+
+function sortBy(key) {
+  if (sortKey === key) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortKey = key;
+    sortDir = key === 'venues' ? 'desc' : 'asc';
+  }
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+  });
+  const thMap = { name: 0, venues: 1 };
+  const ths = document.querySelectorAll('thead th');
+  if (thMap[sortKey] !== undefined) {
+    ths[thMap[sortKey]].classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  }
+  renderTable();
+}
+
+function getFiltered() {
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  return allAttractions.filter(a => {
+    if (currentRegion !== 'all' && a.region !== currentRegion) return false;
+    if (currentFilter === 'linked' && a.tmStatus !== 'linked') return false;
+    if (currentFilter === 'unlinked' && (a.tmStatus !== 'unlinked' && a.tmStatus !== 'pending')) return false;
+    if (currentFilter === 'junk' && !a.junk) return false;
+    if (search && !a.name.toLowerCase().includes(search)) return false;
+    return true;
+  }).sort((a, b) => {
+    let va = sortKey === 'venues' ? a.venues : a.name.toLowerCase();
+    let vb = sortKey === 'venues' ? b.venues : b.name.toLowerCase();
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  const body = document.getElementById('tableBody');
+  document.getElementById('tableCount').textContent = `${filtered.length} attraction${filtered.length !== 1 ? 's' : ''}`;
+  document.getElementById('emptyState').style.display = filtered.length === 0 ? 'block' : 'none';
+  document.querySelector('.table-wrap').style.display = filtered.length === 0 ? 'none' : 'block';
+
+  if (filtered.length === 0) { body.innerHTML = ''; return; }
+
+  body.innerHTML = filtered.map(a => {
+    const barPct = Math.round((a.venues / maxVenues) * 100);
+    const [dateStart, dateEnd] = a.dates.split('-');
+
+    let statusBadge = '';
+    if (a.junk) {
+      statusBadge = `<span class="status-badge badge-junk"><span class="dot"></span>junk/test</span>`;
+    } else if (a.tmStatus === 'linked') {
+      statusBadge = `<span class="status-badge badge-linked"><span class="dot"></span>TM linked</span>`;
+    } else if (a.tmStatus === 'unlinked') {
+      statusBadge = `<span class="status-badge badge-unlinked"><span class="dot"></span>not linked</span>`;
+    } else if (a.tmStatus === 'checking') {
+      statusBadge = `<span class="status-badge badge-checking"><span class="dot"></span>checking</span>`;
+    } else {
+      statusBadge = `<span class="status-badge badge-pending"><span class="dot"></span>pending</span>`;
+    }
+
+    const tmMatch = a.tmName
+      ? `<span class="tm-match" title="${a.tmName}">${a.tmName}</span>`
+      : `<span class="tm-match none">—</span>`;
+
+    const twSearchUrl = a.url;
+    const tmSearchUrl = a.tmUrl || `https://www.ticketmaster.com/search?q=${encodeURIComponent(a.name)}`;
+
+    const checkBtn = (!a.junk && a.tmStatus === 'pending')
+      ? `<button class="icon-btn" title="Check TM" onclick="checkSingle('${a.name.replace(/'/g,"\\'")}')">⟳</button>`
+      : '';
+
+    const viewTMBtn = a.tmUrl
+      ? `<a class="icon-btn" href="${a.tmUrl}" target="_blank" title="View on Ticketmaster">↗</a>`
+      : (!a.junk ? `<a class="icon-btn" href="${tmSearchUrl}" target="_blank" title="Search Ticketmaster">🔍</a>` : '');
+
+    const viewTWBtn = `<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="View on TicketWeb">⊹</a>`;
+
+    return `<tr class="${a.junk ? 'junk-row' : ''}">
+      <td><div class="attraction-name" title="${a.name}">${a.name}</div></td>
+      <td>
+        <div class="venue-count">${a.venues}</div>
+        <div class="venue-bar"><div class="venue-bar-fill" style="width:${barPct}%"></div></div>
+      </td>
+      <td>
+        <div class="date-range">${a.dates}</div>
+      </td>
+      <td><span class="region-badge">${a.region.toUpperCase()}</span></td>
+      <td>${statusBadge}</td>
+      <td>${tmMatch}</td>
+      <td><div class="action-cell">${checkBtn}${viewTMBtn}${viewTWBtn}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function checkSingle(name) {
+  const a = allAttractions.find(x => x.name === name);
+  if (!a) return;
+  a.tmStatus = 'checking';
+  renderTable();
+  await checkAttraction(a);
+  renderStats();
+  renderTable();
+}
+
+async function checkAttraction(a) {
+  if (a.junk) return;
+  try {
+    const url = `https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(a.name)}&size=5&apikey=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const attractions = data?._embedded?.attractions || [];
+    const match = attractions.find(tm => {
+      const tmName = tm.name.toLowerCase().trim();
+      const twName = a.name.toLowerCase().trim();
+      return tmName === twName || tmName.includes(twName) || twName.includes(tmName);
+    });
+    if (match) {
+      a.tmStatus = 'linked';
+      a.tmName = match.name;
+      a.tmId = match.id;
+      a.tmUrl = match.url || null;
+    } else {
+      a.tmStatus = 'unlinked';
+    }
+  } catch {
+    a.tmStatus = 'unlinked';
+  }
+}
+
+async function runTMCheck() {
+  const toCheck = allAttractions.filter(a => !a.junk && a.tmStatus === 'pending');
+  if (toCheck.length === 0) { showToast('All attractions already checked'); return; }
+
+  document.getElementById('runBar').style.display = 'flex';
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('checkBtn').textContent = 'Checking...';
+
+  for (let i = 0; i < toCheck.length; i++) {
+    const a = toCheck[i];
+    a.tmStatus = 'checking';
+    const pct = Math.round((i / toCheck.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('runLabel').textContent = `Checking ${i + 1} of ${toCheck.length}: ${a.name}`;
+    renderTable();
+    await checkAttraction(a);
+    renderStats();
+    await new Promise(r => setTimeout(r, 250));
+  }
+
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('runLabel').textContent = `Done — checked ${toCheck.length} attractions`;
+  document.getElementById('checkBtn').disabled = false;
+  document.getElementById('checkBtn').textContent = 'Check TM attractions ↗';
+  renderStats();
+  renderTable();
+  showToast(`Checked ${toCheck.length} attractions`);
+}
+
+async function runTMCheckVisible() {
+  const filtered = getFiltered().filter(a => !a.junk && a.tmStatus === 'pending');
+  if (filtered.length === 0) { showToast('No pending attractions in current view'); return; }
+  document.getElementById('runBar').style.display = 'flex';
+  for (let i = 0; i < filtered.length; i++) {
+    const a = filtered[i];
+    a.tmStatus = 'checking';
+    const pct = Math.round((i / filtered.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('runLabel').textContent = `Checking ${i + 1} of ${filtered.length}: ${a.name}`;
+    renderTable();
+    await checkAttraction(a);
+    renderStats();
+    await new Promise(r => setTimeout(r, 250));
+  }
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('runLabel').textContent = `Done`;
+  renderStats();
+  renderTable();
+  showToast(`Checked ${filtered.length} attractions`);
+}
+
+function exportCSV() {
+  const filtered = getFiltered();
+  const header = 'Attraction,Venues,Date Range,Region,TM Status,TM Attraction Name,TM Attraction ID,TM URL,TW Search URL';
+  const rows = filtered.map(a =>
+    `"${a.name.replace(/"/g,'""')}",${a.venues},"${a.dates}",${a.region.toUpperCase()},${a.junk ? 'Junk/Test' : a.tmStatus},"${(a.tmName||'').replace(/"/g,'""')}","${a.tmId||''}","${a.tmUrl||''}","${a.url}"`
+  );
+  const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `tw-attraction-audit-${new Date().toISOString().slice(0,10)}.csv`;
+  link.click();
+  showToast('CSV downloaded');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>
