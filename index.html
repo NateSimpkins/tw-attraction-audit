@@ -44,78 +44,107 @@
   .header-meta { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
   .header-right { display: flex; align-items: center; gap: 8px; }
 
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-sans); cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); transition: all 0.15s; text-decoration: none; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-sans); cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); transition: all 0.15s; text-decoration: none; white-space: nowrap; }
   .btn:hover { background: var(--border); border-color: var(--subtle); }
   .btn:active { transform: scale(0.98); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
   .btn-sm { padding: 3px 10px; font-size: 12px; }
+  .btn-seg { padding: 5px 14px; font-size: 12px; font-family: var(--font-mono); }
 
   main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
 
+  /* Setup */
   .setup-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
   .setup-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .setup-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 700px; }
-  .setup-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  .setup-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 760px; }
   .field-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-  select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
+  select { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   select:focus { border-color: var(--accent); }
 
-  .progress-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none; }
-  .progress-label { font-size: 13px; color: var(--text); font-family: var(--font-mono); margin-bottom: 10px; }
-  .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
-  .progress-fill { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.4s; width: 0%; }
-  .progress-sub { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
-  .progress-step { font-size: 11px; color: var(--accent); font-family: var(--font-mono); margin-top: 4px; }
+  .config-row { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .segment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .seg-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+  .seg-card:hover { border-color: var(--accent); }
+  .seg-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .seg-card-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .seg-card-desc { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+
+  .launch-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* Progress */
+  .progress-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none; }
+  .progress-overall-label { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; margin-bottom: 12px; }
+  .progress-fill { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.4s; width: 0%; }
+  .seg-progress-list { display: flex; flex-direction: column; gap: 8px; }
+  .seg-progress-item { display: flex; align-items: center; gap: 10px; }
+  .seg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: background 0.3s; }
+  .seg-dot.running { background: var(--accent); animation: pulse 1s infinite; }
+  .seg-dot.done { background: var(--green); }
+  .seg-dot.queued { background: var(--border2); }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .seg-progress-name { font-size: 12px; font-family: var(--font-mono); color: var(--muted); width: 140px; flex-shrink: 0; }
+  .seg-progress-name.running { color: var(--accent); }
+  .seg-progress-name.done { color: var(--green); }
+  .seg-progress-detail { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .seg-progress-track { flex: 1; height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .seg-progress-fill { height: 3px; border-radius: 2px; background: var(--accent); transition: width 0.3s; width: 0%; }
+  .seg-progress-fill.done { background: var(--green); }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s; }
   .stat-card:hover { border-color: var(--border2); }
-  .stat-card.active { border-color: var(--accent); }
   .stat-card.active-green { border-color: var(--green); background: var(--green-dim); }
   .stat-card.active-amber { border-color: var(--amber); background: var(--amber-dim); }
   .stat-card.active-orange { border-color: var(--orange); background: var(--orange-dim); }
   .stat-card.active-red { border-color: var(--red); background: var(--red-dim); }
-  .stat-card.active-purple { border-color: var(--purple); background: var(--purple-dim); }
   .stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
   .stat-value { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
   .stat-value.green { color: var(--green); }
   .stat-value.amber { color: var(--amber); }
   .stat-value.orange { color: var(--orange); }
   .stat-value.red { color: var(--red); }
-  .stat-value.purple { color: var(--purple); }
   .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); line-height: 1.4; }
 
-  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-  .search-input { flex: 1; min-width: 220px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
+  /* Toolbar */
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .search-input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   .search-input::placeholder { color: var(--muted); }
   .search-input:focus { border-color: var(--accent); }
-  .sort-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
-  .sort-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; white-space: nowrap; }
-  .sort-btn:hover { color: var(--text); }
-  .sort-btn.active { background: var(--surface2); color: var(--text); }
+  .filter-group { display: flex; gap: 3px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
+  .filter-btn { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; white-space: nowrap; }
+  .filter-btn:hover { color: var(--text); }
+  .filter-btn.active { background: var(--surface2); color: var(--text); }
 
+  /* Table */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
   .table-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .table-count { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
   table { width: 100%; border-collapse: collapse; }
   thead th { text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--text); }
+  thead th.sort-asc::after { content: ' ↑'; color: var(--accent); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
   td { padding: 9px 12px; font-size: 13px; vertical-align: middle; }
 
-  .name-cell { max-width: 200px; }
-  .name-primary { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .name-primary { font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
   .name-sub { font-size: 10px; color: var(--muted); font-family: var(--font-mono); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
-  .count-cell { font-family: var(--font-mono); font-size: 13px; }
+  .count-num { font-family: var(--font-mono); font-size: 13px; }
   .bar-wrap { width: 44px; height: 3px; background: var(--border2); border-radius: 2px; margin-top: 4px; }
   .bar-fill { height: 3px; border-radius: 2px; }
-  .date-cell { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .date-cell { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; line-height: 1.5; }
+  .genre-cell { font-size: 11px; font-family: var(--font-mono); color: var(--muted); white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
 
-  .status-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
-  .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .pill .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
   .pill-linked { background: var(--green-dim); color: var(--green); }
   .pill-linked .dot { background: var(--green); }
   .pill-tw-only { background: var(--amber-dim); color: var(--amber); }
@@ -127,21 +156,21 @@
   .pill-junk { background: var(--purple-dim); color: var(--purple); }
   .pill-junk .dot { background: var(--purple); }
 
-  .flags-cell { display: flex; gap: 4px; flex-wrap: wrap; }
-  .flag { display: inline-block; font-size: 10px; font-family: var(--font-mono); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--border2); color: var(--muted); white-space: nowrap; }
-  .flag-warn { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .tm-cell { font-size: 12px; max-width: 180px; }
+  .tm-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; display: block; }
+  .tm-id { font-family: var(--font-mono); font-size: 10px; color: var(--muted); display: block; }
+  .tm-none { color: var(--muted); font-style: italic; }
+  .tm-checking { color: var(--amber); font-family: var(--font-mono); font-size: 11px; }
 
-  .suggestion-cell { font-size: 12px; max-width: 190px; }
-  .suggestion-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
-  .suggestion-id { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 1px; }
-  .suggestion-none { color: var(--muted); font-style: italic; }
-  .suggestion-checking { color: var(--amber); font-family: var(--font-mono); font-size: 11px; }
+  .flags-cell { display: flex; gap: 4px; flex-wrap: wrap; max-width: 140px; }
+  .flag { display: inline-block; font-size: 10px; font-family: var(--font-mono); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--border2); color: var(--muted); white-space: nowrap; }
+  .flag-warn { border-color: var(--amber); color: var(--amber); }
 
   .action-cell { display: flex; gap: 4px; align-items: center; }
-  .icon-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; color: var(--muted); text-decoration: none; transition: all 0.15s; flex-shrink: 0; font-family: var(--font-mono); }
+  .icon-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; color: var(--muted); text-decoration: none; transition: all 0.15s; flex-shrink: 0; font-family: var(--font-mono); font-weight: 500; }
   .icon-btn:hover { color: var(--text); background: var(--surface2); border-color: var(--subtle); }
-  .icon-btn.highlight { border-color: var(--orange); color: var(--orange); }
-  .icon-btn.highlight:hover { background: var(--orange-dim); }
+  .icon-btn.warn { border-color: var(--orange); color: var(--orange); }
+  .icon-btn.warn:hover { background: var(--orange-dim); }
 
   .junk-row td { opacity: 0.35; }
 
@@ -149,8 +178,7 @@
   .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
   .legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-  .empty-state { padding: 4rem 2rem; text-align: center; color: var(--muted); font-size: 14px; }
-  .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .empty-state { padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: 14px; }
 
   #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
   .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; animation: slideIn 0.2s ease; }
@@ -167,102 +195,114 @@
   </div>
   <div class="header-right">
     <button class="btn btn-sm" onclick="resetTool()" id="resetBtn" style="display:none;">↩ New audit</button>
-    <button class="btn btn-sm" onclick="exportCSV()" id="exportBtn" style="display:none;">Export CSV</button>
     <button class="btn btn-sm btn-primary" onclick="runTMSuggestions()" id="suggestBtn" style="display:none;">Find TM matches ↗</button>
   </div>
 </header>
 
 <main>
 
+  <!-- Setup -->
   <div id="setupPanel" class="setup-panel">
     <div class="setup-title">TicketWeb Official Attraction Audit</div>
-    <div class="setup-sub">Pulls all active TicketWeb events via <code>source=ticketweb</code>, identifies attraction status by K8vZ ID, and cross-references untagged events against verified attractions found in the same pull — surfacing events where a verified attraction exists but isn't being used.</div>
-    <div class="setup-grid">
-      <div>
-        <div class="field-label">Pages to fetch</div>
-        <select id="pageCount">
-          <option value="5">5 pages (~1,000 events)</option>
-          <option value="10" selected>10 pages (~2,000 events)</option>
-          <option value="25">25 pages (~5,000 events)</option>
-          <option value="50">50 pages (~10,000 events)</option>
-        </select>
-      </div>
+    <div class="setup-sub">Pulls all active TicketWeb events by segment, paginates until fully exhausted, and identifies which attractions are linked to a verified TM Official Attraction (K8vZ ID), which are TW-only, and which untagged events already have a verified attraction available to tag.</div>
+
+    <div class="config-row">
       <div>
         <div class="field-label">Country</div>
         <select id="countryCode">
-          <option value="" selected>US + Canada</option>
-          <option value="US">United States only</option>
-          <option value="CA">Canada only</option>
+          <option value="US" selected>United States</option>
+          <option value="CA">Canada</option>
         </select>
       </div>
-      <div>
-        <div class="field-label">Date range</div>
-        <select id="startDate">
-          <option value="today" selected>Today onwards</option>
-          <option value="all">All dates</option>
-        </select>
+    </div>
+
+    <div class="field-label" style="margin-bottom:10px;">Segments to audit</div>
+    <div class="segment-grid" id="segmentGrid">
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nJ" onclick="toggleSeg(this)">
+        <div class="seg-card-name">Music</div>
+        <div class="seg-card-desc">Rock, Pop, EDM, Hip-Hop, Country, Jazz...</div>
       </div>
-      <button class="btn btn-primary" onclick="runAudit()" id="runBtn">Run audit ↗</button>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7na" onclick="toggleSeg(this)">
+        <div class="seg-card-name">Arts & Theatre</div>
+        <div class="seg-card-desc">Comedy, Theatre, Dance, Opera...</div>
+      </div>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nE" onclick="toggleSeg(this)">
+        <div class="seg-card-name">Sports</div>
+        <div class="seg-card-desc">Wrestling, Boxing, Motorsports...</div>
+      </div>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7n1" onclick="toggleSeg(this)">
+        <div class="seg-card-name">Miscellaneous</div>
+        <div class="seg-card-desc">Comedy, Food & Drink, Lectures...</div>
+      </div>
+      <div class="seg-card" data-id="KZFzniwnSyZfZ7v7nl" onclick="toggleSeg(this)">
+        <div class="seg-card-name">Undefined</div>
+        <div class="seg-card-desc">Unclassified events</div>
+      </div>
+    </div>
+
+    <div class="launch-row">
+      <button class="btn btn-primary" onclick="runAudit()">Run full audit ↗</button>
+      <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Paginates each segment to completion — may take 5–15 min for a full US audit</span>
     </div>
   </div>
 
+  <!-- Progress -->
   <div class="progress-panel" id="progressPanel">
-    <div class="progress-label" id="progressLabel">Initializing...</div>
+    <div class="progress-overall-label" id="progressOverall">Starting audit...</div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-sub" id="progressSub"></div>
-    <div class="progress-step" id="progressStep"></div>
+    <div class="seg-progress-list" id="segProgressList"></div>
   </div>
 
+  <!-- Results -->
   <div id="resultsPanel" style="display:none;">
 
     <div class="stats-grid" id="statsGrid"></div>
 
     <div class="toolbar">
       <input type="text" class="search-input" id="searchInput" placeholder="Search attraction or event name..." oninput="renderTable()">
-      <div class="sort-group">
-        <button class="sort-btn active" onclick="setSortKey('count', this)">Event count</button>
-        <button class="sort-btn" onclick="setSortKey('name', this)">Name</button>
-        <button class="sort-btn" onclick="setSortKey('date', this)">Date</button>
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('linked',this)">TM linked</button>
+        <button class="filter-btn" onclick="setFilter('tw-only',this)">TW-only</button>
+        <button class="filter-btn" onclick="setFilter('missed',this)">Not tagged</button>
+        <button class="filter-btn" onclick="setFilter('untagged',this)">No attraction</button>
+        <button class="filter-btn" onclick="setFilter('action',this)">Action needed</button>
       </div>
-      <button class="btn btn-sm" onclick="setFilter('all')" id="clearBtn" style="display:none;">✕ Clear filter</button>
+      <div class="filter-group" id="segFilter"></div>
     </div>
 
     <div class="table-wrap">
       <div class="table-top">
         <span class="table-count" id="tableCount"></span>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span id="filterLabel" style="font-size:11px;color:var(--muted);font-family:var(--font-mono);"></span>
-        </div>
+        <button class="btn btn-sm" onclick="setFilter('all', document.querySelector(\'.filter-btn.active\'))" id="clearBtn" style="display:none;">✕ Clear filter</button>
       </div>
       <table>
         <thead>
           <tr>
-            <th style="width:210px;">Attraction / event name</th>
+            <th class="sortable" onclick="sortBy('name')" id="th-name" style="width:200px;">Attraction / event name</th>
             <th style="width:65px;">Events</th>
-            <th style="width:130px;">Date range</th>
-            <th style="width:125px;">Status</th>
-            <th style="width:185px;">TM attraction</th>
-            <th style="width:130px;">Flags</th>
-            <th style="width:95px;">Actions</th>
+            <th class="sortable" onclick="sortBy('date')" id="th-date" style="width:120px;">Date range</th>
+            <th class="sortable" onclick="sortBy('segment')" id="th-segment" style="width:130px;">Segment › genre</th>
+            <th class="sortable" onclick="sortBy('status')" id="th-status" style="width:120px;">Status</th>
+            <th style="width:190px;">TM attraction</th>
+            <th style="width:110px;">Flags</th>
+            <th style="width:80px;">Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
       <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>K8vZ linked — TM Official Attraction</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only attraction — needs TM link</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>Verified attraction exists — not tagged on event</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction tagged</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>K8vZ linked</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only (needs TM link)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>Verified attraction exists — not tagged</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction at all</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>Junk / test</span>
       </div>
     </div>
 
   </div>
 
-  <div id="emptyState" class="empty-state" style="display:none;">
-    <div class="empty-icon">🔍</div>
-    <div>No attractions match the current filter.</div>
-  </div>
+  <div id="emptyState" class="empty-state" style="display:none;">No attractions match the current filter.</div>
 
 </main>
 
@@ -271,204 +311,174 @@
 <script>
 const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
 
+const SEGMENTS = {
+  'KZFzniwnSyZfZ7v7nJ': 'Music',
+  'KZFzniwnSyZfZ7v7na': 'Arts & Theatre',
+  'KZFzniwnSyZfZ7v7nE': 'Sports',
+  'KZFzniwnSyZfZ7v7n1': 'Miscellaneous',
+  'KZFzniwnSyZfZ7v7nl': 'Undefined'
+};
+
 const JUNK_PATTERNS = [/^test\b/i,/do not purchase/i,/rigor monitoring/i,/^test attraction/i,/^test event/i,/^test act\b/i,/ram v'?\d/i,/test act and support/i,/^TEST\s/,/^test and /i];
 function isJunk(n) { return JUNK_PATTERNS.some(p => p.test(n.trim())); }
 function isTMVerified(id) { return id && (id.startsWith('K8vZ') || id.startsWith('K8vz')); }
 
-const NON_ARTIST_KW = ['vip','meet & greet','meet and greet','experience','brunch','drag','open mic','karaoke','trivia','bingo','dance party','showcase','tour package','upgrade','stadium tour','classic tour','general admission','comedy night'];
-function likelyNonArtist(n) { const l=n.toLowerCase(); return NON_ARTIST_KW.some(k=>l.includes(k)); }
-
-function allFallback(images) {
-  if (!images || !images.length) return true;
-  return images.every(i => i.fallback === true);
-}
-
-function hasSpotify(externalLinks) { return !!(externalLinks && externalLinks.spotify && externalLinks.spotify.length); }
-function hasBandsintown(externalLinks) { return !!(externalLinks && externalLinks.bandsintown && externalLinks.bandsintown.length); }
-
-// Normalize name for matching — lowercase, strip punctuation/articles
 function normalizeName(n) {
-  return n.toLowerCase()
-    .replace(/^(the|a|an)\s+/,'')
-    .replace(/[^a-z0-9\s]/g,'')
-    .replace(/\s+/g,' ')
-    .trim();
+  return n.toLowerCase().replace(/^(the|a|an)\s+/,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
 }
 
-// Check if eventName contains an attraction name as a whole-word match
-function matchAttractionInEventName(eventName, attractionName) {
-  const evtNorm = normalizeName(eventName);
-  const attNorm = normalizeName(attractionName);
-  if (attNorm.length < 3) return false;
-  // Exact or starts-with or contains as whole word sequence
-  if (evtNorm === attNorm) return true;
-  if (evtNorm.startsWith(attNorm + ' ')) return true;
-  if (evtNorm.includes(' ' + attNorm + ' ')) return true;
-  if (evtNorm.endsWith(' ' + attNorm)) return true;
+function matchAttractionInEventName(evtName, attName) {
+  const e = normalizeName(evtName), a = normalizeName(attName);
+  if (a.length < 3) return false;
+  if (e === a) return true;
+  if (e.startsWith(a + ' ') || e.includes(' ' + a + ' ') || e.endsWith(' ' + a)) return true;
   return false;
+}
+
+function toggleSeg(el) {
+  el.classList.toggle('selected');
 }
 
 let allRows = [];
 let currentFilter = 'all';
 let sortKey = 'count';
+let sortDir = 'desc';
 let maxCount = 1;
-
-// Verified attraction dictionary built during fetch: normalizedName -> {id, name, url, externalLinks, images}
 let verifiedAttractionDict = {};
+let segProgress = {};
 
-function setProgress(pct, label, sub, step) {
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = label;
-  if (sub !== undefined) document.getElementById('progressSub').textContent = sub;
-  if (step !== undefined) document.getElementById('progressStep').textContent = step;
+// Sort header management
+function updateSortHeaders() {
+  ['name','date','segment','status'].forEach(k => {
+    const th = document.getElementById('th-' + k);
+    if (!th) return;
+    th.classList.remove('sort-asc','sort-desc');
+    if (sortKey === k) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+function sortBy(key) {
+  if (sortKey === key) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
+  else { sortKey = key; sortDir = key === 'count' ? 'desc' : 'asc'; }
+  updateSortHeaders();
+  renderTable();
 }
 
 async function runAudit() {
-  const pages = parseInt(document.getElementById('pageCount').value);
   const country = document.getElementById('countryCode').value;
-  const startFromToday = document.getElementById('startDate').value === 'today';
+  const selectedSegs = [...document.querySelectorAll('.seg-card.selected')].map(el => ({ id: el.dataset.id, name: SEGMENTS[el.dataset.id] }));
+
+  if (!selectedSegs.length) { showToast('Select at least one segment'); return; }
 
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('progressPanel').style.display = 'block';
   document.getElementById('resultsPanel').style.display = 'none';
-  document.getElementById('emptyState').style.display = 'none';
 
-  // Intermediate storage
-  const attractionMap = {}; // keyed by attraction ID or UNTAGGED::eventName
-  const untaggedEvents = []; // events with no attraction for cross-reference later
-  let totalEvents = 0;
-  let actualPages = 0;
+  allRows = [];
   verifiedAttractionDict = {};
+  const attractionMap = {};
+  segProgress = {};
 
-  // PASS 1: Fetch all TW events, build attraction map + verified dictionary
-  for (let page = 0; page < pages; page++) {
-    const pct = Math.round((page / pages) * 75);
-    setProgress(pct,
-      `Pass 1 of 2 — fetching TW events (page ${page+1} of ${pages})`,
-      `${totalEvents.toLocaleString()} events processed`,
-      'Building verified attraction dictionary...'
-    );
+  // Build progress UI
+  const list = document.getElementById('segProgressList');
+  list.innerHTML = selectedSegs.map(s => `
+    <div class="seg-progress-item" id="segrow-${s.id}">
+      <div class="seg-dot queued" id="dot-${s.id}"></div>
+      <div class="seg-progress-name" id="segname-${s.id}">${s.name}</div>
+      <div class="seg-progress-track"><div class="seg-progress-fill" id="segbar-${s.id}"></div></div>
+      <div class="seg-progress-detail" id="segdetail-${s.id}">queued</div>
+    </div>
+  `).join('');
 
-    try {
-      let url = `https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&size=200&page=${page}&apikey=${API_KEY}`;
-      if (country) url += `&countryCode=${country}`;
-      if (startFromToday) {
-        const today = new Date().toISOString().split('T')[0] + 'T00:00:00Z';
-        url += `&startDateTime=${today}`;
-      }
+  let totalSegsDone = 0;
 
-      const res = await fetch(url);
-      const data = await res.json();
-      const events = data?._embedded?.events || [];
-      if (!events.length) break;
-      actualPages++;
-      totalEvents += events.length;
+  for (const seg of selectedSegs) {
+    // Update UI for this segment
+    document.getElementById('dot-' + seg.id).className = 'seg-dot running';
+    document.getElementById('segname-' + seg.id).className = 'seg-progress-name running';
+    document.getElementById('progressOverall').textContent = `Fetching ${seg.name} events...`;
 
-      for (const evt of events) {
-        const evtAttractions = evt._embedded?.attractions || [];
-        const evtDate = evt.dates?.start?.localDate || '';
-        const evtName = evt.name || '';
-        const evtUrl = evt.url || '';
-        const evtCountry = evt._embedded?.venues?.[0]?.country?.countryCode || 'US';
-        const region = evtCountry === 'CA' ? 'ca' : 'us';
-        const isCustomName = evt.nameOrigin === 'custom';
+    let page = 0, segEvents = 0, keepGoing = true;
 
-        if (evtAttractions.length === 0) {
-          // Store for cross-reference in pass 2
-          untaggedEvents.push({ evtName, evtUrl, evtDate, region, isCustomName });
+    while (keepGoing) {
+      const pct = Math.min(Math.round((page / (page + 5)) * 100), 95);
+      document.getElementById('segbar-' + seg.id).style.width = pct + '%';
+      document.getElementById('segdetail-' + seg.id).textContent = `page ${page + 1} · ${segEvents.toLocaleString()} events`;
+      document.getElementById('progressFill').style.width = Math.round(((totalSegsDone + (page / (page + 5))) / selectedSegs.length) * 100) + '%';
 
-          // Group untagged by event name
-          const key = 'UNTAGGED::' + evtName.toLowerCase().trim();
-          if (!attractionMap[key]) {
-            attractionMap[key] = {
-              key, name: evtName, attractionId: null, status: 'untagged',
-              tmName: null, tmId: null, tmUrl: null,
-              externalLinks: null, attractionImages: null,
-              count: 0, firstDate: evtDate, lastDate: evtDate,
-              twUrl: evtUrl, region, junk: isJunk(evtName),
-              nonArtist: likelyNonArtist(evtName), isCustomName,
-              missedAttractionId: null, missedAttractionName: null,
-              tmSuggestion: null, suggestionChecked: false
-            };
-          }
-          attractionMap[key].count++;
-          if (evtDate && evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+      try {
+        let url = `https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&classificationId=${seg.id}&size=200&page=${page}&countryCode=${country}&apikey=${API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const events = data?._embedded?.events || [];
 
-        } else {
-          for (const a of evtAttractions) {
-            const verified = isTMVerified(a.id);
-            const key = a.id;
+        if (!events.length) { keepGoing = false; break; }
+        segEvents += events.length;
 
+        for (const evt of events) {
+          const evtAttractions = evt._embedded?.attractions || [];
+          const evtDate = evt.dates?.start?.localDate || '';
+          const evtName = evt.name || '';
+          const evtUrl = evt.url || '';
+          const segment = evt.classifications?.[0]?.segment?.name || seg.name;
+          const genre = evt.classifications?.[0]?.genre?.name || '';
+          const isCustomName = evt.nameOrigin === 'custom';
+
+          if (!evtAttractions.length) {
+            const key = 'UNTAGGED::' + evtName.toLowerCase().trim();
             if (!attractionMap[key]) {
-              attractionMap[key] = {
-                key, name: a.name, attractionId: a.id,
-                status: verified ? 'linked' : 'tw-only',
-                tmName: verified ? a.name : null,
-                tmId: verified ? a.id : null,
-                tmUrl: verified ? (a.url || null) : null,
-                externalLinks: a.externalLinks || null,
-                attractionImages: a.images || null,
-                count: 0, firstDate: evtDate, lastDate: evtDate,
-                twUrl: evtUrl, region, junk: isJunk(a.name),
-                nonArtist: likelyNonArtist(a.name), isCustomName: false,
-                missedAttractionId: null, missedAttractionName: null,
-                tmSuggestion: verified ? {found:true,name:a.name,id:a.id,url:a.url||null} : null,
-                suggestionChecked: verified
-              };
+              attractionMap[key] = { key, name: evtName, attractionId: null, status: 'untagged', tmName: null, tmId: null, tmUrl: null, count: 0, firstDate: evtDate, lastDate: evtDate, twUrl: evtUrl, segment, genre, junk: isJunk(evtName), isCustomName, missedAttractionId: null, missedAttractionName: null, tmSuggestion: null, suggestionChecked: false };
             }
             attractionMap[key].count++;
-            if (evtDate && evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
-            if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
+            if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+          } else {
+            for (const a of evtAttractions) {
+              const verified = isTMVerified(a.id);
+              const key = a.id;
+              if (!attractionMap[key]) {
+                attractionMap[key] = { key, name: a.name, attractionId: a.id, status: verified ? 'linked' : 'tw-only', tmName: verified ? a.name : null, tmId: verified ? a.id : null, tmUrl: verified ? (a.url || null) : null, count: 0, firstDate: evtDate, lastDate: evtDate, twUrl: evtUrl, segment, genre, junk: isJunk(a.name), isCustomName: false, missedAttractionId: null, missedAttractionName: null, tmSuggestion: verified ? { found: true, name: a.name, id: a.id, url: a.url || null } : null, suggestionChecked: verified };
+              }
+              attractionMap[key].count++;
+              if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+              if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
 
-            // Build verified attraction dictionary
-            if (verified) {
-              const normKey = normalizeName(a.name);
-              if (!verifiedAttractionDict[normKey]) {
-                verifiedAttractionDict[normKey] = { id: a.id, name: a.name, url: a.url || null, externalLinks: a.externalLinks || null, images: a.images || null };
+              if (verified) {
+                const nk = normalizeName(a.name);
+                if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = { id: a.id, name: a.name, url: a.url || null };
               }
             }
           }
         }
-      }
 
-      if (events.length < 200) break;
-      await new Promise(r => setTimeout(r, 150));
-    } catch(e) {
-      console.error(e);
-      break;
+        if (events.length < 200) keepGoing = false;
+        else { page++; await new Promise(r => setTimeout(r, 200)); }
+      } catch(e) { keepGoing = false; }
     }
+
+    // Mark segment done
+    document.getElementById('dot-' + seg.id).className = 'seg-dot done';
+    document.getElementById('segname-' + seg.id).className = 'seg-progress-name done';
+    document.getElementById('segbar-' + seg.id).style.width = '100%';
+    document.getElementById('segbar-' + seg.id).className = 'seg-progress-fill done';
+    document.getElementById('segdetail-' + seg.id).textContent = `${segEvents.toLocaleString()} events · done`;
+    totalSegsDone++;
+    document.getElementById('progressFill').style.width = Math.round((totalSegsDone / selectedSegs.length) * 100) + '%';
   }
 
-  // PASS 2: Cross-reference untagged events against verified attraction dictionary
-  setProgress(80,
-    'Pass 2 of 2 — cross-referencing untagged events',
-    `Checking ${untaggedEvents.length.toLocaleString()} untagged events against ${Object.keys(verifiedAttractionDict).length} verified attractions`,
-    'Looking for verified attractions that should be tagged...'
-  );
-  await new Promise(r => setTimeout(r, 100));
+  // Pass 2: cross-reference untagged events
+  document.getElementById('progressOverall').textContent = 'Cross-referencing untagged events against verified attractions...';
 
   let missedCount = 0;
   for (const [key, row] of Object.entries(attractionMap)) {
     if (row.status !== 'untagged' || row.junk) continue;
-
-    // Try to find a verified attraction that matches this event name
-    let matched = null;
-
-    // Check exact normalized match first
     const normEvt = normalizeName(row.name);
-    if (verifiedAttractionDict[normEvt]) {
-      matched = verifiedAttractionDict[normEvt];
-    } else {
-      // Check if event name contains any verified attraction name
+    let matched = verifiedAttractionDict[normEvt] || null;
+    if (!matched) {
       for (const [normAtt, attData] of Object.entries(verifiedAttractionDict)) {
         if (normAtt.length < 3) continue;
-        if (matchAttractionInEventName(row.name, attData.name)) {
-          matched = attData;
-          break;
-        }
+        if (matchAttractionInEventName(row.name, attData.name)) { matched = attData; break; }
       }
     }
-
     if (matched) {
       row.status = 'missed';
       row.missedAttractionId = matched.id;
@@ -482,72 +492,83 @@ async function runAudit() {
     }
   }
 
-  setProgress(100, 'Audit complete', `${totalEvents.toLocaleString()} events across ${actualPages} pages · ${missedCount} missed tagging opportunities found`);
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressOverall').textContent = 'Audit complete';
   await new Promise(r => setTimeout(r, 400));
 
-  allRows = Object.values(attractionMap).sort((a,b) => b.count - a.count);
+  allRows = Object.values(attractionMap).sort((a, b) => b.count - a.count);
   maxCount = Math.max(...allRows.map(r => r.count), 1);
 
   document.getElementById('progressPanel').style.display = 'none';
   document.getElementById('resultsPanel').style.display = 'block';
   document.getElementById('resetBtn').style.display = '';
-  document.getElementById('exportBtn').style.display = '';
   document.getElementById('suggestBtn').style.display = '';
 
-  const dateStr = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  document.getElementById('headerMeta').textContent = `${totalEvents.toLocaleString()} events · ${dateStr}`;
+  const totalEvents = allRows.reduce((s, r) => s + r.count, 0);
+  const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  document.getElementById('headerMeta').textContent = `${totalEvents.toLocaleString()} events · ${country} · ${dateStr}`;
 
+  buildSegmentFilter(selectedSegs);
   renderStats();
   renderTable();
-  showToast(`Audit complete — ${allRows.length} unique attractions, ${missedCount} missed tagging opportunities`);
+  showToast(`Audit complete — ${allRows.length} unique attractions · ${missedCount} missed tagging opportunities`);
+}
+
+function buildSegmentFilter(segs) {
+  const el = document.getElementById('segFilter');
+  if (segs.length <= 1) { el.style.display = 'none'; return; }
+  el.innerHTML = `<button class="filter-btn active" onclick="setSegFilter('all',this)">All segments</button>` +
+    segs.map(s => `<button class="filter-btn" onclick="setSegFilter('${s.name}',this)">${s.name}</button>`).join('');
+}
+
+let currentSegFilter = 'all';
+function setSegFilter(seg, el) {
+  currentSegFilter = seg;
+  document.querySelectorAll('#segFilter .filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
 }
 
 function renderStats() {
-  const nonJunk = allRows.filter(r => !r.junk);
-  const linked = nonJunk.filter(r => r.status === 'linked').length;
-  const twOnly = nonJunk.filter(r => r.status === 'tw-only').length;
-  const missed = nonJunk.filter(r => r.status === 'missed').length;
-  const untagged = nonJunk.filter(r => r.status === 'untagged').length;
+  const nj = allRows.filter(r => !r.junk);
+  const linked = nj.filter(r => r.status === 'linked').length;
+  const twOnly = nj.filter(r => r.status === 'tw-only').length;
+  const missed = nj.filter(r => r.status === 'missed').length;
+  const untagged = nj.filter(r => r.status === 'untagged').length;
   const junk = allRows.filter(r => r.junk).length;
   const total = linked + twOnly + missed + untagged;
-  const linkRate = total > 0 ? Math.round((linked / total) * 100) : 0;
   const actionNeeded = twOnly + missed + untagged;
 
-  const cards = [
-    { id:'all', label:'Total attractions', value:total, cls:'', sub:'click to show all', filter:'all', activeCls:'' },
-    { id:'linked', label:'TM linked', value:linked, cls:'green', sub:'K8vZ ID confirmed', filter:'linked', activeCls:'active-green' },
-    { id:'tw-only', label:'TW-only attraction', value:twOnly, cls:'amber', sub:'needs TM link', filter:'tw-only', activeCls:'active-amber' },
-    { id:'missed', label:'Missed tagging', value:missed, cls:'orange', sub:'attraction exists, not used', filter:'missed', activeCls:'active-orange' },
-    { id:'untagged', label:'No attraction', value:untagged, cls:'red', sub:'needs attraction created', filter:'untagged', activeCls:'active-red' },
-    { id:'action', label:'Action needed', value:actionNeeded, cls:'amber', sub:'TW-only + missed + untagged', filter:'action', activeCls:'active-amber' },
-  ];
-
-  document.getElementById('statsGrid').innerHTML = cards.map(c =>
-    `<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}')">
-      <div class="stat-label">${c.label}</div>
-      <div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div>
-      <div class="stat-sub">${c.sub}</div>
-    </div>`
-  ).join('');
+  document.getElementById('statsGrid').innerHTML = [
+    { id:'all', label:'Total attractions', value:total, cls:'', sub:'click to show all', filter:'all', ac:'' },
+    { id:'linked', label:'TM linked', value:linked, cls:'green', sub:'K8vZ ID confirmed', filter:'linked', ac:'active-green' },
+    { id:'tw-only', label:'TW-only', value:twOnly, cls:'amber', sub:'needs TM link', filter:'tw-only', ac:'active-amber' },
+    { id:'missed', label:'Not tagged', value:missed, cls:'orange', sub:'attraction exists, unused', filter:'missed', ac:'active-orange' },
+    { id:'untagged', label:'No attraction', value:untagged, cls:'red', sub:'needs attraction created', filter:'untagged', ac:'active-red' },
+    { id:'action', label:'Action needed', value:actionNeeded, cls:'amber', sub:'TW-only + missed + untagged', filter:'action', ac:'active-amber' },
+  ].map(c => `<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}', null)">
+    <div class="stat-label">${c.label}</div>
+    <div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div>
+    <div class="stat-sub">${c.sub}</div>
+  </div>`).join('');
 }
 
-function setFilter(f) {
+function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.stat-card').forEach(c => {
-    c.classList.remove('active','active-green','active-amber','active-orange','active-red','active-purple');
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    if (b.closest('#segFilter')) return;
+    b.classList.remove('active');
   });
-  const map = { all:'', linked:'active-green', 'tw-only':'active-amber', missed:'active-orange', untagged:'active-red', action:'active-amber' };
+  if (el) el.classList.add('active');
+  else {
+    const btn = document.querySelector(`.filter-btn[onclick*="'${f}'"]`);
+    if (btn && !btn.closest('#segFilter')) btn.classList.add('active');
+  }
+  document.querySelectorAll('.stat-card').forEach(c => c.className = 'stat-card');
+  const acMap = { linked:'active-green', 'tw-only':'active-amber', missed:'active-orange', untagged:'active-red', action:'active-amber' };
   const card = document.getElementById('stat-' + (f === 'action' ? 'action' : f));
-  if (card) { card.classList.add('active'); if (map[f]) card.classList.add(map[f]); }
+  if (card && acMap[f]) card.classList.add(acMap[f]);
   document.getElementById('clearBtn').style.display = f === 'all' ? 'none' : '';
-  document.getElementById('filterLabel').textContent = f !== 'all' ? `Showing: ${f}` : '';
-  renderTable();
-}
-
-function setSortKey(key, el) {
-  sortKey = key;
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
   renderTable();
 }
 
@@ -559,98 +580,77 @@ function getFiltered() {
     if (currentFilter === 'missed' && r.status !== 'missed') return false;
     if (currentFilter === 'untagged' && r.status !== 'untagged') return false;
     if (currentFilter === 'action' && !['tw-only','missed','untagged'].includes(r.status)) return false;
+    if (currentSegFilter !== 'all' && r.segment !== currentSegFilter) return false;
     if (search && !r.name.toLowerCase().includes(search)) return false;
     return true;
-  }).sort((a,b) => {
-    if (sortKey === 'count') return b.count - a.count;
-    if (sortKey === 'name') return a.name.localeCompare(b.name);
-    if (sortKey === 'date') return (b.lastDate||'').localeCompare(a.lastDate||'');
-    return 0;
+  }).sort((a, b) => {
+    let va, vb;
+    if (sortKey === 'count') { va = a.count; vb = b.count; }
+    else if (sortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+    else if (sortKey === 'date') { va = a.lastDate || ''; vb = b.lastDate || ''; }
+    else if (sortKey === 'segment') { va = (a.segment + a.genre).toLowerCase(); vb = (b.segment + b.genre).toLowerCase(); }
+    else if (sortKey === 'status') { const o = {linked:0,'tw-only':1,missed:2,untagged:3,junk:4}; va = o[a.status]||3; vb = o[b.status]||3; }
+    else { va = a.count; vb = b.count; }
+    return va < vb ? (sortDir === 'asc' ? -1 : 1) : va > vb ? (sortDir === 'asc' ? 1 : -1) : 0;
   });
 }
 
 function renderTable() {
   const filtered = getFiltered();
-  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length!==1?'s':''}`;
+  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length !== 1 ? 's' : ''}`;
   document.getElementById('emptyState').style.display = filtered.length === 0 && allRows.length > 0 ? 'block' : 'none';
-
   if (!filtered.length) { document.getElementById('tableBody').innerHTML = ''; return; }
 
   document.getElementById('tableBody').innerHTML = filtered.map(r => {
     const barPct = Math.round((r.count / maxCount) * 100);
-    const barColor = r.status==='linked' ? 'var(--green)' : r.status==='tw-only' ? 'var(--amber)' : r.status==='missed' ? 'var(--orange)' : 'var(--red)';
+    const barColor = r.status==='linked'?'var(--green)':r.status==='tw-only'?'var(--amber)':r.status==='missed'?'var(--orange)':'var(--red)';
 
-    // Status badge
     let badge;
-    if (r.junk) badge = `<span class="status-pill pill-junk"><span class="dot"></span>junk</span>`;
-    else if (r.status==='linked') badge = `<span class="status-pill pill-linked"><span class="dot"></span>TM linked</span>`;
-    else if (r.status==='tw-only') badge = `<span class="status-pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
-    else if (r.status==='missed') badge = `<span class="status-pill pill-missed"><span class="dot"></span>not tagged</span>`;
-    else badge = `<span class="status-pill pill-untagged"><span class="dot"></span>untagged</span>`;
+    if (r.junk) badge = `<span class="pill pill-junk"><span class="dot"></span>junk</span>`;
+    else if (r.status==='linked') badge = `<span class="pill pill-linked"><span class="dot"></span>TM linked</span>`;
+    else if (r.status==='tw-only') badge = `<span class="pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
+    else if (r.status==='missed') badge = `<span class="pill pill-missed"><span class="dot"></span>not tagged</span>`;
+    else badge = `<span class="pill pill-untagged"><span class="dot"></span>untagged</span>`;
 
-    // TM attraction cell
     let tmCell;
-    if (r.status === 'linked') {
-      tmCell = `<div class="suggestion-name" title="${r.tmName}">${r.tmName}</div><div class="suggestion-id">${r.tmId}</div>`;
-    } else if (r.status === 'missed') {
-      tmCell = `<div class="suggestion-name" style="color:var(--orange)" title="${r.missedAttractionName}">⚠ ${r.missedAttractionName}</div><div class="suggestion-id">${r.missedAttractionId}</div>`;
-    } else if (r.junk || r.nonArtist) {
-      tmCell = `<span class="suggestion-none">review manually</span>`;
-    } else if (r.tmSuggestion === 'checking') {
-      tmCell = `<span class="suggestion-checking">checking...</span>`;
-    } else if (r.tmSuggestion?.found) {
-      tmCell = `<div class="suggestion-name" title="${r.tmSuggestion.name}">${r.tmSuggestion.name}</div><div class="suggestion-id">${r.tmSuggestion.id}</div>`;
-    } else if (r.tmSuggestion && !r.tmSuggestion.found) {
-      tmCell = `<span class="suggestion-none">no TM match found</span>`;
-    } else {
-      tmCell = `<span class="suggestion-none">—</span>`;
-    }
+    if (r.status === 'linked') tmCell = `<span class="tm-name" title="${r.tmName}">${r.tmName}</span><span class="tm-id">${r.tmId}</span>`;
+    else if (r.status === 'missed') tmCell = `<span class="tm-name" style="color:var(--orange)" title="${r.missedAttractionName}">⚠ ${r.missedAttractionName}</span><span class="tm-id">${r.missedAttractionId}</span>`;
+    else if (r.junk) tmCell = `<span class="tm-none">—</span>`;
+    else if (r.tmSuggestion === 'checking') tmCell = `<span class="tm-checking">checking...</span>`;
+    else if (r.tmSuggestion?.found) tmCell = `<span class="tm-name" title="${r.tmSuggestion.name}">${r.tmSuggestion.name}</span><span class="tm-id">${r.tmSuggestion.id}</span>`;
+    else if (r.tmSuggestion && !r.tmSuggestion.found) tmCell = `<span class="tm-none">no TM match found</span>`;
+    else tmCell = `<span class="tm-none">—</span>`;
 
-    // Flags
     const flags = [];
     if (r.status === 'missed') flags.push(`<span class="flag flag-warn">use ${r.missedAttractionId}</span>`);
-    if (r.attractionImages && allFallback(r.attractionImages)) flags.push(`<span class="flag flag-warn">no artist photo</span>`);
-    if (r.externalLinks && !hasSpotify(r.externalLinks)) flags.push(`<span class="flag">no spotify</span>`);
     if (r.isCustomName && r.status !== 'linked') flags.push(`<span class="flag">custom name</span>`);
-    if (r.nonArtist) flags.push(`<span class="flag">non-artist</span>`);
 
-    // Actions
-    const twUrl = r.twUrl || `https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}`;
-    const tmUrl = r.tmUrl || (r.tmSuggestion?.url) || `https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
-    const twBtn = `<a class="icon-btn" href="${twUrl}" target="_blank" title="View on TicketWeb">TW</a>`;
-    const tmBtn = `<a class="icon-btn" href="${tmUrl}" target="_blank" title="View on Ticketmaster">TM</a>`;
-    const searchBtn = (!r.junk && !r.nonArtist && !r.suggestionChecked)
-      ? `<button class="icon-btn" title="Search TM for match" onclick="checkOne('${r.key.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">?</button>` : '';
-    const missedBtn = r.status === 'missed'
-      ? `<a class="icon-btn highlight" href="https://www.ticketmaster.com/artist/${r.missedAttractionId}" target="_blank" title="Tag this attraction: ${r.missedAttractionId}">⚠</a>` : '';
+    const twSearchUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.name)}`;
+    const tmUrl = r.tmUrl || r.tmSuggestion?.url || `https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
+    const searchBtn = (!r.junk && !r.suggestionChecked) ? `<button class="icon-btn" title="Search TM" onclick="checkOne('${r.key.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">?</button>` : '';
+    const missedBtn = r.status === 'missed' ? `<a class="icon-btn warn" href="${tmUrl}" target="_blank" title="View TM attraction">⚠</a>` : '';
+    const tmBtn = `<a class="icon-btn" href="${tmUrl}" target="_blank" title="View on TM">TM</a>`;
+    const twBtn = `<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search on TW">TW</a>`;
 
-    const dateRange = r.firstDate && r.lastDate && r.firstDate !== r.lastDate
-      ? `${r.firstDate}<br>${r.lastDate}` : (r.firstDate || '—');
+    const genreDisplay = r.genre && r.genre !== 'Undefined' ? `${r.segment} › ${r.genre}` : r.segment;
 
-    return `<tr class="${r.junk ? 'junk-row' : ''}">
-      <td class="name-cell">
-        <div class="name-primary" title="${r.name}">${r.name}</div>
-        ${r.attractionId ? `<div class="name-sub">${r.attractionId}</div>` : ''}
-      </td>
-      <td>
-        <div class="count-cell">${r.count}</div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%;background:${barColor};"></div></div>
-      </td>
-      <td><div class="date-cell" style="line-height:1.4;">${dateRange}</div></td>
+    return `<tr class="${r.junk?'junk-row':''}">
+      <td><span class="name-primary" title="${r.name}">${r.name}</span>${r.attractionId?`<span class="name-sub">${r.attractionId}</span>`:''}</td>
+      <td><div class="count-num">${r.count}</div><div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%;background:${barColor};"></div></div></td>
+      <td><div class="date-cell">${r.firstDate||'—'}<br>${r.lastDate && r.lastDate !== r.firstDate ? r.lastDate : ''}</div></td>
+      <td><div class="genre-cell" title="${genreDisplay}">${genreDisplay}</div></td>
       <td>${badge}</td>
-      <td class="suggestion-cell">${tmCell}</td>
+      <td class="tm-cell">${tmCell}</td>
       <td><div class="flags-cell">${flags.join('')}</div></td>
       <td><div class="action-cell">${missedBtn}${searchBtn}${twBtn}${tmBtn}</div></td>
     </tr>`;
   }).join('');
 }
 
-// Manual TM search for one row
 async function checkOne(key) {
   const r = allRows.find(x => x.key === key);
   if (!r) return;
-  r.tmSuggestion = 'checking';
-  r.suggestionChecked = true;
+  r.tmSuggestion = 'checking'; r.suggestionChecked = true;
   renderTable();
   await fetchTMSuggestion(r);
   renderTable();
@@ -661,26 +661,18 @@ async function fetchTMSuggestion(r) {
     const res = await fetch(`https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(r.name)}&size=3&apikey=${API_KEY}`);
     const data = await res.json();
     const matches = data?._embedded?.attractions || [];
-    const match = matches.find(m => {
-      const t = normalizeName(m.name);
-      const n = normalizeName(r.name);
-      return t === n || t.includes(n) || n.includes(t);
-    });
-    r.tmSuggestion = match
-      ? { found:true, name:match.name, id:match.id, url:match.url||null }
-      : { found:false };
+    const match = matches.find(m => { const t = normalizeName(m.name), n = normalizeName(r.name); return t === n || t.includes(n) || n.includes(t); });
+    r.tmSuggestion = match ? { found:true, name:match.name, id:match.id, url:match.url||null } : { found:false };
   } catch { r.tmSuggestion = { found:false }; }
 }
 
-// Batch TM suggestions for all unmatched visible rows
 async function runTMSuggestions() {
-  const toCheck = getFiltered().filter(r => !r.junk && !r.nonArtist && !r.suggestionChecked && r.status !== 'linked' && r.status !== 'missed');
+  const toCheck = getFiltered().filter(r => !r.junk && !r.suggestionChecked && r.status !== 'linked' && r.status !== 'missed');
   if (!toCheck.length) { showToast('All visible rows already checked'); return; }
   document.getElementById('suggestBtn').disabled = true;
   document.getElementById('suggestBtn').textContent = `Checking ${toCheck.length}...`;
-  for (let i=0; i<toCheck.length; i++) {
-    toCheck[i].tmSuggestion = 'checking';
-    toCheck[i].suggestionChecked = true;
+  for (let i = 0; i < toCheck.length; i++) {
+    toCheck[i].tmSuggestion = 'checking'; toCheck[i].suggestionChecked = true;
     if (i % 5 === 0) renderTable();
     await fetchTMSuggestion(toCheck[i]);
     await new Promise(r => setTimeout(r, 220));
@@ -688,45 +680,27 @@ async function runTMSuggestions() {
   document.getElementById('suggestBtn').disabled = false;
   document.getElementById('suggestBtn').textContent = 'Find TM matches ↗';
   renderTable();
-  showToast(`Checked ${toCheck.length} attractions against TM`);
+  showToast(`Checked ${toCheck.length} attractions`);
 }
 
 function resetTool() {
   allRows = []; verifiedAttractionDict = {};
-  currentFilter = 'all'; sortKey = 'count';
+  currentFilter = 'all'; currentSegFilter = 'all'; sortKey = 'count'; sortDir = 'desc';
   document.getElementById('setupPanel').style.display = 'block';
   document.getElementById('progressPanel').style.display = 'none';
   document.getElementById('resultsPanel').style.display = 'none';
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resetBtn').style.display = 'none';
-  document.getElementById('exportBtn').style.display = 'none';
   document.getElementById('suggestBtn').style.display = 'none';
   document.getElementById('headerMeta').textContent = '';
   document.getElementById('progressFill').style.width = '0%';
 }
 
-function exportCSV() {
-  const filtered = getFiltered();
-  const header = 'Name,TW Attraction ID,Event Count,First Date,Last Date,Status,TM Attraction Name,TM Attraction ID,TM URL,Missed Attraction ID,No Artist Photo,No Spotify,Custom Name,Non-Artist,TW Search URL';
-  const rows = filtered.map(r => {
-    const status = r.junk ? 'Junk' : r.status === 'linked' ? 'TM Linked' : r.status === 'tw-only' ? 'TW-Only' : r.status === 'missed' ? 'Missed Tagging' : 'Untagged';
-    const noPhoto = r.attractionImages ? allFallback(r.attractionImages) : '';
-    const noSpotify = r.externalLinks ? !hasSpotify(r.externalLinks) : '';
-    return `"${r.name.replace(/"/g,'""')}","${r.attractionId||''}",${r.count},"${r.firstDate||''}","${r.lastDate||''}","${status}","${(r.tmName||r.tmSuggestion?.name||'').replace(/"/g,'""')}","${r.tmId||r.tmSuggestion?.id||''}","${r.tmUrl||r.tmSuggestion?.url||''}","${r.missedAttractionId||''}","${noPhoto}","${noSpotify}","${r.isCustomName||''}","${r.nonArtist||''}","https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}"`;
-  });
-  const blob = new Blob([[header,...rows].join('\n')],{type:'text/csv'});
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `tw-attraction-audit-${new Date().toISOString().slice(0,10)}.csv`;
-  link.click();
-  showToast('CSV downloaded');
-}
-
 function showToast(msg) {
   const t = document.createElement('div');
-  t.className='toast'; t.textContent=msg;
+  t.className = 'toast'; t.textContent = msg;
   document.getElementById('toastContainer').appendChild(t);
-  setTimeout(()=>t.remove(), 3500);
+  setTimeout(() => t.remove(), 4000);
 }
 </script>
 </body>
