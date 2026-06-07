@@ -594,12 +594,17 @@ async function runAudit() {
   }
 
   document.getElementById('progressOverall').textContent = 'Cross-referencing untagged events...';
+  await new Promise(r => setTimeout(r, 50));
   let missedCount = 0;
-  for (const [key, row] of Object.entries(attractionMap)) {
+  const attractionEntries = Object.entries(attractionMap);
+  const verifiedEntries = Object.entries(verifiedAttractionDict);
+  for (let ci = 0; ci < attractionEntries.length; ci++) {
+    if (ci % 200 === 0) await new Promise(r => setTimeout(r, 0));
+    const [key, row] = attractionEntries[ci];
     if (row.status !== 'untagged' || row.junk) continue;
     const normEvt = normalizeName(row.name);
     let matched = verifiedAttractionDict[normEvt] || null;
-    if (!matched) { for (const [, attData] of Object.entries(verifiedAttractionDict)) { if (attData.name.length < 3) continue; if (matchAttractionInEventName(row.name, attData.name)) { matched = attData; break; } } }
+    if (!matched) { for (const [, attData] of verifiedEntries) { if (attData.name.length < 3) continue; if (matchAttractionInEventName(row.name, attData.name)) { matched = attData; break; } } }
     if (matched) { row.status='missed'; row.missedAttractionId=matched.id; row.missedAttractionName=matched.name; row.tmId=matched.id; row.tmName=matched.name; row.tmUrl=matched.url; row.tmSuggestion={found:true,name:matched.name,id:matched.id,url:matched.url}; row.suggestionChecked=true; missedCount++; }
   }
 
