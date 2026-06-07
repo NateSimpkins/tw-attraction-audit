@@ -198,6 +198,14 @@
   #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
   .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; animation: slideIn 0.2s ease; }
   @keyframes slideIn { from { transform: translateY(8px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+  /* ORG REPORT */
+  .pct-bar-wrap { width: 72px; height: 5px; background: var(--border2); border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 6px; flex-shrink: 0; }
+  .pct-bar-fill { height: 5px; border-radius: 3px; }
+  .health-badge { display: inline-flex; align-items: center; font-size: 11px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .health-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .health-yellow { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .health-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
 </style>
 </head>
 <body>
@@ -216,6 +224,7 @@
 
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('audit', this)">Attraction Audit</button>
+  <button class="tab-btn" onclick="switchTab('orgreport', this)">Org Report</button>
   <button class="tab-btn" onclick="switchTab('builder', this)">Venue ID Builder</button>
 </div>
 
@@ -302,7 +311,51 @@
 </main>
 </div>
 
-<!-- ===== TAB 2: VENUE ID BUILDER ===== -->
+<!-- ===== TAB 2: ORG REPORT ===== -->
+<div id="tab-orgreport" class="tab-content">
+<main>
+  <div id="orgEmptyState" style="padding:3rem 2rem;text-align:center;color:var(--muted);font-family:var(--font-mono);font-size:13px;">Run an Attraction Audit first — the Org Report populates automatically.</div>
+  <div id="orgReportContent" style="display:none;">
+    <div class="stats-grid" id="orgStatsGrid" style="margin-bottom:1.5rem;"></div>
+    <div class="toolbar">
+      <input type="text" class="search-input" id="orgSearchInput" placeholder="Search org or venue name..." oninput="renderOrgTable()">
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setOrgFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setOrgFilter('green',this)">Green</button>
+        <button class="filter-btn" onclick="setOrgFilter('yellow',this)">Yellow</button>
+        <button class="filter-btn" onclick="setOrgFilter('red',this)">Red</button>
+      </div>
+      <button class="btn btn-sm" onclick="exportOrgCSV()">↓ Export CSV</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-top">
+        <span class="table-count" id="orgTableCount"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" onclick="setOrgSort('venueName')" id="orgth-venueName" style="width:200px;">Org / Venue Name</th>
+            <th class="sortable" onclick="setOrgSort('total')" id="orgth-total" style="width:80px;">Attractions</th>
+            <th class="sortable" onclick="setOrgSort('linked')" id="orgth-linked" style="width:80px;">TM Linked</th>
+            <th class="sortable" onclick="setOrgSort('notTagged')" id="orgth-notTagged" style="width:80px;">Not Tagged</th>
+            <th class="sortable" onclick="setOrgSort('untagged')" id="orgth-untagged" style="width:90px;">No Attraction</th>
+            <th class="sortable" onclick="setOrgSort('actionNeeded')" id="orgth-actionNeeded" style="width:90px;">Action Needed</th>
+            <th class="sortable" onclick="setOrgSort('eventCount')" id="orgth-eventCount" style="width:70px;">Events</th>
+            <th class="sortable" onclick="setOrgSort('lastDate')" id="orgth-lastDate" style="width:120px;">Date Range</th>
+            <th style="width:110px;">Top Genre</th>
+            <th class="sortable" onclick="setOrgSort('pctLinked')" id="orgth-pctLinked" style="width:150px;">% Linked</th>
+            <th class="sortable" onclick="setOrgSort('health')" id="orgth-health" style="width:80px;">Health</th>
+            <th style="width:50px;">TW</th>
+          </tr>
+        </thead>
+        <tbody id="orgTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ===== TAB 3: VENUE ID BUILDER ===== -->
 <div id="tab-builder" class="tab-content">
 <main>
 
@@ -393,11 +446,13 @@ function switchTab(tab, btn) {
   const isAudit = tab === 'audit';
   document.getElementById('resetBtn').style.display = (isAudit && auditDone) ? '' : 'none';
   document.getElementById('suggestBtn').style.display = (isAudit && auditDone) ? '' : 'none';
+  if (tab === 'orgreport' && auditDone && orgRows.length) { renderOrgTable(); }
 }
 
 // ===== AUDIT TAB =====
 let allRows = [], currentFilter = 'all', sortKey = 'count', sortDir = 'desc', maxCount = 1;
 let verifiedAttractionDict = {}, currentSegFilter = 'all', auditDone = false;
+let orgRows = [], orgFilter = 'all', orgSortKey = 'actionNeeded', orgSortDir = 'desc';
 
 function toggleSeg(el) { el.classList.toggle('selected'); }
 
@@ -425,6 +480,7 @@ async function runAudit() {
   document.getElementById('resultsPanel').style.display = 'none';
   allRows = []; verifiedAttractionDict = {};
   const attractionMap = {};
+  const orgEventMap = {};
 
   const list = document.getElementById('segProgressList');
   list.innerHTML = selectedSegs.map(s => `
@@ -468,6 +524,13 @@ async function runAudit() {
           const segment = evt.classifications?.[0]?.segment?.name || seg.name;
           const genre = evt.classifications?.[0]?.genre?.name || '';
           const isCustomName = evt.nameOrigin === 'custom';
+          const venueName = evt._embedded?.venues?.[0]?.name || '';
+          if (venueName) {
+            if (!orgEventMap[venueName]) orgEventMap[venueName] = { venueName, attractionKeys: new Set(), eventCount: 0, genres: {}, dates: [] };
+            orgEventMap[venueName].eventCount++;
+            if (evtDate) orgEventMap[venueName].dates.push(evtDate);
+            if (genre && genre !== 'Undefined') orgEventMap[venueName].genres[genre] = (orgEventMap[venueName].genres[genre]||0)+1;
+          }
 
           if (!embeddedAttractions.length && !linkedAttractionIds.length) {
             // Truly untagged — no attraction at all
@@ -475,6 +538,7 @@ async function runAudit() {
             if (!attractionMap[key]) attractionMap[key] = { key, name:evtName, attractionId:null, status:'untagged', tmName:null, tmId:null, tmUrl:null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(evtName), isCustomName, missedAttractionId:null, missedAttractionName:null, tmSuggestion:null, suggestionChecked:false };
             attractionMap[key].count++;
             if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+            if (venueName) orgEventMap[venueName].attractionKeys.add(key);
           } else if (embeddedAttractions.length) {
             // Full attraction objects embedded — use as before
             for (const a of embeddedAttractions) {
@@ -485,6 +549,7 @@ async function runAudit() {
               if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
               if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
               if (verified) { const nk = normalizeName(a.name); if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = {id:a.id,name:a.name,url:a.url||null}; }
+              if (venueName) orgEventMap[venueName].attractionKeys.add(key);
             }
           } else {
             // Only _links.attractions hrefs — extract ID from href, no name available
@@ -496,6 +561,7 @@ async function runAudit() {
               if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
               if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
               if (verified) verifiedAttractionDict[normalizeName(evtName)] = {id:aId, name:evtName, url:null};
+              if (venueName) orgEventMap[venueName].attractionKeys.add(key);
             }
           }
         }
@@ -564,12 +630,20 @@ async function runAudit() {
     const segment = evt.classifications?.[0]?.segment?.name || 'Music';
     const genre = evt.classifications?.[0]?.genre?.name || '';
     const isCustomName = evt.nameOrigin === 'custom';
+    const venueName2 = evt._embedded?.venues?.[0]?.name || '';
+    if (venueName2) {
+      if (!orgEventMap[venueName2]) orgEventMap[venueName2] = { venueName: venueName2, attractionKeys: new Set(), eventCount: 0, genres: {}, dates: [] };
+      orgEventMap[venueName2].eventCount++;
+      if (evtDate) orgEventMap[venueName2].dates.push(evtDate);
+      if (genre && genre !== 'Undefined') orgEventMap[venueName2].genres[genre] = (orgEventMap[venueName2].genres[genre]||0)+1;
+    }
 
     if (!embeddedAttractions.length && !linkedAttractionIds.length) {
       const key = 'UNTAGGED::'+evtName.toLowerCase().trim();
       if (!attractionMap[key]) attractionMap[key] = { key, name:evtName, attractionId:null, status:'untagged', tmName:null, tmId:null, tmUrl:null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(evtName), isCustomName, missedAttractionId:null, missedAttractionName:null, tmSuggestion:null, suggestionChecked:false };
       attractionMap[key].count++;
       if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+      if (venueName2) orgEventMap[venueName2].attractionKeys.add(key);
     } else if (embeddedAttractions.length) {
       for (const a of embeddedAttractions) {
         const verified = isTMVerified(a.id);
@@ -579,6 +653,7 @@ async function runAudit() {
         if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
         if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
         if (verified) { const nk = normalizeName(a.name); if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = {id:a.id,name:a.name,url:a.url||null}; }
+        if (venueName2) orgEventMap[venueName2].attractionKeys.add(key);
       }
     } else {
       for (const aId of linkedAttractionIds) {
@@ -589,6 +664,7 @@ async function runAudit() {
         if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
         if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
         if (verified) verifiedAttractionDict[normalizeName(evtName)] = {id:aId, name:evtName, url:null};
+        if (venueName2) orgEventMap[venueName2].attractionKeys.add(key);
       }
     }
   }
@@ -612,6 +688,7 @@ async function runAudit() {
   document.getElementById('progressOverall').textContent = 'Audit complete';
   await new Promise(r => setTimeout(r,400));
 
+  buildOrgReport(orgEventMap, attractionMap);
   allRows = Object.values(attractionMap).sort((a,b) => b.count - a.count);
   maxCount = Math.max(...allRows.map(r => r.count), 1);
   auditDone = true;
@@ -782,6 +859,9 @@ async function runTMSuggestions() {
 
 function resetAudit() {
   allRows=[]; verifiedAttractionDict={}; currentFilter='all'; currentSegFilter='all'; sortKey='count'; sortDir='desc'; auditDone=false;
+  orgRows=[]; orgFilter='all'; orgSortKey='actionNeeded'; orgSortDir='desc';
+  document.getElementById('orgEmptyState').style.display='block';
+  document.getElementById('orgReportContent').style.display='none';
   document.getElementById('setupPanel').style.display='block';
   document.getElementById('progressPanel').style.display='none';
   document.getElementById('resultsPanel').style.display='none';
@@ -1069,6 +1149,124 @@ window.addEventListener('load', () => {
     }
   } catch(e) {}
 });
+
+// ===== ORG REPORT =====
+function buildOrgReport(orgEventMap, attractionMap) {
+  const rows = [];
+  for (const [venueName, orgData] of Object.entries(orgEventMap)) {
+    let linked = 0, twOnly = 0, missed = 0, untagged = 0;
+    for (const key of orgData.attractionKeys) {
+      const row = attractionMap[key];
+      if (!row || row.junk) continue;
+      if (row.status === 'linked') linked++;
+      else if (row.status === 'tw-only') twOnly++;
+      else if (row.status === 'missed') missed++;
+      else if (row.status === 'untagged') untagged++;
+    }
+    const total = linked + twOnly + missed + untagged;
+    if (!total) continue;
+    const notTagged = twOnly + missed;
+    const actionNeeded = twOnly + missed + untagged;
+    const pctLinked = Math.round(linked / total * 100);
+    const health = pctLinked >= 80 ? 'green' : pctLinked >= 50 ? 'yellow' : 'red';
+    const sortedDates = [...orgData.dates].filter(Boolean).sort();
+    const topGenre = Object.entries(orgData.genres).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
+    rows.push({ venueName, total, linked, notTagged, untagged, actionNeeded, eventCount: orgData.eventCount, firstDate: sortedDates[0]||'', lastDate: sortedDates[sortedDates.length-1]||'', topGenre, pctLinked, health });
+  }
+  orgRows = rows.sort((a,b) => b.actionNeeded - a.actionNeeded);
+  orgFilter = 'all'; orgSortKey = 'actionNeeded'; orgSortDir = 'desc';
+  document.getElementById('orgEmptyState').style.display = 'none';
+  document.getElementById('orgReportContent').style.display = 'block';
+  renderOrgStats();
+  renderOrgTable();
+}
+
+function renderOrgStats() {
+  const total = orgRows.length;
+  const greenCount = orgRows.filter(r => r.health === 'green').length;
+  const needAction = orgRows.filter(r => r.actionNeeded > 0).length;
+  const totalAction = orgRows.reduce((s,r) => s + r.actionNeeded, 0);
+  document.getElementById('orgStatsGrid').innerHTML = [
+    { label:'Total orgs', value:total, cls:'' },
+    { label:'100% linked', value:greenCount, cls:'green', sub:'all attractions TM-linked' },
+    { label:'Orgs needing action', value:needAction, cls:'amber', sub:'at least one gap' },
+    { label:'Total action needed', value:totalAction, cls:'red', sub:'across all orgs' },
+  ].map(c=>`<div class="stat-card">
+    <div class="stat-label">${c.label}</div>
+    <div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div>
+    ${c.sub?`<div class="stat-sub">${c.sub}</div>`:''}
+  </div>`).join('');
+}
+
+function setOrgFilter(f, el) {
+  orgFilter = f;
+  document.querySelectorAll('#tab-orgreport .filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderOrgTable();
+}
+
+function setOrgSort(key) {
+  if (orgSortKey === key) orgSortDir = orgSortDir === 'asc' ? 'desc' : 'asc';
+  else { orgSortKey = key; orgSortDir = 'desc'; }
+  updateOrgSortHeaders();
+  renderOrgTable();
+}
+
+function updateOrgSortHeaders() {
+  ['venueName','total','linked','notTagged','untagged','actionNeeded','eventCount','lastDate','pctLinked','health'].forEach(k => {
+    const th = document.getElementById('orgth-'+k);
+    if (!th) return;
+    th.classList.remove('sort-asc','sort-desc');
+    if (orgSortKey===k) th.classList.add(orgSortDir==='asc'?'sort-asc':'sort-desc');
+  });
+}
+
+function renderOrgTable() {
+  const search = (document.getElementById('orgSearchInput')?.value||'').toLowerCase();
+  const filtered = orgRows.filter(r => {
+    if (orgFilter !== 'all' && r.health !== orgFilter) return false;
+    if (search && !r.venueName.toLowerCase().includes(search)) return false;
+    return true;
+  }).sort((a,b) => {
+    let va = a[orgSortKey], vb = b[orgSortKey];
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+    return va < vb ? (orgSortDir==='asc'?-1:1) : va > vb ? (orgSortDir==='asc'?1:-1) : 0;
+  });
+  document.getElementById('orgTableCount').textContent = `${filtered.length.toLocaleString()} org${filtered.length!==1?'s':''}`;
+  document.getElementById('orgTableBody').innerHTML = filtered.map(r => {
+    const barColor = r.health==='green'?'var(--green)':r.health==='yellow'?'var(--amber)':'var(--red)';
+    const healthLabel = r.health==='green'?'Healthy':r.health==='yellow'?'Warning':'Critical';
+    const dateRange = r.firstDate ? (r.lastDate && r.lastDate!==r.firstDate ? `${r.firstDate}<br>${r.lastDate}` : r.firstDate) : '—';
+    const twUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.venueName)}`;
+    return `<tr>
+      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
+      <td><span class="count-num">${r.total}</span></td>
+      <td><span class="count-num" style="color:var(--green)">${r.linked}</span></td>
+      <td><span class="count-num" style="color:${r.notTagged>0?'var(--orange)':'var(--muted)'}">${r.notTagged}</span></td>
+      <td><span class="count-num" style="color:${r.untagged>0?'var(--red)':'var(--muted)'}">${r.untagged}</span></td>
+      <td><span class="count-num" style="color:${r.actionNeeded>0?'var(--amber)':'var(--muted)'};font-weight:${r.actionNeeded>0?500:400}">${r.actionNeeded}</span></td>
+      <td><span class="count-num">${r.eventCount}</span></td>
+      <td><div class="date-cell">${dateRange}</div></td>
+      <td><div class="genre-cell" title="${r.topGenre}">${r.topGenre}</div></td>
+      <td><div style="display:flex;align-items:center;gap:6px;"><div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${r.pctLinked}%;background:${barColor};"></div></div><span style="font-family:var(--font-mono);font-size:12px;">${r.pctLinked}%</span></div></td>
+      <td><span class="health-badge health-${r.health}">${healthLabel}</span></td>
+      <td><a class="icon-btn" href="${twUrl}" target="_blank" title="Search TW">TW</a></td>
+    </tr>`;
+  }).join('');
+}
+
+function exportOrgCSV() {
+  if (!orgRows.length) { showToast('No data to export'); return; }
+  const headers = ['Org/Venue Name','Total Attractions','TM Linked','Not Tagged','No Attraction','Action Needed','Total Events','First Date','Last Date','Top Genre','% Linked','Health'];
+  const rows = orgRows.map(r => [r.venueName,r.total,r.linked,r.notTagged,r.untagged,r.actionNeeded,r.eventCount,r.firstDate,r.lastDate,r.topGenre,r.pctLinked+'%',r.health]);
+  const csv = [headers,...rows].map(row => row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `org-report-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV exported');
+}
 
 function showToast(msg) {
   const t = document.createElement('div');
