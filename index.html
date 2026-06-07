@@ -32,389 +32,95 @@
     --radius: 8px;
     --radius-lg: 12px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .logo-mark {
-    width: 28px;
-    height: 28px;
-    background: var(--accent);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    color: #fff;
-    letter-spacing: -0.5px;
-  }
-
-  .header-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -0.2px;
-  }
-
-  .header-sub {
-    font-size: 12px;
-    color: var(--muted);
-    font-family: var(--font-mono);
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: var(--radius);
-    font-size: 13px;
-    font-family: var(--font-sans);
-    font-weight: 400;
-    cursor: pointer;
-    border: 1px solid var(--border2);
-    background: var(--surface2);
-    color: var(--text);
-    transition: all 0.15s;
-    text-decoration: none;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  header { border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--surface); position: sticky; top: 0; z-index: 100; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: #fff; letter-spacing: -0.5px; }
+  .header-title { font-size: 14px; font-weight: 500; color: var(--text); letter-spacing: -0.2px; }
+  .header-sub { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-sans); font-weight: 400; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); transition: all 0.15s; text-decoration: none; }
   .btn:hover { background: var(--border); border-color: var(--subtle); }
   .btn:active { transform: scale(0.98); }
-
-  .btn-primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
+  .btn-sm { padding: 3px 10px; font-size: 12px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
-  .btn-sm {
-    padding: 3px 10px;
-    font-size: 12px;
-  }
+  /* Mode selector */
+  .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .mode-card { background: var(--surface); border: 1.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; cursor: pointer; transition: all 0.2s; }
+  .mode-card:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .mode-card.active { border-color: var(--accent); background: var(--accent-dim); }
+  .mode-card-icon { font-size: 24px; margin-bottom: 10px; }
+  .mode-card-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .mode-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  .upload-zone {
-    border: 1.5px dashed var(--border2);
-    border-radius: var(--radius-lg);
-    padding: 3rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
-    margin-bottom: 2rem;
-  }
-
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--accent);
-    background: var(--accent-dim);
-  }
-
-  .upload-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 22px;
-  }
-
-  .upload-title {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-
-  .upload-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 1.25rem;
-  }
-
+  /* Upload zone */
+  .upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); margin-bottom: 1.5rem; }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-dim); }
+  .upload-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 22px; }
+  .upload-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .upload-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.25rem; }
   #fileInput { display: none; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 0.5rem; font-family: var(--font-mono); }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.5rem;
-  }
+  /* Live fetch panel */
+  .fetch-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .fetch-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+  .field-label { font-size: 12px; font-family: var(--font-mono); color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+  select, input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
+  select:focus, input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
 
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-
-  .stat-value {
-    font-size: 26px;
-    font-weight: 300;
-    letter-spacing: -1px;
-    color: var(--text);
-  }
-
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+  .stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 300; letter-spacing: -1px; color: var(--text); }
   .stat-value.green { color: var(--green); }
   .stat-value.amber { color: var(--amber); }
   .stat-value.red { color: var(--red); }
   .stat-value.purple { color: var(--purple); }
 
-  .toolbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .toolbar input[type="text"] {
-    flex: 1;
-    min-width: 200px;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 7px 12px;
-    font-size: 13px;
-    font-family: var(--font-sans);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .toolbar input[type="text"]::placeholder { color: var(--muted); }
-  .toolbar input[type="text"]:focus { border-color: var(--accent); }
-
-  .filter-group {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 3px;
-  }
-
-  .filter-btn {
-    padding: 4px 12px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-family: var(--font-mono);
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
+  /* Toolbar */
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .filter-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
+  .filter-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; white-space: nowrap; }
   .filter-btn:hover { color: var(--text); }
   .filter-btn.active { background: var(--surface2); color: var(--text); }
-  .filter-btn.active.all { color: var(--text); }
   .filter-btn.active.linked { color: var(--green); }
   .filter-btn.active.unlinked { color: var(--red); }
   .filter-btn.active.junk { color: var(--purple); }
-
-  .region-group {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 3px;
-  }
-
-  .region-btn {
-    padding: 4px 12px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-family: var(--font-mono);
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    transition: all 0.15s;
-  }
-
+  .region-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
+  .region-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; }
   .region-btn:hover { color: var(--text); }
   .region-btn.active { background: var(--surface2); color: var(--text); }
 
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .table-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    gap: 8px;
-  }
-
-  .table-count {
-    font-size: 12px;
-    font-family: var(--font-mono);
-    color: var(--muted);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead th {
-    text-align: left;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 400;
-    white-space: nowrap;
-  }
-
+  /* Table */
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .table-header-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); gap: 8px; flex-wrap: wrap; }
+  .table-count { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 16px; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
   thead th.sortable { cursor: pointer; user-select: none; }
   thead th.sortable:hover { color: var(--text); }
   thead th.sort-asc::after { content: ' ↑'; }
   thead th.sort-desc::after { content: ' ↓'; }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
-
-  td {
-    padding: 10px 16px;
-    font-size: 13px;
-    vertical-align: middle;
-  }
-
-  .attraction-name {
-    font-weight: 500;
-    color: var(--text);
-    max-width: 220px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .venue-count {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text);
-  }
-
-  .venue-bar {
-    width: 60px;
-    height: 3px;
-    background: var(--border2);
-    border-radius: 2px;
-    margin-top: 4px;
-  }
-
-  .venue-bar-fill {
-    height: 3px;
-    border-radius: 2px;
-    background: var(--accent);
-  }
-
-  .date-range {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .region-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-family: var(--font-mono);
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    padding: 3px 8px;
-    border-radius: 5px;
-    white-space: nowrap;
-  }
-
-  .status-badge .dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
+  td { padding: 10px 16px; font-size: 13px; vertical-align: middle; }
+  .attraction-name { font-weight: 500; color: var(--text); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .venue-count { font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+  .venue-bar { width: 60px; height: 3px; background: var(--border2); border-radius: 2px; margin-top: 4px; }
+  .venue-bar-fill { height: 3px; border-radius: 2px; background: var(--accent); }
+  .date-range { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .region-badge { display: inline-block; font-size: 10px; font-family: var(--font-mono); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border2); color: var(--muted); }
+  .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--font-mono); padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
+  .status-badge .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
   .badge-linked { background: var(--green-dim); color: var(--green); }
   .badge-linked .dot { background: var(--green); }
   .badge-unlinked { background: var(--red-dim); color: var(--red); }
@@ -425,144 +131,29 @@
   .badge-pending .dot { background: var(--muted); }
   .badge-junk { background: var(--purple-dim); color: var(--purple); }
   .badge-junk .dot { background: var(--purple); }
-
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-
-  .tm-match {
-    font-size: 12px;
-    color: var(--text);
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
+  .tm-match { font-size: 12px; color: var(--text); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .tm-match.none { color: var(--muted); font-style: italic; }
-
-  .action-cell {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .icon-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: 1px solid var(--border2);
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: all 0.15s;
-  }
-
+  .action-cell { display: flex; gap: 6px; align-items: center; }
+  .icon-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--muted); text-decoration: none; transition: all 0.15s; }
   .icon-btn:hover { color: var(--text); border-color: var(--subtle); background: var(--border); }
 
-  .run-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  /* Run bar */
+  .run-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .run-label { font-size: 13px; color: var(--muted); flex: 1; min-width: 200px; font-family: var(--font-mono); }
+  .progress-track { flex: 1; min-width: 200px; height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
 
-  .run-label {
-    font-size: 13px;
-    color: var(--muted);
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .progress-track {
-    flex: 1;
-    min-width: 200px;
-    height: 4px;
-    background: var(--border2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 4px;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.3s;
-    width: 0%;
-  }
-
-  .empty-state {
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--muted);
-  }
-
-  .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-  .empty-text { font-size: 14px; }
-
-  .junk-row td { opacity: 0.5; }
-
-  .note {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 0.5rem;
-    font-family: var(--font-mono);
-  }
-
-  .legend {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 10px 16px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--muted);
-  }
-
-  .legend-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-  }
-
-  #toastContainer {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .toast {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 10px 16px;
-    font-size: 13px;
-    color: var(--text);
-    animation: slideIn 0.2s ease;
-  }
-
+  .junk-row td { opacity: 0.45; }
+  .empty-state { padding: 4rem 2rem; text-align: center; color: var(--muted); }
+  .legend { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--border); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
+  .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+  #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; color: var(--text); animation: slideIn 0.2s ease; }
   @keyframes slideIn { from { transform: translateY(8px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 1.5rem 0; color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 </style>
 </head>
 <body>
@@ -576,49 +167,115 @@
     <div class="header-sub" id="reportDate"></div>
   </div>
   <div class="header-right">
+    <button class="btn btn-sm" onclick="resetTool()" id="resetBtn" style="display:none;">↩ New audit</button>
     <button class="btn btn-sm" onclick="exportCSV()" id="exportBtn" style="display:none;">Export CSV</button>
     <button class="btn btn-sm btn-primary" onclick="runTMCheck()" id="checkBtn" style="display:none;">Check TM attractions ↗</button>
   </div>
 </header>
 
 <main>
-  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-    <div class="upload-icon">📋</div>
-    <div class="upload-title">Upload weekly TW tour report</div>
-    <div class="upload-sub">Drop the HTML file from your weekly TicketWeb email, or click to browse</div>
-    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Choose file</button>
-    <input type="file" id="fileInput" accept=".html,.htm" onchange="handleFile(event)">
-    <div class="note" style="margin-top:1rem;">Accepts the standard TicketWeb Attraction/Tour Report HTML export</div>
+
+  <!-- Mode selection -->
+  <div id="modePanel">
+    <div style="margin-bottom: 1.5rem;">
+      <div style="font-size: 18px; font-weight: 500; margin-bottom: 6px;">TicketWeb Attraction Audit</div>
+      <div style="font-size: 13px; color: var(--muted);">Identify which TW attractions are missing a Ticketmaster Official Attraction link. Choose how to load attraction data:</div>
+    </div>
+
+    <div class="mode-selector">
+      <div class="mode-card" onclick="selectMode('live')">
+        <div class="mode-card-icon">⚡</div>
+        <div class="mode-card-title">Live API pull</div>
+        <div class="mode-card-desc">Fetch TicketWeb events directly from the Ticketmaster Discovery API right now — no file needed. Best for on-demand audits anytime.</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('upload')">
+        <div class="mode-card-icon">📋</div>
+        <div class="mode-card-title">Upload weekly report</div>
+        <div class="mode-card-desc">Upload the HTML file from your weekly TicketWeb Attraction/Tour Report email. Best for a complete, authoritative snapshot of all active attractions.</div>
+      </div>
+    </div>
   </div>
 
+  <!-- Live fetch panel -->
+  <div id="liveFetchPanel" style="display:none;">
+    <div class="fetch-panel">
+      <div style="font-size: 13px; font-weight: 500; margin-bottom: 1rem;">Configure live pull</div>
+      <div class="fetch-grid">
+        <div>
+          <div class="field-label">Pages to fetch</div>
+          <select id="pageCount">
+            <option value="5">5 pages (~1,000 events)</option>
+            <option value="10" selected>10 pages (~2,000 events)</option>
+            <option value="25">25 pages (~5,000 events)</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-label">Country</div>
+          <select id="countryCode">
+            <option value="US" selected>United States</option>
+            <option value="CA">Canada</option>
+            <option value="">US + CA</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="runLiveFetch()">Fetch TicketWeb events ↗</button>
+        </div>
+      </div>
+      <div style="font-size: 12px; color: var(--muted); margin-top: 10px; font-family: var(--font-mono);">Pulls events from source=ticketweb via the TM Discovery API and aggregates by attraction name</div>
+    </div>
+    <div class="divider">or upload report instead</div>
+    <div class="upload-zone" id="uploadZone2" onclick="document.getElementById('fileInput2').click()">
+      <div class="upload-title" style="font-size:14px;">Upload weekly TW tour report HTML</div>
+      <div class="upload-sub">Drop file or click to browse</div>
+      <input type="file" id="fileInput2" accept=".html,.htm" onchange="handleFile(event)">
+    </div>
+  </div>
+
+  <!-- Upload-only panel -->
+  <div id="uploadOnlyPanel" style="display:none;">
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-icon">📋</div>
+      <div class="upload-title">Upload weekly TW tour report</div>
+      <div class="upload-sub">Drop the HTML file from your weekly TicketWeb email, or click to browse</div>
+      <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Choose file</button>
+      <input type="file" id="fileInput" accept=".html,.htm" onchange="handleFile(event)">
+      <div class="note" style="margin-top:1rem;">Accepts the standard TicketWeb Attraction/Tour Report HTML export</div>
+    </div>
+    <div class="divider">or pull live instead</div>
+    <button class="btn" onclick="selectMode('live')" style="width:100%; justify-content:center;">⚡ Switch to live API pull</button>
+  </div>
+
+  <!-- Progress bar (live fetch) -->
+  <div class="run-bar" id="fetchRunBar" style="display:none;">
+    <div class="run-label" id="fetchRunLabel">Fetching events...</div>
+    <div class="progress-track"><div class="progress-fill" id="fetchProgressFill"></div></div>
+  </div>
+
+  <!-- Results -->
   <div id="appContent" style="display:none;">
-
     <div class="stats-grid" id="statsGrid"></div>
-
     <div class="run-bar" id="runBar" style="display:none;">
       <div class="run-label" id="runLabel">Ready to check attractions against Ticketmaster...</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     </div>
-
     <div class="toolbar">
       <input type="text" id="searchInput" placeholder="Search attraction name..." oninput="renderTable()">
       <div class="filter-group">
-        <button class="filter-btn active all" data-filter="all" onclick="setFilter('all', this)">All</button>
-        <button class="filter-btn" data-filter="linked" onclick="setFilter('linked', this)">TM linked</button>
-        <button class="filter-btn" data-filter="unlinked" onclick="setFilter('unlinked', this)">Not linked</button>
-        <button class="filter-btn" data-filter="junk" onclick="setFilter('junk', this)">Junk / test</button>
+        <button class="filter-btn active all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('linked', this)">TM linked</button>
+        <button class="filter-btn unlinked" onclick="setFilter('unlinked', this)">Not linked</button>
+        <button class="filter-btn junk" onclick="setFilter('junk', this)">Junk / test</button>
       </div>
-      <div class="region-group">
-        <button class="region-btn active" data-region="all" onclick="setRegion('all', this)">US + CA</button>
+      <div class="region-group" id="regionGroup">
+        <button class="region-btn active" data-region="all" onclick="setRegion('all', this)">All</button>
         <button class="region-btn" data-region="us" onclick="setRegion('us', this)">US</button>
         <button class="region-btn" data-region="ca" onclick="setRegion('ca', this)">CA</button>
       </div>
     </div>
-
     <div class="table-wrap">
       <div class="table-header-row">
         <span class="table-count" id="tableCount"></span>
-        <button class="btn btn-sm" onclick="runTMCheckVisible()" id="checkVisibleBtn" style="display:none;">Check visible attractions</button>
+        <button class="btn btn-sm" onclick="runTMCheckVisible()">Check visible ↗</button>
       </div>
       <table>
         <thead>
@@ -628,14 +285,14 @@
             <th style="width:160px;">Date range</th>
             <th style="width:50px;">Region</th>
             <th style="width:130px;">TM status</th>
-            <th style="width:180px;">TM attraction match</th>
+            <th style="width:180px;">TM match</th>
             <th style="width:90px;">Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
       <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>Linked to TM Official Attraction</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>TM Official Attraction linked</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No TM attraction found</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Checking...</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--muted)"></span>Not yet checked</span>
@@ -645,8 +302,8 @@
   </div>
 
   <div id="emptyState" style="display:none;" class="empty-state">
-    <div class="empty-icon">🔍</div>
-    <div class="empty-text">No attractions match the current filters</div>
+    <div style="font-size:2rem; margin-bottom:.75rem;">🔍</div>
+    <div style="font-size:14px;">No attractions match the current filters</div>
   </div>
 </main>
 
@@ -656,14 +313,12 @@
 const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
 
 const JUNK_PATTERNS = [
-  /^test/i, /do not purchase/i, /rigor monitoring/i,
-  /test attraction/i, /test event/i, /test act/i,
-  /ram v'?\d/i, /test act and support/i
+  /^test\b/i, /do not purchase/i, /rigor monitoring/i,
+  /^test attraction/i, /^test event/i, /^test act/i,
+  /ram v'?\d/i, /test act and support/i, /^TEST\s/
 ];
 
-function isJunk(name) {
-  return JUNK_PATTERNS.some(p => p.test(name));
-}
+function isJunk(name) { return JUNK_PATTERNS.some(p => p.test(name.trim())); }
 
 let allAttractions = [];
 let currentFilter = 'all';
@@ -672,31 +327,55 @@ let sortKey = 'venues';
 let sortDir = 'desc';
 let maxVenues = 1;
 
-const uploadZone = document.getElementById('uploadZone');
-uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
-uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-uploadZone.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) parseFile(file);
+function selectMode(mode) {
+  document.getElementById('modePanel').style.display = 'none';
+  if (mode === 'live') {
+    document.getElementById('liveFetchPanel').style.display = 'block';
+  } else {
+    document.getElementById('uploadOnlyPanel').style.display = 'block';
+  }
+}
+
+function resetTool() {
+  allAttractions = [];
+  currentFilter = 'all';
+  currentRegion = 'all';
+  sortKey = 'venues';
+  sortDir = 'desc';
+  document.getElementById('modePanel').style.display = 'block';
+  document.getElementById('liveFetchPanel').style.display = 'none';
+  document.getElementById('uploadOnlyPanel').style.display = 'none';
+  document.getElementById('appContent').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('fetchRunBar').style.display = 'none';
+  document.getElementById('runBar').style.display = 'none';
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('exportBtn').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'none';
+  document.getElementById('reportDate').textContent = '';
+}
+
+/* ── DRAG + DROP ── */
+['uploadZone','uploadZone2'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) parseFile(file);
+  });
 });
 
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) parseFile(file);
-}
+function handleFile(e) { const f = e.target.files[0]; if (f) parseFile(f); }
 
 function parseFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
-    const html = e.target.result;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const rows = doc.querySelectorAll('tr');
+    const doc = new DOMParser().parseFromString(e.target.result, 'text/html');
     const attractions = [];
-
-    rows.forEach(row => {
+    doc.querySelectorAll('tr').forEach(row => {
       const cells = row.querySelectorAll('td');
       if (cells.length === 4) {
         const name = cells[0].textContent.trim();
@@ -705,83 +384,108 @@ function parseFile(file) {
         const url = cells[3].textContent.trim();
         const region = url.includes('ticketweb.ca') ? 'ca' : 'us';
         if (name && venues > 0) {
-          attractions.push({
-            name, venues, dates, url, region,
-            junk: isJunk(name),
-            tmStatus: 'pending',
-            tmName: null,
-            tmId: null,
-            tmUrl: null
-          });
+          attractions.push({ name, venues, dates, url, region, junk: isJunk(name), tmStatus: 'pending', tmName: null, tmId: null, tmUrl: null });
         }
       }
     });
-
-    if (attractions.length === 0) {
-      showToast('Could not parse file — make sure it is the standard TW tour report HTML');
-      return;
-    }
-
-    allAttractions = attractions;
-    maxVenues = Math.max(...attractions.map(a => a.venues));
-
-    document.getElementById('uploadZone').style.display = 'none';
-    document.getElementById('appContent').style.display = 'block';
-    document.getElementById('exportBtn').style.display = '';
-    document.getElementById('checkBtn').style.display = '';
-    document.getElementById('checkVisibleBtn').style.display = '';
-
-    const dateMatch = file.name.match(/\d{4}[-_]\d{2}[-_]\d{2}/);
-    document.getElementById('reportDate').textContent = dateMatch ? dateMatch[0] : file.name;
-
-    renderStats();
-    renderTable();
-    showToast(`Loaded ${attractions.length} attractions`);
+    if (!attractions.length) { showToast('Could not parse file — check it is the standard TW tour report HTML'); return; }
+    loadAttractions(attractions, file.name);
   };
   reader.readAsText(file);
 }
 
-function renderStats() {
-  const total = allAttractions.length;
-  const linked = allAttractions.filter(a => a.tmStatus === 'linked').length;
-  const unlinked = allAttractions.filter(a => a.tmStatus === 'unlinked').length;
-  const junk = allAttractions.filter(a => a.junk).length;
-  const checked = allAttractions.filter(a => a.tmStatus === 'linked' || a.tmStatus === 'unlinked').length;
-  const us = allAttractions.filter(a => a.region === 'us').length;
-  const ca = allAttractions.filter(a => a.region === 'ca').length;
+/* ── LIVE FETCH ── */
+async function runLiveFetch() {
+  const pages = parseInt(document.getElementById('pageCount').value);
+  const country = document.getElementById('countryCode').value;
+  const attractionMap = {};
 
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">Total attractions</div>
-      <div class="stat-value">${total}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">US / CA split</div>
-      <div class="stat-value">${us}<span style="font-size:14px;color:var(--muted);font-weight:400;"> / ${ca}</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">TM linked</div>
-      <div class="stat-value green">${linked}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Not linked</div>
-      <div class="stat-value red">${unlinked}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Junk / test entries</div>
-      <div class="stat-value purple">${junk}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Checked</div>
-      <div class="stat-value">${checked}<span style="font-size:14px;color:var(--muted);font-weight:400;"> / ${total}</span></div>
-    </div>
-  `;
+  document.getElementById('fetchRunBar').style.display = 'flex';
+  document.getElementById('fetchProgressFill').style.width = '0%';
+
+  for (let page = 0; page < pages; page++) {
+    document.getElementById('fetchProgressFill').style.width = Math.round((page / pages) * 100) + '%';
+    document.getElementById('fetchRunLabel').textContent = `Fetching page ${page + 1} of ${pages} from TM Discovery API...`;
+    try {
+      let url = `https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&size=200&page=${page}&apikey=${API_KEY}`;
+      if (country) url += `&countryCode=${country}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const events = data?._embedded?.events || [];
+      if (!events.length) break;
+
+      for (const evt of events) {
+        const evtAttractions = evt._embedded?.attractions || [];
+        const region = evt._embedded?.venues?.[0]?.country?.countryCode === 'CA' ? 'ca' : 'us';
+        const dateStart = evt.dates?.start?.localDate || '';
+        const dateEnd = evt.dates?.end?.localDate || dateStart;
+
+        if (!evtAttractions.length) {
+          const key = '__none__';
+          if (!attractionMap[key]) attractionMap[key] = { name: '(no attraction tagged)', venues: 0, dates: dateStart, url: '', region, junk: false, tmStatus: 'unlinked', tmName: null, tmId: null, tmUrl: null, eventCount: 0 };
+          attractionMap[key].eventCount++;
+          attractionMap[key].venues = attractionMap[key].eventCount;
+        } else {
+          for (const a of evtAttractions) {
+            const key = a.id;
+            if (!attractionMap[key]) {
+              const verified = a.id?.startsWith('K8vZ') || a.id?.startsWith('K8vz');
+              attractionMap[key] = {
+                name: a.name,
+                venues: 0,
+                dates: dateStart,
+                url: `https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(a.name)}`,
+                region,
+                junk: isJunk(a.name),
+                tmStatus: verified ? 'linked' : 'pending',
+                tmName: verified ? a.name : null,
+                tmId: verified ? a.id : null,
+                tmUrl: verified ? (a.url || null) : null,
+                eventCount: 0
+              };
+            }
+            attractionMap[key].eventCount++;
+            attractionMap[key].venues = attractionMap[key].eventCount;
+            if (dateStart > attractionMap[key].dates) attractionMap[key].dates = dateStart;
+          }
+        }
+      }
+      if (events.length < 200) break;
+      await new Promise(r => setTimeout(r, 150));
+    } catch(err) { break; }
+  }
+
+  document.getElementById('fetchProgressFill').style.width = '100%';
+  document.getElementById('fetchRunLabel').textContent = 'Done fetching — loading results...';
+  await new Promise(r => setTimeout(r, 300));
+  document.getElementById('fetchRunBar').style.display = 'none';
+
+  const attractions = Object.values(attractionMap).sort((a, b) => b.venues - a.venues);
+  const countryLabel = country === 'US' ? 'US' : country === 'CA' ? 'CA' : 'US+CA';
+  loadAttractions(attractions, `Live pull — ${countryLabel}`);
 }
 
+function loadAttractions(attractions, label) {
+  allAttractions = attractions;
+  maxVenues = Math.max(...attractions.map(a => a.venues), 1);
+  document.getElementById('liveFetchPanel').style.display = 'none';
+  document.getElementById('uploadOnlyPanel').style.display = 'none';
+  document.getElementById('appContent').style.display = 'block';
+  document.getElementById('resetBtn').style.display = '';
+  document.getElementById('exportBtn').style.display = '';
+  document.getElementById('checkBtn').style.display = '';
+  const dateMatch = (label || '').match(/\d{4}[-_]\d{2}[-_]\d{2}/);
+  document.getElementById('reportDate').textContent = dateMatch ? dateMatch[0] : label;
+  renderStats();
+  renderTable();
+  showToast(`Loaded ${attractions.length} attractions`);
+}
+
+/* ── FILTERS / SORT ── */
 function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active', f);
+  document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); });
+  el.classList.add('active');
   renderTable();
 }
 
@@ -793,20 +497,8 @@ function setRegion(r, el) {
 }
 
 function sortBy(key) {
-  if (sortKey === key) {
-    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-  } else {
-    sortKey = key;
-    sortDir = key === 'venues' ? 'desc' : 'asc';
-  }
-  document.querySelectorAll('thead th').forEach(th => {
-    th.classList.remove('sort-asc', 'sort-desc');
-  });
-  const thMap = { name: 0, venues: 1 };
-  const ths = document.querySelectorAll('thead th');
-  if (thMap[sortKey] !== undefined) {
-    ths[thMap[sortKey]].classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-  }
+  sortDir = (sortKey === key) ? (sortDir === 'asc' ? 'desc' : 'asc') : (key === 'venues' ? 'desc' : 'asc');
+  sortKey = key;
   renderTable();
 }
 
@@ -815,71 +507,61 @@ function getFiltered() {
   return allAttractions.filter(a => {
     if (currentRegion !== 'all' && a.region !== currentRegion) return false;
     if (currentFilter === 'linked' && a.tmStatus !== 'linked') return false;
-    if (currentFilter === 'unlinked' && (a.tmStatus !== 'unlinked' && a.tmStatus !== 'pending')) return false;
+    if (currentFilter === 'unlinked' && a.tmStatus !== 'unlinked' && a.tmStatus !== 'pending') return false;
     if (currentFilter === 'junk' && !a.junk) return false;
     if (search && !a.name.toLowerCase().includes(search)) return false;
     return true;
   }).sort((a, b) => {
     let va = sortKey === 'venues' ? a.venues : a.name.toLowerCase();
     let vb = sortKey === 'venues' ? b.venues : b.name.toLowerCase();
-    if (va < vb) return sortDir === 'asc' ? -1 : 1;
-    if (va > vb) return sortDir === 'asc' ? 1 : -1;
-    return 0;
+    return va < vb ? (sortDir === 'asc' ? -1 : 1) : va > vb ? (sortDir === 'asc' ? 1 : -1) : 0;
   });
+}
+
+/* ── RENDER ── */
+function renderStats() {
+  const total = allAttractions.filter(a => !a.isNone).length;
+  const linked = allAttractions.filter(a => a.tmStatus === 'linked').length;
+  const unlinked = allAttractions.filter(a => a.tmStatus === 'unlinked').length;
+  const junk = allAttractions.filter(a => a.junk).length;
+  const checked = allAttractions.filter(a => a.tmStatus === 'linked' || a.tmStatus === 'unlinked').length;
+  const linkRate = checked > 0 ? Math.round((linked / checked) * 100) : 0;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total attractions</div><div class="stat-value">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">TM linked</div><div class="stat-value green">${linked}</div></div>
+    <div class="stat-card"><div class="stat-label">Not linked</div><div class="stat-value red">${unlinked}</div></div>
+    <div class="stat-card"><div class="stat-label">Pending check</div><div class="stat-value amber">${allAttractions.filter(a=>a.tmStatus==='pending').length}</div></div>
+    <div class="stat-card"><div class="stat-label">Junk / test</div><div class="stat-value purple">${junk}</div></div>
+    <div class="stat-card"><div class="stat-label">Link rate</div><div class="stat-value">${linkRate}<span style="font-size:14px;color:var(--muted);font-weight:400;">%</span></div></div>
+  `;
 }
 
 function renderTable() {
   const filtered = getFiltered();
-  const body = document.getElementById('tableBody');
   document.getElementById('tableCount').textContent = `${filtered.length} attraction${filtered.length !== 1 ? 's' : ''}`;
-  document.getElementById('emptyState').style.display = filtered.length === 0 ? 'block' : 'none';
-  document.querySelector('.table-wrap').style.display = filtered.length === 0 ? 'none' : 'block';
+  document.getElementById('emptyState').style.display = filtered.length === 0 && allAttractions.length > 0 ? 'block' : 'none';
 
-  if (filtered.length === 0) { body.innerHTML = ''; return; }
+  if (!filtered.length) { document.getElementById('tableBody').innerHTML = ''; return; }
 
-  body.innerHTML = filtered.map(a => {
+  document.getElementById('tableBody').innerHTML = filtered.map(a => {
     const barPct = Math.round((a.venues / maxVenues) * 100);
-    const [dateStart, dateEnd] = a.dates.split('-');
+    let statusBadge;
+    if (a.junk) statusBadge = `<span class="status-badge badge-junk"><span class="dot"></span>junk/test</span>`;
+    else if (a.tmStatus === 'linked') statusBadge = `<span class="status-badge badge-linked"><span class="dot"></span>TM linked</span>`;
+    else if (a.tmStatus === 'unlinked') statusBadge = `<span class="status-badge badge-unlinked"><span class="dot"></span>not linked</span>`;
+    else if (a.tmStatus === 'checking') statusBadge = `<span class="status-badge badge-checking"><span class="dot"></span>checking</span>`;
+    else statusBadge = `<span class="status-badge badge-pending"><span class="dot"></span>pending</span>`;
 
-    let statusBadge = '';
-    if (a.junk) {
-      statusBadge = `<span class="status-badge badge-junk"><span class="dot"></span>junk/test</span>`;
-    } else if (a.tmStatus === 'linked') {
-      statusBadge = `<span class="status-badge badge-linked"><span class="dot"></span>TM linked</span>`;
-    } else if (a.tmStatus === 'unlinked') {
-      statusBadge = `<span class="status-badge badge-unlinked"><span class="dot"></span>not linked</span>`;
-    } else if (a.tmStatus === 'checking') {
-      statusBadge = `<span class="status-badge badge-checking"><span class="dot"></span>checking</span>`;
-    } else {
-      statusBadge = `<span class="status-badge badge-pending"><span class="dot"></span>pending</span>`;
-    }
-
-    const tmMatch = a.tmName
-      ? `<span class="tm-match" title="${a.tmName}">${a.tmName}</span>`
-      : `<span class="tm-match none">—</span>`;
-
-    const twSearchUrl = a.url;
+    const tmMatch = a.tmName ? `<span class="tm-match" title="${a.tmName}">${a.tmName}</span>` : `<span class="tm-match none">—</span>`;
     const tmSearchUrl = a.tmUrl || `https://www.ticketmaster.com/search?q=${encodeURIComponent(a.name)}`;
-
-    const checkBtn = (!a.junk && a.tmStatus === 'pending')
-      ? `<button class="icon-btn" title="Check TM" onclick="checkSingle('${a.name.replace(/'/g,"\\'")}')">⟳</button>`
-      : '';
-
-    const viewTMBtn = a.tmUrl
-      ? `<a class="icon-btn" href="${a.tmUrl}" target="_blank" title="View on Ticketmaster">↗</a>`
-      : (!a.junk ? `<a class="icon-btn" href="${tmSearchUrl}" target="_blank" title="Search Ticketmaster">🔍</a>` : '');
-
-    const viewTWBtn = `<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="View on TicketWeb">⊹</a>`;
+    const checkBtn = (!a.junk && a.tmStatus === 'pending') ? `<button class="icon-btn" title="Check TM" onclick="checkSingle('${a.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">⟳</button>` : '';
+    const viewTMBtn = a.tmUrl ? `<a class="icon-btn" href="${a.tmUrl}" target="_blank" title="View on Ticketmaster">↗</a>` : (!a.junk ? `<a class="icon-btn" href="${tmSearchUrl}" target="_blank" title="Search Ticketmaster">🔍</a>` : '');
+    const viewTWBtn = a.url ? `<a class="icon-btn" href="${a.url}" target="_blank" title="View on TicketWeb">⊹</a>` : '';
 
     return `<tr class="${a.junk ? 'junk-row' : ''}">
       <td><div class="attraction-name" title="${a.name}">${a.name}</div></td>
-      <td>
-        <div class="venue-count">${a.venues}</div>
-        <div class="venue-bar"><div class="venue-bar-fill" style="width:${barPct}%"></div></div>
-      </td>
-      <td>
-        <div class="date-range">${a.dates}</div>
-      </td>
+      <td><div class="venue-count">${a.venues}</div><div class="venue-bar"><div class="venue-bar-fill" style="width:${barPct}%"></div></div></td>
+      <td><div class="date-range">${a.dates || '—'}</div></td>
       <td><span class="region-badge">${a.region.toUpperCase()}</span></td>
       <td>${statusBadge}</td>
       <td>${tmMatch}</td>
@@ -888,99 +570,83 @@ function renderTable() {
   }).join('');
 }
 
-async function checkSingle(name) {
-  const a = allAttractions.find(x => x.name === name);
-  if (!a) return;
-  a.tmStatus = 'checking';
-  renderTable();
-  await checkAttraction(a);
-  renderStats();
-  renderTable();
-}
-
+/* ── TM CHECK ── */
 async function checkAttraction(a) {
   if (a.junk) return;
   try {
-    const url = `https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(a.name)}&size=5&apikey=${API_KEY}`;
-    const res = await fetch(url);
+    const res = await fetch(`https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(a.name)}&size=5&apikey=${API_KEY}`);
     const data = await res.json();
-    const attractions = data?._embedded?.attractions || [];
-    const match = attractions.find(tm => {
-      const tmName = tm.name.toLowerCase().trim();
-      const twName = a.name.toLowerCase().trim();
-      return tmName === twName || tmName.includes(twName) || twName.includes(tmName);
+    const matches = data?._embedded?.attractions || [];
+    const match = matches.find(tm => {
+      const t = tm.name.toLowerCase().trim();
+      const n = a.name.toLowerCase().trim();
+      return t === n || t.includes(n) || n.includes(t);
     });
-    if (match) {
-      a.tmStatus = 'linked';
-      a.tmName = match.name;
-      a.tmId = match.id;
-      a.tmUrl = match.url || null;
-    } else {
-      a.tmStatus = 'unlinked';
-    }
-  } catch {
-    a.tmStatus = 'unlinked';
-  }
+    if (match) { a.tmStatus = 'linked'; a.tmName = match.name; a.tmId = match.id; a.tmUrl = match.url || null; }
+    else { a.tmStatus = 'unlinked'; }
+  } catch { a.tmStatus = 'unlinked'; }
+}
+
+async function checkSingle(name) {
+  const a = allAttractions.find(x => x.name === name);
+  if (!a) return;
+  a.tmStatus = 'checking'; renderTable();
+  await checkAttraction(a);
+  renderStats(); renderTable();
 }
 
 async function runTMCheck() {
   const toCheck = allAttractions.filter(a => !a.junk && a.tmStatus === 'pending');
-  if (toCheck.length === 0) { showToast('All attractions already checked'); return; }
-
+  if (!toCheck.length) { showToast('All attractions already checked'); return; }
   document.getElementById('runBar').style.display = 'flex';
   document.getElementById('checkBtn').disabled = true;
   document.getElementById('checkBtn').textContent = 'Checking...';
-
   for (let i = 0; i < toCheck.length; i++) {
     const a = toCheck[i];
     a.tmStatus = 'checking';
-    const pct = Math.round((i / toCheck.length) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressFill').style.width = Math.round((i / toCheck.length) * 100) + '%';
     document.getElementById('runLabel').textContent = `Checking ${i + 1} of ${toCheck.length}: ${a.name}`;
     renderTable();
     await checkAttraction(a);
     renderStats();
     await new Promise(r => setTimeout(r, 250));
   }
-
   document.getElementById('progressFill').style.width = '100%';
   document.getElementById('runLabel').textContent = `Done — checked ${toCheck.length} attractions`;
   document.getElementById('checkBtn').disabled = false;
   document.getElementById('checkBtn').textContent = 'Check TM attractions ↗';
-  renderStats();
-  renderTable();
+  renderStats(); renderTable();
   showToast(`Checked ${toCheck.length} attractions`);
 }
 
 async function runTMCheckVisible() {
-  const filtered = getFiltered().filter(a => !a.junk && a.tmStatus === 'pending');
-  if (filtered.length === 0) { showToast('No pending attractions in current view'); return; }
+  const toCheck = getFiltered().filter(a => !a.junk && a.tmStatus === 'pending');
+  if (!toCheck.length) { showToast('No pending attractions in current view'); return; }
   document.getElementById('runBar').style.display = 'flex';
-  for (let i = 0; i < filtered.length; i++) {
-    const a = filtered[i];
+  for (let i = 0; i < toCheck.length; i++) {
+    const a = toCheck[i];
     a.tmStatus = 'checking';
-    const pct = Math.round((i / filtered.length) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('runLabel').textContent = `Checking ${i + 1} of ${filtered.length}: ${a.name}`;
+    document.getElementById('progressFill').style.width = Math.round((i / toCheck.length) * 100) + '%';
+    document.getElementById('runLabel').textContent = `Checking ${i + 1} of ${toCheck.length}: ${a.name}`;
     renderTable();
     await checkAttraction(a);
     renderStats();
     await new Promise(r => setTimeout(r, 250));
   }
   document.getElementById('progressFill').style.width = '100%';
-  document.getElementById('runLabel').textContent = `Done`;
-  renderStats();
-  renderTable();
-  showToast(`Checked ${filtered.length} attractions`);
+  document.getElementById('runLabel').textContent = 'Done';
+  renderStats(); renderTable();
+  showToast(`Checked ${toCheck.length} attractions`);
 }
 
+/* ── EXPORT ── */
 function exportCSV() {
   const filtered = getFiltered();
-  const header = 'Attraction,Venues,Date Range,Region,TM Status,TM Attraction Name,TM Attraction ID,TM URL,TW Search URL';
+  const header = 'Attraction,Event Count,Date Range,Region,TM Status,TM Attraction Name,TM Attraction ID,TM URL,TW Search URL';
   const rows = filtered.map(a =>
-    `"${a.name.replace(/"/g,'""')}",${a.venues},"${a.dates}",${a.region.toUpperCase()},${a.junk ? 'Junk/Test' : a.tmStatus},"${(a.tmName||'').replace(/"/g,'""')}","${a.tmId||''}","${a.tmUrl||''}","${a.url}"`
+    `"${a.name.replace(/"/g,'""')}",${a.venues},"${a.dates || ''}",${a.region.toUpperCase()},${a.junk?'Junk/Test':a.tmStatus},"${(a.tmName||'').replace(/"/g,'""')}","${a.tmId||''}","${a.tmUrl||''}","${a.url||''}"`
   );
-  const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv' });
+  const blob = new Blob([[header,...rows].join('\n')], {type:'text/csv'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = `tw-attraction-audit-${new Date().toISOString().slice(0,10)}.csv`;
@@ -990,8 +656,7 @@ function exportCSV() {
 
 function showToast(msg) {
   const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
+  t.className = 'toast'; t.textContent = msg;
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
