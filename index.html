@@ -9,34 +9,21 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f12;
-    --surface: #13161b;
-    --surface2: #1a1e25;
-    --border: #252a33;
-    --border2: #2f3540;
-    --text: #e8eaed;
-    --muted: #6b7280;
-    --subtle: #3d4450;
-    --accent: #3b82f6;
-    --accent-dim: rgba(59,130,246,0.12);
-    --green: #22c55e;
-    --green-dim: rgba(34,197,94,0.12);
-    --amber: #f59e0b;
-    --amber-dim: rgba(245,158,11,0.12);
-    --red: #ef4444;
-    --red-dim: rgba(239,68,68,0.12);
-    --purple: #a78bfa;
-    --purple-dim: rgba(167,139,250,0.12);
-    --orange: #f97316;
-    --orange-dim: rgba(249,115,22,0.12);
-    --font-mono: 'DM Mono', monospace;
-    --font-sans: 'DM Sans', sans-serif;
-    --radius: 8px;
-    --radius-lg: 12px;
+    --bg: #0d0f12; --surface: #13161b; --surface2: #1a1e25; --border: #252a33; --border2: #2f3540;
+    --text: #e8eaed; --muted: #6b7280; --subtle: #3d4450;
+    --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
+    --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
+    --amber: #f59e0b; --amber-dim: rgba(245,158,11,0.12);
+    --red: #ef4444; --red-dim: rgba(239,68,68,0.12);
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.12);
+    --orange: #f97316; --orange-dim: rgba(249,115,22,0.12);
+    --font-mono: 'DM Mono', monospace; --font-sans: 'DM Sans', sans-serif;
+    --radius: 8px; --radius-lg: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
 
+  /* NAV */
   header { border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--surface); position: sticky; top: 0; z-index: 100; }
   .header-left { display: flex; align-items: center; gap: 12px; }
   .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: #fff; }
@@ -44,6 +31,16 @@
   .header-meta { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
   .header-right { display: flex; align-items: center; gap: 8px; }
 
+  /* TABS */
+  .tab-bar { display: flex; gap: 2px; background: var(--surface2); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  .tab-btn { padding: 10px 18px; font-size: 13px; font-family: var(--font-sans); cursor: pointer; border: none; background: transparent; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; margin-bottom: -1px; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SHARED */
+  main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-sans); cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); transition: all 0.15s; text-decoration: none; white-space: nowrap; }
   .btn:hover { background: var(--border); border-color: var(--subtle); }
   .btn:active { transform: scale(0.98); }
@@ -51,32 +48,20 @@
   .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
   .btn-sm { padding: 3px 10px; font-size: 12px; }
-  .btn-seg { padding: 5px 14px; font-size: 12px; font-family: var(--font-mono); }
-
-  main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-
-  /* Setup */
-  .setup-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
-  .setup-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .setup-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 760px; }
+  .btn-danger { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: #fff; }
   .field-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
   select { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   select:focus { border-color: var(--accent); }
 
-  .config-row { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  /* PANEL */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
+  .panel-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .panel-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 760px; }
 
-  .segment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .seg-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
-  .seg-card:hover { border-color: var(--accent); }
-  .seg-card.selected { border-color: var(--accent); background: var(--accent-dim); }
-  .seg-card-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-  .seg-card-desc { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
-
-  .launch-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-  /* Progress */
+  /* PROGRESS */
   .progress-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none; }
-  .progress-overall-label { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .progress-overall-label { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
   .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; margin-bottom: 12px; }
   .progress-fill { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.4s; width: 0%; }
   .seg-progress-list { display: flex; flex-direction: column; gap: 8px; }
@@ -84,7 +69,6 @@
   .seg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: background 0.3s; }
   .seg-dot.running { background: var(--accent); animation: pulse 1s infinite; }
   .seg-dot.done { background: var(--green); }
-  .seg-dot.queued { background: var(--border2); }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
   .seg-progress-name { font-size: 12px; font-family: var(--font-mono); color: var(--muted); width: 140px; flex-shrink: 0; }
   .seg-progress-name.running { color: var(--accent); }
@@ -94,7 +78,7 @@
   .seg-progress-fill { height: 3px; border-radius: 2px; background: var(--accent); transition: width 0.3s; width: 0%; }
   .seg-progress-fill.done { background: var(--green); }
 
-  /* Stats */
+  /* STATS */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s; }
   .stat-card:hover { border-color: var(--border2); }
@@ -110,7 +94,7 @@
   .stat-value.red { color: var(--red); }
   .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); line-height: 1.4; }
 
-  /* Toolbar */
+  /* TOOLBAR */
   .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
   .search-input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   .search-input::placeholder { color: var(--muted); }
@@ -120,7 +104,7 @@
   .filter-btn:hover { color: var(--text); }
   .filter-btn.active { background: var(--surface2); color: var(--text); }
 
-  /* Table */
+  /* TABLE */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
   .table-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .table-count { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
@@ -171,14 +155,45 @@
   .icon-btn:hover { color: var(--text); background: var(--surface2); border-color: var(--subtle); }
   .icon-btn.warn { border-color: var(--orange); color: var(--orange); }
   .icon-btn.warn:hover { background: var(--orange-dim); }
-
   .junk-row td { opacity: 0.35; }
-
   .legend { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--border); }
   .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
   .legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-  .empty-state { padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: 14px; }
+  /* SEGMENT GRID */
+  .segment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .seg-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+  .seg-card:hover { border-color: var(--accent); }
+  .seg-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .seg-card-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .seg-card-desc { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .config-row { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .launch-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* VENUE BUILDER SPECIFIC */
+  .upload-zone { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 1.5rem; }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-dim); }
+  .upload-zone input { display: none; }
+  .upload-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .upload-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .upload-loaded { border-color: var(--green); background: var(--green-dim); }
+  .upload-loaded .upload-icon { color: var(--green); }
+
+  .builder-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .builder-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.875rem 1rem; }
+  .builder-stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .builder-stat-value { font-size: 20px; font-weight: 300; letter-spacing: -0.5px; }
+
+  .venue-id-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; }
+  .cache-note { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .cache-note.has-cache { color: var(--green); }
+
+  /* VENUE TABLE */
+  .venue-match-badge { font-size: 10px; font-family: var(--font-mono); padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+  .match-exact { background: var(--green-dim); color: var(--green); }
+  .match-fuzzy { background: var(--amber-dim); color: var(--amber); }
+  .tw-count-badge { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; }
 
   #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
   .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; animation: slideIn 0.2s ease; }
@@ -194,18 +209,23 @@
     <span class="header-meta" id="headerMeta"></span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm" onclick="resetTool()" id="resetBtn" style="display:none;">↩ New audit</button>
+    <button class="btn btn-sm" onclick="resetAudit()" id="resetBtn" style="display:none;">↩ New audit</button>
     <button class="btn btn-sm btn-primary" onclick="runTMSuggestions()" id="suggestBtn" style="display:none;">Find TM matches ↗</button>
   </div>
 </header>
 
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('audit', this)">Attraction Audit</button>
+  <button class="tab-btn" onclick="switchTab('builder', this)">Venue ID Builder</button>
+</div>
+
+<!-- ===== TAB 1: ATTRACTION AUDIT ===== -->
+<div id="tab-audit" class="tab-content active">
 <main>
 
-  <!-- Setup -->
-  <div id="setupPanel" class="setup-panel">
-    <div class="setup-title">TicketWeb Official Attraction Audit</div>
-    <div class="setup-sub">Pulls all active TicketWeb events by segment, paginates until fully exhausted, and identifies which attractions are linked to a verified TM Official Attraction (K8vZ ID), which are TW-only, and which untagged events already have a verified attraction available to tag.</div>
-
+  <div id="setupPanel" class="panel">
+    <div class="panel-title">TicketWeb Official Attraction Audit</div>
+    <div class="panel-sub">Pulls all active TicketWeb events by segment using <code>source=ticketweb</code>, paginates each segment to full completion, and identifies which attractions are TM-linked (K8vZ), TW-only, missing tags, or untagged entirely.</div>
     <div class="config-row">
       <div>
         <div class="field-label">Country</div>
@@ -215,49 +235,28 @@
         </select>
       </div>
     </div>
-
     <div class="field-label" style="margin-bottom:10px;">Segments to audit</div>
-    <div class="segment-grid" id="segmentGrid">
-      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nJ" onclick="toggleSeg(this)">
-        <div class="seg-card-name">Music</div>
-        <div class="seg-card-desc">Rock, Pop, EDM, Hip-Hop, Country, Jazz...</div>
-      </div>
-      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7na" onclick="toggleSeg(this)">
-        <div class="seg-card-name">Arts & Theatre</div>
-        <div class="seg-card-desc">Comedy, Theatre, Dance, Opera...</div>
-      </div>
-      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nE" onclick="toggleSeg(this)">
-        <div class="seg-card-name">Sports</div>
-        <div class="seg-card-desc">Wrestling, Boxing, Motorsports...</div>
-      </div>
-      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7n1" onclick="toggleSeg(this)">
-        <div class="seg-card-name">Miscellaneous</div>
-        <div class="seg-card-desc">Comedy, Food & Drink, Lectures...</div>
-      </div>
-      <div class="seg-card" data-id="KZFzniwnSyZfZ7v7nl" onclick="toggleSeg(this)">
-        <div class="seg-card-name">Undefined</div>
-        <div class="seg-card-desc">Unclassified events</div>
-      </div>
+    <div class="segment-grid">
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nJ" onclick="toggleSeg(this)"><div class="seg-card-name">Music</div><div class="seg-card-desc">Rock, Pop, EDM, Hip-Hop, Country...</div></div>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7na" onclick="toggleSeg(this)"><div class="seg-card-name">Arts & Theatre</div><div class="seg-card-desc">Comedy, Theatre, Dance, Opera...</div></div>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7nE" onclick="toggleSeg(this)"><div class="seg-card-name">Sports</div><div class="seg-card-desc">Wrestling, Boxing, Motorsports...</div></div>
+      <div class="seg-card selected" data-id="KZFzniwnSyZfZ7v7n1" onclick="toggleSeg(this)"><div class="seg-card-name">Miscellaneous</div><div class="seg-card-desc">Comedy, Food & Drink, Lectures...</div></div>
+      <div class="seg-card" data-id="KZFzniwnSyZfZ7v7nl" onclick="toggleSeg(this)"><div class="seg-card-name">Undefined</div><div class="seg-card-desc">Unclassified events</div></div>
     </div>
-
     <div class="launch-row">
       <button class="btn btn-primary" onclick="runAudit()">Run full audit ↗</button>
-      <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Paginates each segment to completion — may take 5–15 min for a full US audit</span>
+      <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Paginates each segment to completion — may take 5–15 min</span>
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="progress-panel" id="progressPanel">
     <div class="progress-overall-label" id="progressOverall">Starting audit...</div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="seg-progress-list" id="segProgressList"></div>
   </div>
 
-  <!-- Results -->
   <div id="resultsPanel" style="display:none;">
-
     <div class="stats-grid" id="statsGrid"></div>
-
     <div class="toolbar">
       <input type="text" class="search-input" id="searchInput" placeholder="Search attraction or event name..." oninput="renderTable()">
       <div class="filter-group">
@@ -270,11 +269,10 @@
       </div>
       <div class="filter-group" id="segFilter"></div>
     </div>
-
     <div class="table-wrap">
       <div class="table-top">
         <span class="table-count" id="tableCount"></span>
-        <button class="btn btn-sm" onclick="setFilter('all', document.querySelector(\'.filter-btn.active\'))" id="clearBtn" style="display:none;">✕ Clear filter</button>
+        <button class="btn btn-sm" onclick="setFilter('all',null)" id="clearBtn" style="display:none;">✕ Clear filter</button>
       </div>
       <table>
         <thead>
@@ -296,122 +294,162 @@
         <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only (needs TM link)</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>Verified attraction exists — not tagged</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction at all</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>Junk / test</span>
       </div>
     </div>
-
   </div>
-
-  <div id="emptyState" class="empty-state" style="display:none;">No attractions match the current filter.</div>
+  <div id="emptyState" style="display:none;padding:3rem 2rem;text-align:center;color:var(--muted);">No attractions match the current filter.</div>
 
 </main>
+</div>
+
+<!-- ===== TAB 2: VENUE ID BUILDER ===== -->
+<div id="tab-builder" class="tab-content">
+<main>
+
+  <div class="panel">
+    <div class="panel-title">Venue ID Builder</div>
+    <div class="panel-sub">Upload a CSV export of the Venue Breakdown spreadsheet. The tool searches the TM Discovery API for each active org and finds their API venue IDs — used to pull Flow 2 venue-org events in a future audit update. Only orgs with $1,000+ revenue and confirmed TW events on TM are included.</div>
+
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+      <input type="file" id="csvFile" accept=".csv,.xlsx" onchange="handleFileUpload(this)">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Upload Venue Breakdown CSV</div>
+      <div class="upload-sub">Export from Google Sheets as CSV · Column A: Venue Name · Column B: Org Name · Column E: Total Revenue</div>
+    </div>
+
+    <div id="builderStats" style="display:none;">
+      <div class="builder-stats">
+        <div class="builder-stat"><div class="builder-stat-label">Total orgs</div><div class="builder-stat-value" id="bStatTotal">—</div></div>
+        <div class="builder-stat"><div class="builder-stat-label">Active orgs</div><div class="builder-stat-value" id="bStatActive">—</div></div>
+        <div class="builder-stat"><div class="builder-stat-label">To search</div><div class="builder-stat-value" id="bStatSearch">—</div></div>
+        <div class="builder-stat"><div class="builder-stat-label">Est. time</div><div class="builder-stat-value" id="bStatTime">—</div></div>
+      </div>
+      <div class="launch-row" style="margin-bottom:1.5rem;">
+        <button class="btn btn-primary" id="runBuilderBtn" onclick="runVenueBuilder()">Build venue ID list ↗</button>
+        <button class="btn btn-danger btn-sm" onclick="clearVenueCache()" id="clearCacheBtn" style="display:none;">Clear cache</button>
+        <span class="cache-note" id="cacheNote"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-panel" id="builderProgressPanel">
+    <div class="progress-overall-label" id="builderProgressLabel">Starting venue search...</div>
+    <div class="progress-track"><div class="progress-fill" id="builderProgressFill"></div></div>
+    <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-top:8px;" id="builderProgressSub"></div>
+  </div>
+
+  <div id="venueResultsPanel" style="display:none;">
+    <div class="venue-id-row">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="table-count" id="venueTableCount"></span>
+        <button class="btn btn-sm" onclick="exportVenueCSV()">↓ Export CSV</button>
+      </div>
+      <input type="text" class="search-input" style="max-width:280px;" id="venueSearch" placeholder="Search org or venue name..." oninput="renderVenueTable()">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:220px;">Org name (TW backend)</th>
+            <th style="width:220px;">Matched venue name (TM)</th>
+            <th style="width:130px;">API venue ID</th>
+            <th style="width:80px;">TW events</th>
+            <th style="width:70px;">Country</th>
+            <th style="width:90px;">Match</th>
+          </tr>
+        </thead>
+        <tbody id="venueTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+</div>
 
 <div id="toastContainer"></div>
 
 <script>
 const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
-
-const SEGMENTS = {
-  'KZFzniwnSyZfZ7v7nJ': 'Music',
-  'KZFzniwnSyZfZ7v7na': 'Arts & Theatre',
-  'KZFzniwnSyZfZ7v7nE': 'Sports',
-  'KZFzniwnSyZfZ7v7n1': 'Miscellaneous',
-  'KZFzniwnSyZfZ7v7nl': 'Undefined'
-};
-
+const SEGMENTS = { 'KZFzniwnSyZfZ7v7nJ':'Music','KZFzniwnSyZfZ7v7na':'Arts & Theatre','KZFzniwnSyZfZ7v7nE':'Sports','KZFzniwnSyZfZ7v7n1':'Miscellaneous','KZFzniwnSyZfZ7v7nl':'Undefined' };
 const JUNK_PATTERNS = [/^test\b/i,/do not purchase/i,/rigor monitoring/i,/^test attraction/i,/^test event/i,/^test act\b/i,/ram v'?\d/i,/test act and support/i,/^TEST\s/,/^test and /i];
 function isJunk(n) { return JUNK_PATTERNS.some(p => p.test(n.trim())); }
 function isTMVerified(id) { return id && (id.startsWith('K8vZ') || id.startsWith('K8vz')); }
-
-function normalizeName(n) {
-  return n.toLowerCase().replace(/^(the|a|an)\s+/,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
-}
-
+function normalizeName(n) { return n.toLowerCase().replace(/^(the|a|an)\s+/,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim(); }
 function matchAttractionInEventName(evtName, attName) {
   const e = normalizeName(evtName), a = normalizeName(attName);
   if (a.length < 3) return false;
-  if (e === a) return true;
-  if (e.startsWith(a + ' ') || e.includes(' ' + a + ' ') || e.endsWith(' ' + a)) return true;
-  return false;
+  return e === a || e.startsWith(a+' ') || e.includes(' '+a+' ') || e.endsWith(' '+a);
 }
 
-function toggleSeg(el) {
-  el.classList.toggle('selected');
+// ===== TAB SWITCHING =====
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+  // Show/hide header buttons
+  const isAudit = tab === 'audit';
+  document.getElementById('resetBtn').style.display = (isAudit && auditDone) ? '' : 'none';
+  document.getElementById('suggestBtn').style.display = (isAudit && auditDone) ? '' : 'none';
 }
 
-let allRows = [];
-let currentFilter = 'all';
-let sortKey = 'count';
-let sortDir = 'desc';
-let maxCount = 1;
-let verifiedAttractionDict = {};
-let segProgress = {};
+// ===== AUDIT TAB =====
+let allRows = [], currentFilter = 'all', sortKey = 'count', sortDir = 'desc', maxCount = 1;
+let verifiedAttractionDict = {}, currentSegFilter = 'all', auditDone = false;
 
-// Sort header management
+function toggleSeg(el) { el.classList.toggle('selected'); }
+
 function updateSortHeaders() {
   ['name','date','segment','status'].forEach(k => {
-    const th = document.getElementById('th-' + k);
+    const th = document.getElementById('th-'+k);
     if (!th) return;
     th.classList.remove('sort-asc','sort-desc');
-    if (sortKey === k) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    if (sortKey===k) th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');
   });
 }
-
 function sortBy(key) {
-  if (sortKey === key) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
-  else { sortKey = key; sortDir = key === 'count' ? 'desc' : 'asc'; }
-  updateSortHeaders();
-  renderTable();
+  if (sortKey===key) sortDir = sortDir==='asc'?'desc':'asc';
+  else { sortKey=key; sortDir=key==='count'?'desc':'asc'; }
+  updateSortHeaders(); renderTable();
 }
 
 async function runAudit() {
   const country = document.getElementById('countryCode').value;
   const selectedSegs = [...document.querySelectorAll('.seg-card.selected')].map(el => ({ id: el.dataset.id, name: SEGMENTS[el.dataset.id] }));
-
   if (!selectedSegs.length) { showToast('Select at least one segment'); return; }
 
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('progressPanel').style.display = 'block';
   document.getElementById('resultsPanel').style.display = 'none';
-
-  allRows = [];
-  verifiedAttractionDict = {};
+  allRows = []; verifiedAttractionDict = {};
   const attractionMap = {};
-  segProgress = {};
 
-  // Build progress UI
   const list = document.getElementById('segProgressList');
   list.innerHTML = selectedSegs.map(s => `
-    <div class="seg-progress-item" id="segrow-${s.id}">
+    <div class="seg-progress-item">
       <div class="seg-dot queued" id="dot-${s.id}"></div>
       <div class="seg-progress-name" id="segname-${s.id}">${s.name}</div>
       <div class="seg-progress-track"><div class="seg-progress-fill" id="segbar-${s.id}"></div></div>
       <div class="seg-progress-detail" id="segdetail-${s.id}">queued</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   let totalSegsDone = 0;
 
   for (const seg of selectedSegs) {
-    // Update UI for this segment
-    document.getElementById('dot-' + seg.id).className = 'seg-dot running';
-    document.getElementById('segname-' + seg.id).className = 'seg-progress-name running';
+    document.getElementById('dot-'+seg.id).className = 'seg-dot running';
+    document.getElementById('segname-'+seg.id).className = 'seg-progress-name running';
     document.getElementById('progressOverall').textContent = `Fetching ${seg.name} events...`;
 
     let page = 0, segEvents = 0, keepGoing = true;
-
     while (keepGoing) {
-      const pct = Math.min(Math.round((page / (page + 5)) * 100), 95);
-      document.getElementById('segbar-' + seg.id).style.width = pct + '%';
-      document.getElementById('segdetail-' + seg.id).textContent = `page ${page + 1} · ${segEvents.toLocaleString()} events`;
-      document.getElementById('progressFill').style.width = Math.round(((totalSegsDone + (page / (page + 5))) / selectedSegs.length) * 100) + '%';
-
+      const pct = Math.min(Math.round((page/(page+5))*100),95);
+      document.getElementById('segbar-'+seg.id).style.width = pct+'%';
+      document.getElementById('segdetail-'+seg.id).textContent = `page ${page+1} · ${segEvents.toLocaleString()} events`;
+      document.getElementById('progressFill').style.width = Math.round(((totalSegsDone+(page/(page+5)))/selectedSegs.length)*100)+'%';
       try {
-        let url = `https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&classificationId=${seg.id}&size=200&page=${page}&countryCode=${country}&apikey=${API_KEY}`;
-        const res = await fetch(url);
+        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&classificationId=${seg.id}&size=200&page=${page}&countryCode=${country}&apikey=${API_KEY}`);
         const data = await res.json();
         const events = data?._embedded?.events || [];
-
         if (!events.length) { keepGoing = false; break; }
         segEvents += events.length;
 
@@ -425,103 +463,75 @@ async function runAudit() {
           const isCustomName = evt.nameOrigin === 'custom';
 
           if (!evtAttractions.length) {
-            const key = 'UNTAGGED::' + evtName.toLowerCase().trim();
-            if (!attractionMap[key]) {
-              attractionMap[key] = { key, name: evtName, attractionId: null, status: 'untagged', tmName: null, tmId: null, tmUrl: null, count: 0, firstDate: evtDate, lastDate: evtDate, twUrl: evtUrl, segment, genre, junk: isJunk(evtName), isCustomName, missedAttractionId: null, missedAttractionName: null, tmSuggestion: null, suggestionChecked: false };
-            }
+            const key = 'UNTAGGED::'+evtName.toLowerCase().trim();
+            if (!attractionMap[key]) attractionMap[key] = { key, name:evtName, attractionId:null, status:'untagged', tmName:null, tmId:null, tmUrl:null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(evtName), isCustomName, missedAttractionId:null, missedAttractionName:null, tmSuggestion:null, suggestionChecked:false };
             attractionMap[key].count++;
             if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
           } else {
             for (const a of evtAttractions) {
               const verified = isTMVerified(a.id);
               const key = a.id;
-              if (!attractionMap[key]) {
-                attractionMap[key] = { key, name: a.name, attractionId: a.id, status: verified ? 'linked' : 'tw-only', tmName: verified ? a.name : null, tmId: verified ? a.id : null, tmUrl: verified ? (a.url || null) : null, count: 0, firstDate: evtDate, lastDate: evtDate, twUrl: evtUrl, segment, genre, junk: isJunk(a.name), isCustomName: false, missedAttractionId: null, missedAttractionName: null, tmSuggestion: verified ? { found: true, name: a.name, id: a.id, url: a.url || null } : null, suggestionChecked: verified };
-              }
+              if (!attractionMap[key]) attractionMap[key] = { key, name:a.name, attractionId:a.id, status:verified?'linked':'tw-only', tmName:verified?a.name:null, tmId:verified?a.id:null, tmUrl:verified?(a.url||null):null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(a.name), isCustomName:false, missedAttractionId:null, missedAttractionName:null, tmSuggestion:verified?{found:true,name:a.name,id:a.id,url:a.url||null}:null, suggestionChecked:verified };
               attractionMap[key].count++;
               if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
               if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
-
-              if (verified) {
-                const nk = normalizeName(a.name);
-                if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = { id: a.id, name: a.name, url: a.url || null };
-              }
+              if (verified) { const nk = normalizeName(a.name); if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = {id:a.id,name:a.name,url:a.url||null}; }
             }
           }
         }
-
         if (events.length < 200) keepGoing = false;
-        else { page++; await new Promise(r => setTimeout(r, 200)); }
+        else { page++; await new Promise(r => setTimeout(r,200)); }
       } catch(e) { keepGoing = false; }
     }
 
-    // Mark segment done
-    document.getElementById('dot-' + seg.id).className = 'seg-dot done';
-    document.getElementById('segname-' + seg.id).className = 'seg-progress-name done';
-    document.getElementById('segbar-' + seg.id).style.width = '100%';
-    document.getElementById('segbar-' + seg.id).className = 'seg-progress-fill done';
-    document.getElementById('segdetail-' + seg.id).textContent = `${segEvents.toLocaleString()} events · done`;
+    document.getElementById('dot-'+seg.id).className = 'seg-dot done';
+    document.getElementById('segname-'+seg.id).className = 'seg-progress-name done';
+    document.getElementById('segbar-'+seg.id).style.width = '100%';
+    document.getElementById('segbar-'+seg.id).className = 'seg-progress-fill done';
+    document.getElementById('segdetail-'+seg.id).textContent = `${segEvents.toLocaleString()} events · done`;
     totalSegsDone++;
-    document.getElementById('progressFill').style.width = Math.round((totalSegsDone / selectedSegs.length) * 100) + '%';
+    document.getElementById('progressFill').style.width = Math.round((totalSegsDone/selectedSegs.length)*100)+'%';
   }
 
-  // Pass 2: cross-reference untagged events
-  document.getElementById('progressOverall').textContent = 'Cross-referencing untagged events against verified attractions...';
-
+  document.getElementById('progressOverall').textContent = 'Cross-referencing untagged events...';
   let missedCount = 0;
   for (const [key, row] of Object.entries(attractionMap)) {
     if (row.status !== 'untagged' || row.junk) continue;
     const normEvt = normalizeName(row.name);
     let matched = verifiedAttractionDict[normEvt] || null;
-    if (!matched) {
-      for (const [normAtt, attData] of Object.entries(verifiedAttractionDict)) {
-        if (normAtt.length < 3) continue;
-        if (matchAttractionInEventName(row.name, attData.name)) { matched = attData; break; }
-      }
-    }
-    if (matched) {
-      row.status = 'missed';
-      row.missedAttractionId = matched.id;
-      row.missedAttractionName = matched.name;
-      row.tmId = matched.id;
-      row.tmName = matched.name;
-      row.tmUrl = matched.url;
-      row.tmSuggestion = { found: true, name: matched.name, id: matched.id, url: matched.url };
-      row.suggestionChecked = true;
-      missedCount++;
-    }
+    if (!matched) { for (const [, attData] of Object.entries(verifiedAttractionDict)) { if (attData.name.length < 3) continue; if (matchAttractionInEventName(row.name, attData.name)) { matched = attData; break; } } }
+    if (matched) { row.status='missed'; row.missedAttractionId=matched.id; row.missedAttractionName=matched.name; row.tmId=matched.id; row.tmName=matched.name; row.tmUrl=matched.url; row.tmSuggestion={found:true,name:matched.name,id:matched.id,url:matched.url}; row.suggestionChecked=true; missedCount++; }
   }
 
   document.getElementById('progressFill').style.width = '100%';
   document.getElementById('progressOverall').textContent = 'Audit complete';
-  await new Promise(r => setTimeout(r, 400));
+  await new Promise(r => setTimeout(r,400));
 
-  allRows = Object.values(attractionMap).sort((a, b) => b.count - a.count);
+  allRows = Object.values(attractionMap).sort((a,b) => b.count - a.count);
   maxCount = Math.max(...allRows.map(r => r.count), 1);
+  auditDone = true;
 
   document.getElementById('progressPanel').style.display = 'none';
   document.getElementById('resultsPanel').style.display = 'block';
   document.getElementById('resetBtn').style.display = '';
   document.getElementById('suggestBtn').style.display = '';
 
-  const totalEvents = allRows.reduce((s, r) => s + r.count, 0);
-  const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  document.getElementById('headerMeta').textContent = `${totalEvents.toLocaleString()} events · ${country} · ${dateStr}`;
+  const totalEvents = allRows.reduce((s,r) => s+r.count, 0);
+  const dateStr = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('headerMeta').textContent = `${totalEvents.toLocaleString()} events · ${document.getElementById('countryCode').value} · ${dateStr}`;
 
-  buildSegmentFilter(selectedSegs);
-  renderStats();
-  renderTable();
+  const selectedSegsForFilter = [...document.querySelectorAll('.seg-card.selected')].map(el => ({ id: el.dataset.id, name: SEGMENTS[el.dataset.id] }));
+  buildSegmentFilter(selectedSegsForFilter);
+  renderStats(); renderTable();
   showToast(`Audit complete — ${allRows.length} unique attractions · ${missedCount} missed tagging opportunities`);
 }
 
 function buildSegmentFilter(segs) {
   const el = document.getElementById('segFilter');
-  if (segs.length <= 1) { el.style.display = 'none'; return; }
-  el.innerHTML = `<button class="filter-btn active" onclick="setSegFilter('all',this)">All segments</button>` +
-    segs.map(s => `<button class="filter-btn" onclick="setSegFilter('${s.name}',this)">${s.name}</button>`).join('');
+  if (segs.length <= 1) { el.style.display='none'; return; }
+  el.innerHTML = `<button class="filter-btn active" onclick="setSegFilter('all',this)">All segments</button>` + segs.map(s => `<button class="filter-btn" onclick="setSegFilter('${s.name}',this)">${s.name}</button>`).join('');
 }
 
-let currentSegFilter = 'all';
 function setSegFilter(seg, el) {
   currentSegFilter = seg;
   document.querySelectorAll('#segFilter .filter-btn').forEach(b => b.classList.remove('active'));
@@ -531,126 +541,108 @@ function setSegFilter(seg, el) {
 
 function renderStats() {
   const nj = allRows.filter(r => !r.junk);
-  const linked = nj.filter(r => r.status === 'linked').length;
-  const twOnly = nj.filter(r => r.status === 'tw-only').length;
-  const missed = nj.filter(r => r.status === 'missed').length;
-  const untagged = nj.filter(r => r.status === 'untagged').length;
-  const junk = allRows.filter(r => r.junk).length;
-  const total = linked + twOnly + missed + untagged;
-  const actionNeeded = twOnly + missed + untagged;
-
+  const linked=nj.filter(r=>r.status==='linked').length, twOnly=nj.filter(r=>r.status==='tw-only').length;
+  const missed=nj.filter(r=>r.status==='missed').length, untagged=nj.filter(r=>r.status==='untagged').length;
+  const total=linked+twOnly+missed+untagged, actionNeeded=twOnly+missed+untagged;
   document.getElementById('statsGrid').innerHTML = [
-    { id:'all', label:'Total attractions', value:total, cls:'', sub:'click to show all', filter:'all', ac:'' },
-    { id:'linked', label:'TM linked', value:linked, cls:'green', sub:'K8vZ ID confirmed', filter:'linked', ac:'active-green' },
-    { id:'tw-only', label:'TW-only', value:twOnly, cls:'amber', sub:'needs TM link', filter:'tw-only', ac:'active-amber' },
-    { id:'missed', label:'Not tagged', value:missed, cls:'orange', sub:'attraction exists, unused', filter:'missed', ac:'active-orange' },
-    { id:'untagged', label:'No attraction', value:untagged, cls:'red', sub:'needs attraction created', filter:'untagged', ac:'active-red' },
-    { id:'action', label:'Action needed', value:actionNeeded, cls:'amber', sub:'TW-only + missed + untagged', filter:'action', ac:'active-amber' },
-  ].map(c => `<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}', null)">
-    <div class="stat-label">${c.label}</div>
-    <div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div>
-    <div class="stat-sub">${c.sub}</div>
-  </div>`).join('');
+    {id:'all',label:'Total attractions',value:total,cls:'',sub:'click to show all',filter:'all',ac:''},
+    {id:'linked',label:'TM linked',value:linked,cls:'green',sub:'K8vZ ID confirmed',filter:'linked',ac:'active-green'},
+    {id:'tw-only',label:'TW-only',value:twOnly,cls:'amber',sub:'needs TM link',filter:'tw-only',ac:'active-amber'},
+    {id:'missed',label:'Not tagged',value:missed,cls:'orange',sub:'attraction exists, unused',filter:'missed',ac:'active-orange'},
+    {id:'untagged',label:'No attraction',value:untagged,cls:'red',sub:'needs attraction created',filter:'untagged',ac:'active-red'},
+    {id:'action',label:'Action needed',value:actionNeeded,cls:'amber',sub:'TW-only + missed + untagged',filter:'action',ac:'active-amber'},
+  ].map(c=>`<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}',null)">
+    <div class="stat-label">${c.label}</div><div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div><div class="stat-sub">${c.sub}</div></div>`).join('');
 }
 
 function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    if (b.closest('#segFilter')) return;
-    b.classList.remove('active');
-  });
+  document.querySelectorAll('.filter-btn').forEach(b => { if (!b.closest('#segFilter')) b.classList.remove('active'); });
   if (el) el.classList.add('active');
-  else {
-    const btn = document.querySelector(`.filter-btn[onclick*="'${f}'"]`);
-    if (btn && !btn.closest('#segFilter')) btn.classList.add('active');
-  }
-  document.querySelectorAll('.stat-card').forEach(c => c.className = 'stat-card');
-  const acMap = { linked:'active-green', 'tw-only':'active-amber', missed:'active-orange', untagged:'active-red', action:'active-amber' };
-  const card = document.getElementById('stat-' + (f === 'action' ? 'action' : f));
+  else { const btn = document.querySelector(`.filter-btn[onclick*="'${f}'"]`); if (btn && !btn.closest('#segFilter')) btn.classList.add('active'); }
+  document.querySelectorAll('.stat-card').forEach(c => c.className='stat-card');
+  const acMap = {linked:'active-green','tw-only':'active-amber',missed:'active-orange',untagged:'active-red',action:'active-amber'};
+  const card = document.getElementById('stat-'+(f==='action'?'action':f));
   if (card && acMap[f]) card.classList.add(acMap[f]);
-  document.getElementById('clearBtn').style.display = f === 'all' ? 'none' : '';
+  document.getElementById('clearBtn').style.display = f==='all'?'none':'';
   renderTable();
 }
 
 function getFiltered() {
-  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const search = (document.getElementById('searchInput')?.value||'').toLowerCase();
   return allRows.filter(r => {
-    if (currentFilter === 'linked' && r.status !== 'linked') return false;
-    if (currentFilter === 'tw-only' && r.status !== 'tw-only') return false;
-    if (currentFilter === 'missed' && r.status !== 'missed') return false;
-    if (currentFilter === 'untagged' && r.status !== 'untagged') return false;
-    if (currentFilter === 'action' && !['tw-only','missed','untagged'].includes(r.status)) return false;
-    if (currentSegFilter !== 'all' && r.segment !== currentSegFilter) return false;
+    if (currentFilter==='linked' && r.status!=='linked') return false;
+    if (currentFilter==='tw-only' && r.status!=='tw-only') return false;
+    if (currentFilter==='missed' && r.status!=='missed') return false;
+    if (currentFilter==='untagged' && r.status!=='untagged') return false;
+    if (currentFilter==='action' && !['tw-only','missed','untagged'].includes(r.status)) return false;
+    if (currentSegFilter!=='all' && r.segment!==currentSegFilter) return false;
     if (search && !r.name.toLowerCase().includes(search)) return false;
     return true;
-  }).sort((a, b) => {
-    let va, vb;
-    if (sortKey === 'count') { va = a.count; vb = b.count; }
-    else if (sortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
-    else if (sortKey === 'date') { va = a.lastDate || ''; vb = b.lastDate || ''; }
-    else if (sortKey === 'segment') { va = (a.segment + a.genre).toLowerCase(); vb = (b.segment + b.genre).toLowerCase(); }
-    else if (sortKey === 'status') { const o = {linked:0,'tw-only':1,missed:2,untagged:3,junk:4}; va = o[a.status]||3; vb = o[b.status]||3; }
-    else { va = a.count; vb = b.count; }
-    return va < vb ? (sortDir === 'asc' ? -1 : 1) : va > vb ? (sortDir === 'asc' ? 1 : -1) : 0;
+  }).sort((a,b) => {
+    let va,vb;
+    if (sortKey==='count'){va=a.count;vb=b.count;}
+    else if (sortKey==='name'){va=a.name.toLowerCase();vb=b.name.toLowerCase();}
+    else if (sortKey==='date'){va=a.lastDate||'';vb=b.lastDate||'';}
+    else if (sortKey==='segment'){va=(a.segment+a.genre).toLowerCase();vb=(b.segment+b.genre).toLowerCase();}
+    else if (sortKey==='status'){const o={linked:0,'tw-only':1,missed:2,untagged:3,junk:4};va=o[a.status]||3;vb=o[b.status]||3;}
+    else {va=a.count;vb=b.count;}
+    return va<vb?(sortDir==='asc'?-1:1):va>vb?(sortDir==='asc'?1:-1):0;
   });
 }
 
 function renderTable() {
   const filtered = getFiltered();
-  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length !== 1 ? 's' : ''}`;
-  document.getElementById('emptyState').style.display = filtered.length === 0 && allRows.length > 0 ? 'block' : 'none';
-  if (!filtered.length) { document.getElementById('tableBody').innerHTML = ''; return; }
+  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length!==1?'s':''}`;
+  document.getElementById('emptyState').style.display = filtered.length===0&&allRows.length>0?'block':'none';
+  if (!filtered.length) { document.getElementById('tableBody').innerHTML=''; return; }
 
   document.getElementById('tableBody').innerHTML = filtered.map(r => {
-    const barPct = Math.round((r.count / maxCount) * 100);
+    const barPct = Math.round((r.count/maxCount)*100);
     const barColor = r.status==='linked'?'var(--green)':r.status==='tw-only'?'var(--amber)':r.status==='missed'?'var(--orange)':'var(--red)';
-
     let badge;
-    if (r.junk) badge = `<span class="pill pill-junk"><span class="dot"></span>junk</span>`;
-    else if (r.status==='linked') badge = `<span class="pill pill-linked"><span class="dot"></span>TM linked</span>`;
-    else if (r.status==='tw-only') badge = `<span class="pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
-    else if (r.status==='missed') badge = `<span class="pill pill-missed"><span class="dot"></span>not tagged</span>`;
-    else badge = `<span class="pill pill-untagged"><span class="dot"></span>untagged</span>`;
+    if (r.junk) badge=`<span class="pill pill-junk"><span class="dot"></span>junk</span>`;
+    else if (r.status==='linked') badge=`<span class="pill pill-linked"><span class="dot"></span>TM linked</span>`;
+    else if (r.status==='tw-only') badge=`<span class="pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
+    else if (r.status==='missed') badge=`<span class="pill pill-missed"><span class="dot"></span>not tagged</span>`;
+    else badge=`<span class="pill pill-untagged"><span class="dot"></span>untagged</span>`;
 
     let tmCell;
-    if (r.status === 'linked') tmCell = `<span class="tm-name" title="${r.tmName}">${r.tmName}</span><span class="tm-id">${r.tmId}</span>`;
-    else if (r.status === 'missed') tmCell = `<span class="tm-name" style="color:var(--orange)" title="${r.missedAttractionName}">⚠ ${r.missedAttractionName}</span><span class="tm-id">${r.missedAttractionId}</span>`;
-    else if (r.junk) tmCell = `<span class="tm-none">—</span>`;
-    else if (r.tmSuggestion === 'checking') tmCell = `<span class="tm-checking">checking...</span>`;
-    else if (r.tmSuggestion?.found) tmCell = `<span class="tm-name" title="${r.tmSuggestion.name}">${r.tmSuggestion.name}</span><span class="tm-id">${r.tmSuggestion.id}</span>`;
-    else if (r.tmSuggestion && !r.tmSuggestion.found) tmCell = `<span class="tm-none">no TM match found</span>`;
-    else tmCell = `<span class="tm-none">—</span>`;
+    if (r.status==='linked') tmCell=`<span class="tm-name" title="${r.tmName}">${r.tmName}</span><span class="tm-id">${r.tmId}</span>`;
+    else if (r.status==='missed') tmCell=`<span class="tm-name" style="color:var(--orange)" title="${r.missedAttractionName}">⚠ ${r.missedAttractionName}</span><span class="tm-id">${r.missedAttractionId}</span>`;
+    else if (r.junk) tmCell=`<span class="tm-none">—</span>`;
+    else if (r.tmSuggestion==='checking') tmCell=`<span class="tm-checking">checking...</span>`;
+    else if (r.tmSuggestion?.found) tmCell=`<span class="tm-name" title="${r.tmSuggestion.name}">${r.tmSuggestion.name}</span><span class="tm-id">${r.tmSuggestion.id}</span>`;
+    else if (r.tmSuggestion&&!r.tmSuggestion.found) tmCell=`<span class="tm-none">no TM match found</span>`;
+    else tmCell=`<span class="tm-none">—</span>`;
 
-    const flags = [];
-    if (r.status === 'missed') flags.push(`<span class="flag flag-warn">use ${r.missedAttractionId}</span>`);
-    if (r.isCustomName && r.status !== 'linked') flags.push(`<span class="flag">custom name</span>`);
+    const flags=[];
+    if (r.status==='missed') flags.push(`<span class="flag flag-warn">use ${r.missedAttractionId}</span>`);
+    if (r.isCustomName&&r.status!=='linked') flags.push(`<span class="flag">custom name</span>`);
 
-    const twSearchUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.name)}`;
-    const tmUrl = r.tmUrl || r.tmSuggestion?.url || `https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
-    const searchBtn = (!r.junk && !r.suggestionChecked) ? `<button class="icon-btn" title="Search TM" onclick="checkOne('${r.key.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">?</button>` : '';
-    const missedBtn = r.status === 'missed' ? `<a class="icon-btn warn" href="${tmUrl}" target="_blank" title="View TM attraction">⚠</a>` : '';
-    const tmBtn = `<a class="icon-btn" href="${tmUrl}" target="_blank" title="View on TM">TM</a>`;
-    const twBtn = `<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search on TW">TW</a>`;
-
-    const genreDisplay = r.genre && r.genre !== 'Undefined' ? `${r.segment} › ${r.genre}` : r.segment;
+    const twSearchUrl=`https://www.ticketweb.com/search?q=${encodeURIComponent(r.name)}`;
+    const tmUrl=r.tmUrl||r.tmSuggestion?.url||`https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
+    const searchBtn=(!r.junk&&!r.suggestionChecked)?`<button class="icon-btn" title="Search TM" onclick="checkOne('${r.key.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">?</button>`:'';
+    const missedBtn=r.status==='missed'?`<a class="icon-btn warn" href="${tmUrl}" target="_blank" title="View TM attraction">⚠</a>`:'';
+    const genreDisplay=r.genre&&r.genre!=='Undefined'?`${r.segment} › ${r.genre}`:r.segment;
 
     return `<tr class="${r.junk?'junk-row':''}">
       <td><span class="name-primary" title="${r.name}">${r.name}</span>${r.attractionId?`<span class="name-sub">${r.attractionId}</span>`:''}</td>
       <td><div class="count-num">${r.count}</div><div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%;background:${barColor};"></div></div></td>
-      <td><div class="date-cell">${r.firstDate||'—'}<br>${r.lastDate && r.lastDate !== r.firstDate ? r.lastDate : ''}</div></td>
+      <td><div class="date-cell">${r.firstDate||'—'}<br>${r.lastDate&&r.lastDate!==r.firstDate?r.lastDate:''}</div></td>
       <td><div class="genre-cell" title="${genreDisplay}">${genreDisplay}</div></td>
       <td>${badge}</td>
       <td class="tm-cell">${tmCell}</td>
       <td><div class="flags-cell">${flags.join('')}</div></td>
-      <td><div class="action-cell">${missedBtn}${searchBtn}${twBtn}${tmBtn}</div></td>
+      <td><div class="action-cell">${missedBtn}${searchBtn}<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search on TW">TW</a><a class="icon-btn" href="${tmUrl}" target="_blank" title="View on TM">TM</a></div></td>
     </tr>`;
   }).join('');
 }
 
 async function checkOne(key) {
-  const r = allRows.find(x => x.key === key);
+  const r = allRows.find(x => x.key===key);
   if (!r) return;
-  r.tmSuggestion = 'checking'; r.suggestionChecked = true;
+  r.tmSuggestion='checking'; r.suggestionChecked=true;
   renderTable();
   await fetchTMSuggestion(r);
   renderTable();
@@ -660,45 +652,311 @@ async function fetchTMSuggestion(r) {
   try {
     const res = await fetch(`https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(r.name)}&size=3&apikey=${API_KEY}`);
     const data = await res.json();
-    const matches = data?._embedded?.attractions || [];
-    const match = matches.find(m => { const t = normalizeName(m.name), n = normalizeName(r.name); return t === n || t.includes(n) || n.includes(t); });
-    r.tmSuggestion = match ? { found:true, name:match.name, id:match.id, url:match.url||null } : { found:false };
-  } catch { r.tmSuggestion = { found:false }; }
+    const matches = data?._embedded?.attractions||[];
+    const match = matches.find(m => { const t=normalizeName(m.name),n=normalizeName(r.name); return t===n||t.includes(n)||n.includes(t); });
+    r.tmSuggestion = match?{found:true,name:match.name,id:match.id,url:match.url||null}:{found:false};
+  } catch { r.tmSuggestion={found:false}; }
 }
 
 async function runTMSuggestions() {
-  const toCheck = getFiltered().filter(r => !r.junk && !r.suggestionChecked && r.status !== 'linked' && r.status !== 'missed');
+  const toCheck = getFiltered().filter(r => !r.junk&&!r.suggestionChecked&&r.status!=='linked'&&r.status!=='missed');
   if (!toCheck.length) { showToast('All visible rows already checked'); return; }
-  document.getElementById('suggestBtn').disabled = true;
-  document.getElementById('suggestBtn').textContent = `Checking ${toCheck.length}...`;
-  for (let i = 0; i < toCheck.length; i++) {
-    toCheck[i].tmSuggestion = 'checking'; toCheck[i].suggestionChecked = true;
-    if (i % 5 === 0) renderTable();
+  document.getElementById('suggestBtn').disabled=true;
+  document.getElementById('suggestBtn').textContent=`Checking ${toCheck.length}...`;
+  for (let i=0; i<toCheck.length; i++) {
+    toCheck[i].tmSuggestion='checking'; toCheck[i].suggestionChecked=true;
+    if (i%5===0) renderTable();
     await fetchTMSuggestion(toCheck[i]);
-    await new Promise(r => setTimeout(r, 220));
+    await new Promise(r => setTimeout(r,220));
   }
-  document.getElementById('suggestBtn').disabled = false;
-  document.getElementById('suggestBtn').textContent = 'Find TM matches ↗';
+  document.getElementById('suggestBtn').disabled=false;
+  document.getElementById('suggestBtn').textContent='Find TM matches ↗';
   renderTable();
   showToast(`Checked ${toCheck.length} attractions`);
 }
 
-function resetTool() {
-  allRows = []; verifiedAttractionDict = {};
-  currentFilter = 'all'; currentSegFilter = 'all'; sortKey = 'count'; sortDir = 'desc';
-  document.getElementById('setupPanel').style.display = 'block';
-  document.getElementById('progressPanel').style.display = 'none';
-  document.getElementById('resultsPanel').style.display = 'none';
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('resetBtn').style.display = 'none';
-  document.getElementById('suggestBtn').style.display = 'none';
-  document.getElementById('headerMeta').textContent = '';
-  document.getElementById('progressFill').style.width = '0%';
+function resetAudit() {
+  allRows=[]; verifiedAttractionDict={}; currentFilter='all'; currentSegFilter='all'; sortKey='count'; sortDir='desc'; auditDone=false;
+  document.getElementById('setupPanel').style.display='block';
+  document.getElementById('progressPanel').style.display='none';
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('resetBtn').style.display='none';
+  document.getElementById('suggestBtn').style.display='none';
+  document.getElementById('headerMeta').textContent='';
+  document.getElementById('progressFill').style.width='0%';
 }
+
+// ===== VENUE ID BUILDER TAB =====
+let venueOrgs = [];
+let venueResults = [];
+let builderRunning = false;
+
+function handleFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const zone = document.getElementById('uploadZone');
+
+  if (file.name.endsWith('.csv')) {
+    const reader = new FileReader();
+    reader.onload = e => parseVenueCSV(e.target.result, file.name);
+    reader.readAsText(file);
+  } else if (file.name.endsWith('.xlsx')) {
+    showToast('Please export the sheet as CSV from Google Sheets (File → Download → CSV)');
+    return;
+  }
+
+  zone.classList.add('upload-loaded');
+  zone.querySelector('.upload-icon').textContent = '✅';
+  zone.querySelector('.upload-title').textContent = file.name;
+}
+
+function parseVenueCSV(text, filename) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  // Skip header rows — find first row where col E looks like a number
+  let dataStart = 0;
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    const cols = parseCSVLine(lines[i]);
+    const rev = parseFloat((cols[4]||'').replace(/[$,]/g,''));
+    if (!isNaN(rev)) { dataStart = i; break; }
+  }
+
+  const orgMap = {};
+  for (let i = dataStart; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    if (cols.length < 5) continue;
+    const venueName = (cols[0]||'').trim();
+    const orgName = (cols[1]||'').trim();
+    const revenue = parseFloat((cols[4]||'0').replace(/[$,]/g,'')) || 0;
+    if (!orgName || orgName.toLowerCase().includes('org name') || orgName.toLowerCase().includes('unnamed')) continue;
+    if (!orgMap[orgName]) orgMap[orgName] = { orgName, venueNames: [], totalRevenue: 0 };
+    orgMap[orgName].totalRevenue += revenue;
+    if (venueName && !orgMap[orgName].venueNames.includes(venueName)) orgMap[orgName].venueNames.push(venueName);
+  }
+
+  // Filter active orgs (revenue >= 1000)
+  const allOrgs = Object.values(orgMap);
+  venueOrgs = allOrgs.filter(o => o.totalRevenue >= 1000).sort((a,b) => b.totalRevenue - a.totalRevenue);
+  const inactive = allOrgs.filter(o => o.totalRevenue < 1000).length;
+
+  document.getElementById('bStatTotal').textContent = allOrgs.length;
+  document.getElementById('bStatActive').textContent = venueOrgs.length;
+  document.getElementById('bStatSearch').textContent = venueOrgs.length;
+  document.getElementById('bStatTime').textContent = Math.ceil(venueOrgs.length * 0.25 / 60) + ' min';
+  document.getElementById('builderStats').style.display = 'block';
+
+  // Check cache
+  checkBuilderCache();
+  showToast(`Loaded ${allOrgs.length} orgs — ${venueOrgs.length} active, ${inactive} skipped (< $1k revenue)`);
+}
+
+function parseCSVLine(line) {
+  const result = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i]==='"') { inQ=!inQ; }
+    else if (line[i]===',' && !inQ) { result.push(cur); cur=''; }
+    else { cur+=line[i]; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function checkBuilderCache() {
+  try {
+    const cached = localStorage.getItem('tw_venue_ids');
+    if (cached) {
+      const data = JSON.parse(cached);
+      const note = document.getElementById('cacheNote');
+      note.className = 'cache-note has-cache';
+      note.textContent = `✓ ${data.length} venue IDs cached from previous run`;
+      document.getElementById('clearCacheBtn').style.display = '';
+      // Load cached results
+      venueResults = data;
+      showVenueResults();
+    }
+  } catch(e) {}
+}
+
+function clearVenueCache() {
+  localStorage.removeItem('tw_venue_ids');
+  venueResults = [];
+  document.getElementById('cacheNote').textContent = '';
+  document.getElementById('cacheNote').className = 'cache-note';
+  document.getElementById('clearCacheBtn').style.display = 'none';
+  document.getElementById('venueResultsPanel').style.display = 'none';
+  showToast('Cache cleared');
+}
+
+async function runVenueBuilder() {
+  if (!venueOrgs.length) { showToast('Upload a CSV file first'); return; }
+  if (builderRunning) return;
+  builderRunning = true;
+
+  document.getElementById('runBuilderBtn').disabled = true;
+  document.getElementById('builderProgressPanel').style.display = 'block';
+
+  venueResults = [];
+  let searched = 0, found = 0;
+
+  for (const org of venueOrgs) {
+    searched++;
+    const pct = Math.round((searched / venueOrgs.length) * 100);
+    document.getElementById('builderProgressFill').style.width = pct + '%';
+    document.getElementById('builderProgressLabel').textContent = `Searching org ${searched} of ${venueOrgs.length}: ${org.orgName.substring(0,50)}`;
+    document.getElementById('builderProgressSub').textContent = `${found} venue IDs found so far`;
+
+    // Try both US and CA
+    for (const country of ['US', 'CA']) {
+      try {
+        const keyword = cleanOrgName(org.orgName);
+        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/venues.json?keyword=${encodeURIComponent(keyword)}&countryCode=${country}&size=5&apikey=${API_KEY}`);
+        const data = await res.json();
+        const venues = data?._embedded?.venues || [];
+
+        for (const v of venues) {
+          const twCount = v.upcomingEvents?.ticketweb || 0;
+          if (twCount === 0) continue;
+
+          // Check if already added this venue ID
+          if (venueResults.find(r => r.venueId === v.id)) continue;
+
+          const matchType = getMatchType(org.orgName, org.venueNames, v.name);
+
+          venueResults.push({
+            orgName: org.orgName,
+            venueName: v.name,
+            venueId: v.id,
+            twEvents: twCount,
+            country: v.country?.countryCode || country,
+            matchType,
+            city: v.city?.name || '',
+            state: v.state?.stateCode || ''
+          });
+          found++;
+        }
+      } catch(e) {}
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  // Cache results
+  try { localStorage.setItem('tw_venue_ids', JSON.stringify(venueResults)); } catch(e) {}
+
+  document.getElementById('builderProgressFill').style.width = '100%';
+  document.getElementById('builderProgressLabel').textContent = `Complete — ${found} venue IDs found from ${searched} org searches`;
+  document.getElementById('runBuilderBtn').disabled = false;
+  builderRunning = false;
+
+  const note = document.getElementById('cacheNote');
+  note.className = 'cache-note has-cache';
+  note.textContent = `✓ ${venueResults.length} venue IDs cached`;
+  document.getElementById('clearCacheBtn').style.display = '';
+
+  showVenueResults();
+  showToast(`Done — ${found} TW venue IDs found`);
+}
+
+function cleanOrgName(name) {
+  // Strip common suffixes and legal entity words for better matching
+  return name
+    .replace(/\s*\(SUB\s*-[^)]+\)/gi, '')
+    .replace(/\s*\(Live Nation\)/gi, '')
+    .replace(/\s*\(LEG\)/gi, '')
+    .replace(/\bLLC\b|\bInc\b|\bLtd\b|\bLP\b|\bLLP\b|\bCorp\b/gi, '')
+    .replace(/\bDBA\b.*/gi, '')
+    .replace(/[,\.]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getMatchType(orgName, venueNames, tmVenueName) {
+  const tmNorm = normalizeName(tmVenueName);
+  const orgNorm = normalizeName(cleanOrgName(orgName));
+  if (tmNorm === orgNorm) return 'exact';
+  for (const vn of venueNames) {
+    if (normalizeName(vn) === tmNorm) return 'exact';
+  }
+  if (tmNorm.includes(orgNorm) || orgNorm.includes(tmNorm)) return 'fuzzy';
+  for (const vn of venueNames) {
+    const vnNorm = normalizeName(vn);
+    if (tmNorm.includes(vnNorm) || vnNorm.includes(tmNorm)) return 'fuzzy';
+  }
+  return 'fuzzy';
+}
+
+function showVenueResults() {
+  document.getElementById('venueResultsPanel').style.display = 'block';
+  renderVenueTable();
+}
+
+function renderVenueTable() {
+  const search = (document.getElementById('venueSearch')?.value||'').toLowerCase();
+  const filtered = venueResults.filter(r =>
+    !search || r.orgName.toLowerCase().includes(search) || r.venueName.toLowerCase().includes(search)
+  ).sort((a,b) => b.twEvents - a.twEvents);
+
+  document.getElementById('venueTableCount').textContent = `${filtered.length.toLocaleString()} venue ID${filtered.length!==1?'s':''}`;
+
+  document.getElementById('venueTableBody').innerHTML = filtered.map(r => {
+    const matchBadge = r.matchType === 'exact'
+      ? `<span class="venue-match-badge match-exact">exact</span>`
+      : `<span class="venue-match-badge match-fuzzy">fuzzy</span>`;
+    const loc = [r.city, r.state].filter(Boolean).join(', ');
+    return `<tr>
+      <td><span class="name-primary" title="${r.orgName}">${r.orgName}</span>${loc?`<span class="name-sub">${loc}</span>`:''}</td>
+      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
+      <td><span style="font-family:var(--font-mono);font-size:12px;">${r.venueId}</span></td>
+      <td><span class="tw-count-badge">${r.twEvents}</span></td>
+      <td><span style="font-family:var(--font-mono);font-size:12px;">${r.country}</span></td>
+      <td>${matchBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function exportVenueCSV() {
+  if (!venueResults.length) { showToast('No results to export'); return; }
+  const headers = ['Org Name','Venue Name (TM)','API Venue ID','TW Events','Country','City','State','Match Type'];
+  const rows = venueResults.map(r => [r.orgName,r.venueName,r.venueId,r.twEvents,r.country,r.city||'',r.state||'',r.matchType]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `tw-venue-ids-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV exported');
+}
+
+// Drag and drop
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) { document.getElementById('csvFile').files = e.dataTransfer.files; handleFileUpload({files:[file]}); }
+});
+
+// Check cache on load
+window.addEventListener('load', () => {
+  try {
+    const cached = localStorage.getItem('tw_venue_ids');
+    if (cached) {
+      const data = JSON.parse(cached);
+      venueResults = data;
+      const note = document.getElementById('cacheNote');
+      note.className = 'cache-note has-cache';
+      note.textContent = `✓ ${data.length} venue IDs cached from previous run`;
+      document.getElementById('clearCacheBtn').style.display = '';
+      document.getElementById('builderStats').style.display = 'block';
+      showVenueResults();
+    }
+  } catch(e) {}
+});
 
 function showToast(msg) {
   const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
+  t.className='toast'; t.textContent=msg;
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
