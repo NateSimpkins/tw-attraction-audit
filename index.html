@@ -544,8 +544,15 @@ async function runAudit() {
     }
   }
 
+  // Yield to UI thread before processing
+  await new Promise(r => setTimeout(r, 50));
+  document.getElementById('progressOverall').textContent = `Processing ${venuePassEvents.length} venue events...`;
+  await new Promise(r => setTimeout(r, 50));
+
   // Process venue-pass events into attractionMap (same logic as segment pass)
-  for (const evt of venuePassEvents) {
+  for (let ei = 0; ei < venuePassEvents.length; ei++) {
+    if (ei % 100 === 0) await new Promise(r => setTimeout(r, 0));
+    const evt = venuePassEvents[ei];
     const embeddedAttractions = evt._embedded?.attractions || [];
     const linkedAttractionIds = (evt._links?.attractions || [])
       .map(l => { const m = (l.href||'').match(/\/attractions\/([^?]+)/); return m ? m[1] : null; })
