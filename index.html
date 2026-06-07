@@ -374,7 +374,7 @@ const EMBEDDED_VENUE_IDS = [{"orgName": "Blue Note Presents LLC", "venueName": "
 const EMBEDDED_VENUE_DATE = '2026-06-07';
 const SEGMENTS = { 'KZFzniwnSyZfZ7v7nJ':'Music','KZFzniwnSyZfZ7v7na':'Arts & Theatre','KZFzniwnSyZfZ7v7nE':'Sports','KZFzniwnSyZfZ7v7n1':'Miscellaneous','KZFzniwnSyZfZ7v7nl':'Undefined' };
 const JUNK_PATTERNS = [/^test\b/i,/do not purchase/i,/rigor monitoring/i,/^test attraction/i,/^test event/i,/^test act\b/i,/ram v'?\d/i,/test act and support/i,/^TEST\s/,/^test and /i];
-function isJunk(n) { return JUNK_PATTERNS.some(p => p.test(n.trim())); }
+function isJunk(n) { return n ? JUNK_PATTERNS.some(p => p.test(n.trim())) : false; }
 function isTMVerified(id) { return id && (id.startsWith('K8vZ') || id.startsWith('K8vz')); }
 function normalizeName(n) { return n.toLowerCase().replace(/^(the|a|an)\s+/,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim(); }
 function matchAttractionInEventName(evtName, attName) {
