@@ -513,6 +513,79 @@ async function runAudit() {
     document.getElementById('progressFill').style.width = Math.round((totalSegsDone/selectedSegs.length)*100)+'%';
   }
 
+  // ===== PHASE 2: Venue ID pass =====
+  document.getElementById('progressOverall').textContent = 'Fetching venue events… venue 0 of 67';
+  const venueIds = EMBEDDED_VENUE_IDS.map(v => v.venueId);
+  const seenEventIds = new Set(); // for deduplication across both passes
+  // Collect event IDs already seen from segment pass (we track by attraction key, not event ID, so we dedupe below per-event)
+  // We'll use a separate raw event accumulator for the venue pass
+  const venuePassEvents = [];
+
+  for (let vi = 0; vi < venueIds.length; vi++) {
+    const venueId = venueIds[vi];
+    document.getElementById('progressOverall').textContent = `Fetching venue events… venue ${vi + 1} of ${venueIds.length}`;
+    document.getElementById('progressFill').style.width = Math.round(90 + (vi / venueIds.length) * 8) + '%';
+
+    let vPage = 0, keepVenue = true;
+    while (keepVenue) {
+      try {
+        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${venueId}&countryCode=US&size=200&page=${vPage}&apikey=${API_KEY}`);
+        const data = await res.json();
+        const events = data?._embedded?.events || [];
+        for (const evt of events) {
+          if (!evt.url || !evt.url.includes('ticketweb.com')) continue;
+          if (seenEventIds.has(evt.id)) continue;
+          seenEventIds.add(evt.id);
+          venuePassEvents.push(evt);
+        }
+        if (events.length < 200) keepVenue = false;
+        else { vPage++; await new Promise(r => setTimeout(r, 200)); }
+      } catch(e) { keepVenue = false; }
+    }
+  }
+
+  // Process venue-pass events into attractionMap (same logic as segment pass)
+  for (const evt of venuePassEvents) {
+    const embeddedAttractions = evt._embedded?.attractions || [];
+    const linkedAttractionIds = (evt._links?.attractions || [])
+      .map(l => { const m = (l.href||'').match(/\/attractions\/([^?]+)/); return m ? m[1] : null; })
+      .filter(Boolean);
+
+    const evtDate = evt.dates?.start?.localDate || '';
+    const evtName = evt.name || '';
+    const evtUrl = evt.url || '';
+    const segment = evt.classifications?.[0]?.segment?.name || 'Music';
+    const genre = evt.classifications?.[0]?.genre?.name || '';
+    const isCustomName = evt.nameOrigin === 'custom';
+
+    if (!embeddedAttractions.length && !linkedAttractionIds.length) {
+      const key = 'UNTAGGED::'+evtName.toLowerCase().trim();
+      if (!attractionMap[key]) attractionMap[key] = { key, name:evtName, attractionId:null, status:'untagged', tmName:null, tmId:null, tmUrl:null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(evtName), isCustomName, missedAttractionId:null, missedAttractionName:null, tmSuggestion:null, suggestionChecked:false };
+      attractionMap[key].count++;
+      if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+    } else if (embeddedAttractions.length) {
+      for (const a of embeddedAttractions) {
+        const verified = isTMVerified(a.id);
+        const key = a.id;
+        if (!attractionMap[key]) attractionMap[key] = { key, name:a.name, attractionId:a.id, status:verified?'linked':'tw-only', tmName:verified?a.name:null, tmId:verified?a.id:null, tmUrl:verified?(a.url||null):null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(a.name), isCustomName:false, missedAttractionId:null, missedAttractionName:null, tmSuggestion:verified?{found:true,name:a.name,id:a.id,url:a.url||null}:null, suggestionChecked:verified };
+        attractionMap[key].count++;
+        if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+        if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
+        if (verified) { const nk = normalizeName(a.name); if (!verifiedAttractionDict[nk]) verifiedAttractionDict[nk] = {id:a.id,name:a.name,url:a.url||null}; }
+      }
+    } else {
+      for (const aId of linkedAttractionIds) {
+        const verified = isTMVerified(aId);
+        const key = aId;
+        if (!attractionMap[key]) attractionMap[key] = { key, name:evtName, attractionId:aId, status:verified?'linked':'tw-only', tmName:null, tmId:verified?aId:null, tmUrl:null, count:0, firstDate:evtDate, lastDate:evtDate, twUrl:evtUrl, segment, genre, junk:isJunk(evtName), isCustomName, missedAttractionId:null, missedAttractionName:null, tmSuggestion:null, suggestionChecked:false };
+        attractionMap[key].count++;
+        if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+        if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
+        if (verified) verifiedAttractionDict[normalizeName(evtName)] = {id:aId, name:evtName, url:null};
+      }
+    }
+  }
+
   document.getElementById('progressOverall').textContent = 'Cross-referencing untagged events...';
   let missedCount = 0;
   for (const [key, row] of Object.entries(attractionMap)) {
