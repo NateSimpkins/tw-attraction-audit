@@ -27,8 +27,8 @@
     --red-dim: rgba(239,68,68,0.12);
     --purple: #a78bfa;
     --purple-dim: rgba(167,139,250,0.12);
-    --blue: #3b82f6;
-    --blue-dim: rgba(59,130,246,0.12);
+    --orange: #f97316;
+    --orange-dim: rgba(249,115,22,0.12);
     --font-mono: 'DM Mono', monospace;
     --font-sans: 'DM Sans', sans-serif;
     --radius: 8px;
@@ -52,108 +52,107 @@
   .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
   .btn-sm { padding: 3px 10px; font-size: 12px; }
 
-  main { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+  main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
 
-  /* Setup panel */
   .setup-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
   .setup-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .setup-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5; }
+  .setup-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 700px; }
   .setup-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
   .field-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
   select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   select:focus { border-color: var(--accent); }
 
-  /* Progress */
   .progress-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none; }
-  .progress-label { font-size: 13px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 10px; }
-  .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .progress-label { font-size: 13px; color: var(--text); font-family: var(--font-mono); margin-bottom: 10px; }
+  .progress-track { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
   .progress-fill { height: 4px; background: var(--accent); border-radius: 2px; transition: width 0.4s; width: 0%; }
-  .progress-sub { font-size: 11px; color: var(--subtle); font-family: var(--font-mono); margin-top: 8px; }
+  .progress-sub { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .progress-step { font-size: 11px; color: var(--accent); font-family: var(--font-mono); margin-top: 4px; }
 
-  /* Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s; }
+  .stat-card:hover { border-color: var(--border2); }
+  .stat-card.active { border-color: var(--accent); }
+  .stat-card.active-green { border-color: var(--green); background: var(--green-dim); }
+  .stat-card.active-amber { border-color: var(--amber); background: var(--amber-dim); }
+  .stat-card.active-orange { border-color: var(--orange); background: var(--orange-dim); }
+  .stat-card.active-red { border-color: var(--red); background: var(--red-dim); }
+  .stat-card.active-purple { border-color: var(--purple); background: var(--purple-dim); }
   .stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-  .stat-value { font-size: 28px; font-weight: 300; letter-spacing: -1px; }
+  .stat-value { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
   .stat-value.green { color: var(--green); }
   .stat-value.amber { color: var(--amber); }
+  .stat-value.orange { color: var(--orange); }
   .stat-value.red { color: var(--red); }
   .stat-value.purple { color: var(--purple); }
-  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); line-height: 1.4; }
 
-  /* Action buckets */
-  .buckets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
-  .bucket { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; cursor: pointer; transition: all 0.15s; }
-  .bucket:hover { border-color: var(--border2); }
-  .bucket.active-bucket { border-width: 1.5px; }
-  .bucket.bucket-green.active-bucket { border-color: var(--green); background: var(--green-dim); }
-  .bucket.bucket-amber.active-bucket { border-color: var(--amber); background: var(--amber-dim); }
-  .bucket.bucket-red.active-bucket { border-color: var(--red); background: var(--red-dim); }
-  .bucket-icon { font-size: 18px; margin-bottom: 8px; }
-  .bucket-count { font-size: 28px; font-weight: 300; letter-spacing: -1px; margin-bottom: 2px; }
-  .bucket-count.green { color: var(--green); }
-  .bucket-count.amber { color: var(--amber); }
-  .bucket-count.red { color: var(--red); }
-  .bucket-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
-  .bucket-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
-
-  /* Toolbar */
   .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-  .search-input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
+  .search-input { flex: 1; min-width: 220px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-family: var(--font-sans); color: var(--text); outline: none; transition: border-color 0.15s; }
   .search-input::placeholder { color: var(--muted); }
   .search-input:focus { border-color: var(--accent); }
   .sort-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
-  .sort-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; }
+  .sort-btn { padding: 4px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-mono); cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; white-space: nowrap; }
   .sort-btn:hover { color: var(--text); }
   .sort-btn.active { background: var(--surface2); color: var(--text); }
 
-  /* Table */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .table-header-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .table-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .table-count { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
   table { width: 100%; border-collapse: collapse; }
-  thead th { text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
+  thead th { text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
-  td { padding: 10px 14px; font-size: 13px; vertical-align: middle; }
+  td { padding: 9px 12px; font-size: 13px; vertical-align: middle; }
 
-  .attraction-name { font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .attraction-id { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
-  .event-count { font-family: var(--font-mono); font-size: 13px; }
-  .bar-wrap { width: 50px; height: 3px; background: var(--border2); border-radius: 2px; margin-top: 4px; }
+  .name-cell { max-width: 200px; }
+  .name-primary { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .name-sub { font-size: 10px; color: var(--muted); font-family: var(--font-mono); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .count-cell { font-family: var(--font-mono); font-size: 13px; }
+  .bar-wrap { width: 44px; height: 3px; background: var(--border2); border-radius: 2px; margin-top: 4px; }
   .bar-fill { height: 3px; border-radius: 2px; }
   .date-cell { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
 
-  .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--font-mono); padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
-  .status-badge .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-  .badge-linked { background: var(--green-dim); color: var(--green); }
-  .badge-linked .dot { background: var(--green); }
-  .badge-tw-only { background: var(--amber-dim); color: var(--amber); }
-  .badge-tw-only .dot { background: var(--amber); }
-  .badge-untagged { background: var(--red-dim); color: var(--red); }
-  .badge-untagged .dot { background: var(--red); }
-  .badge-junk { background: var(--purple-dim); color: var(--purple); }
-  .badge-junk .dot { background: var(--purple); }
+  .status-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .pill-linked { background: var(--green-dim); color: var(--green); }
+  .pill-linked .dot { background: var(--green); }
+  .pill-tw-only { background: var(--amber-dim); color: var(--amber); }
+  .pill-tw-only .dot { background: var(--amber); }
+  .pill-missed { background: var(--orange-dim); color: var(--orange); }
+  .pill-missed .dot { background: var(--orange); }
+  .pill-untagged { background: var(--red-dim); color: var(--red); }
+  .pill-untagged .dot { background: var(--red); }
+  .pill-junk { background: var(--purple-dim); color: var(--purple); }
+  .pill-junk .dot { background: var(--purple); }
 
-  .tm-suggestion { font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tm-suggestion.found { color: var(--text); }
-  .tm-suggestion.none { color: var(--muted); font-style: italic; }
-  .tm-suggestion.checking { color: var(--amber); font-family: var(--font-mono); }
+  .flags-cell { display: flex; gap: 4px; flex-wrap: wrap; }
+  .flag { display: inline-block; font-size: 10px; font-family: var(--font-mono); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--border2); color: var(--muted); white-space: nowrap; }
+  .flag-warn { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
 
-  .action-cell { display: flex; gap: 5px; align-items: center; }
-  .icon-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: var(--muted); text-decoration: none; transition: all 0.15s; flex-shrink: 0; }
+  .suggestion-cell { font-size: 12px; max-width: 190px; }
+  .suggestion-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+  .suggestion-id { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .suggestion-none { color: var(--muted); font-style: italic; }
+  .suggestion-checking { color: var(--amber); font-family: var(--font-mono); font-size: 11px; }
+
+  .action-cell { display: flex; gap: 4px; align-items: center; }
+  .icon-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; color: var(--muted); text-decoration: none; transition: all 0.15s; flex-shrink: 0; font-family: var(--font-mono); }
   .icon-btn:hover { color: var(--text); background: var(--surface2); border-color: var(--subtle); }
+  .icon-btn.highlight { border-color: var(--orange); color: var(--orange); }
+  .icon-btn.highlight:hover { background: var(--orange-dim); }
 
-  .junk-row td { opacity: 0.4; }
+  .junk-row td { opacity: 0.35; }
 
-  .legend { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--border); }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
+  .legend { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--border); }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
   .legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
   .empty-state { padding: 4rem 2rem; text-align: center; color: var(--muted); font-size: 14px; }
+  .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; }
 
-  #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  #toastContainer { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
   .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; animation: slideIn 0.2s ease; }
   @keyframes slideIn { from { transform: translateY(8px); opacity:0; } to { transform: translateY(0); opacity:1; } }
 </style>
@@ -163,23 +162,21 @@
 <header>
   <div class="header-left">
     <div class="logo-mark">TW</div>
-    <div>
-      <div class="header-title">Attraction Audit</div>
-    </div>
+    <div class="header-title">Attraction Audit</div>
     <span class="header-meta" id="headerMeta"></span>
   </div>
   <div class="header-right">
     <button class="btn btn-sm" onclick="resetTool()" id="resetBtn" style="display:none;">↩ New audit</button>
     <button class="btn btn-sm" onclick="exportCSV()" id="exportBtn" style="display:none;">Export CSV</button>
+    <button class="btn btn-sm btn-primary" onclick="runTMSuggestions()" id="suggestBtn" style="display:none;">Find TM matches ↗</button>
   </div>
 </header>
 
 <main>
 
-  <!-- Setup -->
   <div id="setupPanel" class="setup-panel">
     <div class="setup-title">TicketWeb Official Attraction Audit</div>
-    <div class="setup-sub">Pulls all active TicketWeb events from the TM Discovery API (<code>source=ticketweb</code>), deduplicates by attraction, and identifies which are linked to a verified Ticketmaster Official Attraction (K8vZ ID), which have a TW-only attraction, and which have nothing tagged at all.</div>
+    <div class="setup-sub">Pulls all active TicketWeb events via <code>source=ticketweb</code>, identifies attraction status by K8vZ ID, and cross-references untagged events against verified attractions found in the same pull — surfacing events where a verified attraction exists but isn't being used.</div>
     <div class="setup-grid">
       <div>
         <div class="field-label">Pages to fetch</div>
@@ -199,93 +196,73 @@
         </select>
       </div>
       <div>
-        <div class="field-label">Start from</div>
+        <div class="field-label">Date range</div>
         <select id="startDate">
           <option value="today" selected>Today onwards</option>
           <option value="all">All dates</option>
         </select>
       </div>
-      <div>
-        <button class="btn btn-primary" onclick="runAudit()" id="runBtn">Run audit ↗</button>
-      </div>
+      <button class="btn btn-primary" onclick="runAudit()" id="runBtn">Run audit ↗</button>
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="progress-panel" id="progressPanel">
     <div class="progress-label" id="progressLabel">Initializing...</div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-sub" id="progressSub"></div>
+    <div class="progress-step" id="progressStep"></div>
   </div>
 
-  <!-- Results -->
   <div id="resultsPanel" style="display:none;">
 
     <div class="stats-grid" id="statsGrid"></div>
 
-    <div class="buckets" id="buckets">
-      <div class="bucket bucket-green" onclick="setBucket('linked')">
-        <div class="bucket-icon">✅</div>
-        <div class="bucket-count green" id="countLinked">0</div>
-        <div class="bucket-title">TM Official Attraction linked</div>
-        <div class="bucket-desc">K8vZ ID confirmed. Event surfaces on TM, Spotify, and 800+ partners.</div>
-      </div>
-      <div class="bucket bucket-amber" onclick="setBucket('tw-only')">
-        <div class="bucket-icon">🔗</div>
-        <div class="bucket-count amber" id="countTWOnly">0</div>
-        <div class="bucket-title">TW-only attraction</div>
-        <div class="bucket-desc">Attraction exists in TW but is not linked to a TM verified attraction. Action: tag the correct verified attraction in the TW event build.</div>
-      </div>
-      <div class="bucket bucket-red" onclick="setBucket('untagged')">
-        <div class="bucket-icon">➕</div>
-        <div class="bucket-count red" id="countUntagged">0</div>
-        <div class="bucket-title">No attraction tagged</div>
-        <div class="bucket-desc">Event has no attraction at all. Action: create or find a verified TW attraction and tag it to the event.</div>
-      </div>
-    </div>
-
     <div class="toolbar">
       <input type="text" class="search-input" id="searchInput" placeholder="Search attraction or event name..." oninput="renderTable()">
       <div class="sort-group">
-        <button class="sort-btn active" onclick="setSortKey('count', this)">By event count</button>
-        <button class="sort-btn" onclick="setSortKey('name', this)">By name</button>
-        <button class="sort-btn" onclick="setSortKey('date', this)">By date</button>
+        <button class="sort-btn active" onclick="setSortKey('count', this)">Event count</button>
+        <button class="sort-btn" onclick="setSortKey('name', this)">Name</button>
+        <button class="sort-btn" onclick="setSortKey('date', this)">Date</button>
       </div>
-      <button class="btn btn-sm" onclick="suggestTMMatches()" id="suggestBtn">Suggest TM matches for unlinked ↗</button>
+      <button class="btn btn-sm" onclick="setFilter('all')" id="clearBtn" style="display:none;">✕ Clear filter</button>
     </div>
 
     <div class="table-wrap">
-      <div class="table-header-row">
+      <div class="table-top">
         <span class="table-count" id="tableCount"></span>
-        <div style="display:flex; gap:8px;">
-          <span style="font-size:11px; color:var(--muted); font-family:var(--font-mono); align-self:center;" id="filterLabel"></span>
-          <button class="btn btn-sm" onclick="setBucket('all')" id="clearFilterBtn" style="display:none;">Clear filter</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span id="filterLabel" style="font-size:11px;color:var(--muted);font-family:var(--font-mono);"></span>
         </div>
       </div>
       <table>
         <thead>
           <tr>
-            <th style="width:220px;">Attraction / event name</th>
-            <th style="width:70px;">Events</th>
-            <th style="width:140px;">Date range</th>
-            <th style="width:120px;">Status</th>
-            <th style="width:200px;">TM attraction suggestion</th>
-            <th style="width:100px;">Actions</th>
+            <th style="width:210px;">Attraction / event name</th>
+            <th style="width:65px;">Events</th>
+            <th style="width:130px;">Date range</th>
+            <th style="width:125px;">Status</th>
+            <th style="width:185px;">TM attraction</th>
+            <th style="width:130px;">Flags</th>
+            <th style="width:95px;">Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
       <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>K8vZ ID — TM Official Attraction linked</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only attraction (no TM link)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction tagged on event</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>Junk / test entry</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>K8vZ linked — TM Official Attraction</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only attraction — needs TM link</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>Verified attraction exists — not tagged on event</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction tagged</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>Junk / test</span>
       </div>
     </div>
 
   </div>
 
-  <div id="emptyState" class="empty-state" style="display:none;">No attractions match the current filter.</div>
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <div class="empty-icon">🔍</div>
+    <div>No attractions match the current filter.</div>
+  </div>
 
 </main>
 
@@ -294,23 +271,56 @@
 <script>
 const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
 
-const JUNK_PATTERNS = [/^test\b/i, /do not purchase/i, /rigor monitoring/i, /^test attraction/i, /^test event/i, /^test act\b/i, /ram v'?\d/i, /test act and support/i, /^TEST\s/];
-function isJunk(name) { return JUNK_PATTERNS.some(p => p.test(name.trim())); }
+const JUNK_PATTERNS = [/^test\b/i,/do not purchase/i,/rigor monitoring/i,/^test attraction/i,/^test event/i,/^test act\b/i,/ram v'?\d/i,/test act and support/i,/^TEST\s/,/^test and /i];
+function isJunk(n) { return JUNK_PATTERNS.some(p => p.test(n.trim())); }
 function isTMVerified(id) { return id && (id.startsWith('K8vZ') || id.startsWith('K8vz')); }
 
-// Non-artist keywords — flag for human review rather than TM search
-const NON_ARTIST_KEYWORDS = ['vip', 'meet & greet', 'meet and greet', 'experience', 'brunch', 'drag', 'comedy night', 'open mic', 'karaoke', 'trivia', 'bingo', 'dance party', 'showcase', 'festival', 'presents', 'tour package', 'upgrade'];
-function likelyNonArtist(name) { const n = name.toLowerCase(); return NON_ARTIST_KEYWORDS.some(k => n.includes(k)); }
+const NON_ARTIST_KW = ['vip','meet & greet','meet and greet','experience','brunch','drag','open mic','karaoke','trivia','bingo','dance party','showcase','tour package','upgrade','stadium tour','classic tour','general admission','comedy night'];
+function likelyNonArtist(n) { const l=n.toLowerCase(); return NON_ARTIST_KW.some(k=>l.includes(k)); }
+
+function allFallback(images) {
+  if (!images || !images.length) return true;
+  return images.every(i => i.fallback === true);
+}
+
+function hasSpotify(externalLinks) { return !!(externalLinks && externalLinks.spotify && externalLinks.spotify.length); }
+function hasBandsintown(externalLinks) { return !!(externalLinks && externalLinks.bandsintown && externalLinks.bandsintown.length); }
+
+// Normalize name for matching — lowercase, strip punctuation/articles
+function normalizeName(n) {
+  return n.toLowerCase()
+    .replace(/^(the|a|an)\s+/,'')
+    .replace(/[^a-z0-9\s]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// Check if eventName contains an attraction name as a whole-word match
+function matchAttractionInEventName(eventName, attractionName) {
+  const evtNorm = normalizeName(eventName);
+  const attNorm = normalizeName(attractionName);
+  if (attNorm.length < 3) return false;
+  // Exact or starts-with or contains as whole word sequence
+  if (evtNorm === attNorm) return true;
+  if (evtNorm.startsWith(attNorm + ' ')) return true;
+  if (evtNorm.includes(' ' + attNorm + ' ')) return true;
+  if (evtNorm.endsWith(' ' + attNorm)) return true;
+  return false;
+}
 
 let allRows = [];
-let currentBucket = 'all';
+let currentFilter = 'all';
 let sortKey = 'count';
 let maxCount = 1;
 
-function setProgress(pct, label, sub) {
+// Verified attraction dictionary built during fetch: normalizedName -> {id, name, url, externalLinks, images}
+let verifiedAttractionDict = {};
+
+function setProgress(pct, label, sub, step) {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = label;
   if (sub !== undefined) document.getElementById('progressSub').textContent = sub;
+  if (step !== undefined) document.getElementById('progressStep').textContent = step;
 }
 
 async function runAudit() {
@@ -321,14 +331,23 @@ async function runAudit() {
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('progressPanel').style.display = 'block';
   document.getElementById('resultsPanel').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
 
-  const attractionMap = {};
-  let totalEventsSeen = 0;
+  // Intermediate storage
+  const attractionMap = {}; // keyed by attraction ID or UNTAGGED::eventName
+  const untaggedEvents = []; // events with no attraction for cross-reference later
+  let totalEvents = 0;
   let actualPages = 0;
+  verifiedAttractionDict = {};
 
+  // PASS 1: Fetch all TW events, build attraction map + verified dictionary
   for (let page = 0; page < pages; page++) {
-    const pct = Math.round((page / pages) * 85);
-    setProgress(pct, `Fetching TW events — page ${page + 1} of ${pages}`, `${totalEventsSeen.toLocaleString()} events processed so far`);
+    const pct = Math.round((page / pages) * 75);
+    setProgress(pct,
+      `Pass 1 of 2 — fetching TW events (page ${page+1} of ${pages})`,
+      `${totalEvents.toLocaleString()} events processed`,
+      'Building verified attraction dictionary...'
+    );
 
     try {
       let url = `https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&size=200&page=${page}&apikey=${API_KEY}`;
@@ -343,34 +362,43 @@ async function runAudit() {
       const events = data?._embedded?.events || [];
       if (!events.length) break;
       actualPages++;
-      totalEventsSeen += events.length;
+      totalEvents += events.length;
 
       for (const evt of events) {
         const evtAttractions = evt._embedded?.attractions || [];
         const evtDate = evt.dates?.start?.localDate || '';
         const evtName = evt.name || '';
         const evtUrl = evt.url || '';
-        const country = evt._embedded?.venues?.[0]?.country?.countryCode || 'US';
-        const region = country === 'CA' ? 'ca' : 'us';
+        const evtCountry = evt._embedded?.venues?.[0]?.country?.countryCode || 'US';
+        const region = evtCountry === 'CA' ? 'ca' : 'us';
+        const isCustomName = evt.nameOrigin === 'custom';
 
         if (evtAttractions.length === 0) {
-          // No attraction tagged — key by event name
+          // Store for cross-reference in pass 2
+          untaggedEvents.push({ evtName, evtUrl, evtDate, region, isCustomName });
+
+          // Group untagged by event name
           const key = 'UNTAGGED::' + evtName.toLowerCase().trim();
           if (!attractionMap[key]) {
             attractionMap[key] = {
               key, name: evtName, attractionId: null, status: 'untagged',
               tmName: null, tmId: null, tmUrl: null,
+              externalLinks: null, attractionImages: null,
               count: 0, firstDate: evtDate, lastDate: evtDate,
-              twUrl: evtUrl, region, junk: isJunk(evtName), nonArtist: likelyNonArtist(evtName),
+              twUrl: evtUrl, region, junk: isJunk(evtName),
+              nonArtist: likelyNonArtist(evtName), isCustomName,
+              missedAttractionId: null, missedAttractionName: null,
               tmSuggestion: null, suggestionChecked: false
             };
           }
           attractionMap[key].count++;
-          if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+          if (evtDate && evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+
         } else {
           for (const a of evtAttractions) {
-            const key = a.id;
             const verified = isTMVerified(a.id);
+            const key = a.id;
+
             if (!attractionMap[key]) {
               attractionMap[key] = {
                 key, name: a.name, attractionId: a.id,
@@ -378,14 +406,27 @@ async function runAudit() {
                 tmName: verified ? a.name : null,
                 tmId: verified ? a.id : null,
                 tmUrl: verified ? (a.url || null) : null,
+                externalLinks: a.externalLinks || null,
+                attractionImages: a.images || null,
                 count: 0, firstDate: evtDate, lastDate: evtDate,
-                twUrl: evtUrl, region, junk: isJunk(a.name), nonArtist: likelyNonArtist(a.name),
-                tmSuggestion: null, suggestionChecked: false
+                twUrl: evtUrl, region, junk: isJunk(a.name),
+                nonArtist: likelyNonArtist(a.name), isCustomName: false,
+                missedAttractionId: null, missedAttractionName: null,
+                tmSuggestion: verified ? {found:true,name:a.name,id:a.id,url:a.url||null} : null,
+                suggestionChecked: verified
               };
             }
             attractionMap[key].count++;
-            if (evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
-            if (!attractionMap[key].firstDate || evtDate < attractionMap[key].firstDate) attractionMap[key].firstDate = evtDate;
+            if (evtDate && evtDate > attractionMap[key].lastDate) attractionMap[key].lastDate = evtDate;
+            if (!attractionMap[key].firstDate || (evtDate && evtDate < attractionMap[key].firstDate)) attractionMap[key].firstDate = evtDate;
+
+            // Build verified attraction dictionary
+            if (verified) {
+              const normKey = normalizeName(a.name);
+              if (!verifiedAttractionDict[normKey]) {
+                verifiedAttractionDict[normKey] = { id: a.id, name: a.name, url: a.url || null, externalLinks: a.externalLinks || null, images: a.images || null };
+              }
+            }
           }
         }
       }
@@ -398,67 +439,108 @@ async function runAudit() {
     }
   }
 
-  setProgress(95, 'Processing results...', `${totalEventsSeen.toLocaleString()} total TW events scanned across ${actualPages} pages`);
-  await new Promise(r => setTimeout(r, 200));
+  // PASS 2: Cross-reference untagged events against verified attraction dictionary
+  setProgress(80,
+    'Pass 2 of 2 — cross-referencing untagged events',
+    `Checking ${untaggedEvents.length.toLocaleString()} untagged events against ${Object.keys(verifiedAttractionDict).length} verified attractions`,
+    'Looking for verified attractions that should be tagged...'
+  );
+  await new Promise(r => setTimeout(r, 100));
 
-  allRows = Object.values(attractionMap).sort((a, b) => b.count - a.count);
+  let missedCount = 0;
+  for (const [key, row] of Object.entries(attractionMap)) {
+    if (row.status !== 'untagged' || row.junk) continue;
+
+    // Try to find a verified attraction that matches this event name
+    let matched = null;
+
+    // Check exact normalized match first
+    const normEvt = normalizeName(row.name);
+    if (verifiedAttractionDict[normEvt]) {
+      matched = verifiedAttractionDict[normEvt];
+    } else {
+      // Check if event name contains any verified attraction name
+      for (const [normAtt, attData] of Object.entries(verifiedAttractionDict)) {
+        if (normAtt.length < 3) continue;
+        if (matchAttractionInEventName(row.name, attData.name)) {
+          matched = attData;
+          break;
+        }
+      }
+    }
+
+    if (matched) {
+      row.status = 'missed';
+      row.missedAttractionId = matched.id;
+      row.missedAttractionName = matched.name;
+      row.tmId = matched.id;
+      row.tmName = matched.name;
+      row.tmUrl = matched.url;
+      row.tmSuggestion = { found: true, name: matched.name, id: matched.id, url: matched.url };
+      row.suggestionChecked = true;
+      missedCount++;
+    }
+  }
+
+  setProgress(100, 'Audit complete', `${totalEvents.toLocaleString()} events across ${actualPages} pages · ${missedCount} missed tagging opportunities found`);
+  await new Promise(r => setTimeout(r, 400));
+
+  allRows = Object.values(attractionMap).sort((a,b) => b.count - a.count);
   maxCount = Math.max(...allRows.map(r => r.count), 1);
 
   document.getElementById('progressPanel').style.display = 'none';
   document.getElementById('resultsPanel').style.display = 'block';
   document.getElementById('resetBtn').style.display = '';
   document.getElementById('exportBtn').style.display = '';
+  document.getElementById('suggestBtn').style.display = '';
 
-  const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  document.getElementById('headerMeta').textContent = `${totalEventsSeen.toLocaleString()} events · ${dateStr}`;
+  const dateStr = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('headerMeta').textContent = `${totalEvents.toLocaleString()} events · ${dateStr}`;
 
   renderStats();
-  renderBuckets();
   renderTable();
-  showToast(`Loaded ${allRows.length} unique attractions from ${totalEventsSeen.toLocaleString()} TW events`);
+  showToast(`Audit complete — ${allRows.length} unique attractions, ${missedCount} missed tagging opportunities`);
 }
 
 function renderStats() {
-  const linked = allRows.filter(r => r.status === 'linked' && !r.junk).length;
-  const twOnly = allRows.filter(r => r.status === 'tw-only' && !r.junk).length;
-  const untagged = allRows.filter(r => r.status === 'untagged' && !r.junk).length;
+  const nonJunk = allRows.filter(r => !r.junk);
+  const linked = nonJunk.filter(r => r.status === 'linked').length;
+  const twOnly = nonJunk.filter(r => r.status === 'tw-only').length;
+  const missed = nonJunk.filter(r => r.status === 'missed').length;
+  const untagged = nonJunk.filter(r => r.status === 'untagged').length;
   const junk = allRows.filter(r => r.junk).length;
-  const total = linked + twOnly + untagged;
+  const total = linked + twOnly + missed + untagged;
   const linkRate = total > 0 ? Math.round((linked / total) * 100) : 0;
-  const actionNeeded = twOnly + untagged;
+  const actionNeeded = twOnly + missed + untagged;
 
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Unique attractions</div><div class="stat-value">${total.toLocaleString()}</div></div>
-    <div class="stat-card"><div class="stat-label">TM linked</div><div class="stat-value green">${linked.toLocaleString()}</div><div class="stat-sub">K8vZ ID confirmed</div></div>
-    <div class="stat-card"><div class="stat-label">TW-only</div><div class="stat-value amber">${twOnly.toLocaleString()}</div><div class="stat-sub">needs TM link</div></div>
-    <div class="stat-card"><div class="stat-label">Untagged events</div><div class="stat-value red">${untagged.toLocaleString()}</div><div class="stat-sub">no attraction at all</div></div>
-    <div class="stat-card"><div class="stat-label">Action needed</div><div class="stat-value" style="color:var(--amber)">${actionNeeded.toLocaleString()}</div><div class="stat-sub">TW-only + untagged</div></div>
-    <div class="stat-card"><div class="stat-label">Link rate</div><div class="stat-value">${linkRate}<span style="font-size:16px;color:var(--muted);font-weight:400;">%</span></div><div class="stat-sub">of non-junk attractions</div></div>
-  `;
+  const cards = [
+    { id:'all', label:'Total attractions', value:total, cls:'', sub:'click to show all', filter:'all', activeCls:'' },
+    { id:'linked', label:'TM linked', value:linked, cls:'green', sub:'K8vZ ID confirmed', filter:'linked', activeCls:'active-green' },
+    { id:'tw-only', label:'TW-only attraction', value:twOnly, cls:'amber', sub:'needs TM link', filter:'tw-only', activeCls:'active-amber' },
+    { id:'missed', label:'Missed tagging', value:missed, cls:'orange', sub:'attraction exists, not used', filter:'missed', activeCls:'active-orange' },
+    { id:'untagged', label:'No attraction', value:untagged, cls:'red', sub:'needs attraction created', filter:'untagged', activeCls:'active-red' },
+    { id:'action', label:'Action needed', value:actionNeeded, cls:'amber', sub:'TW-only + missed + untagged', filter:'action', activeCls:'active-amber' },
+  ];
+
+  document.getElementById('statsGrid').innerHTML = cards.map(c =>
+    `<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}')">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div>
+      <div class="stat-sub">${c.sub}</div>
+    </div>`
+  ).join('');
 }
 
-function renderBuckets() {
-  const linked = allRows.filter(r => r.status === 'linked' && !r.junk).length;
-  const twOnly = allRows.filter(r => r.status === 'tw-only' && !r.junk).length;
-  const untagged = allRows.filter(r => r.status === 'untagged' && !r.junk).length;
-  document.getElementById('countLinked').textContent = linked.toLocaleString();
-  document.getElementById('countTWOnly').textContent = twOnly.toLocaleString();
-  document.getElementById('countUntagged').textContent = untagged.toLocaleString();
-}
-
-function setBucket(bucket) {
-  currentBucket = bucket;
-  document.querySelectorAll('.bucket').forEach(b => b.classList.remove('active-bucket'));
-  if (bucket !== 'all') {
-    const map = { linked: 0, 'tw-only': 1, untagged: 2 };
-    const buckets = document.querySelectorAll('.bucket');
-    if (map[bucket] !== undefined) buckets[map[bucket]].classList.add('active-bucket');
-    document.getElementById('clearFilterBtn').style.display = '';
-    document.getElementById('filterLabel').textContent = `Filtered: ${bucket}`;
-  } else {
-    document.getElementById('clearFilterBtn').style.display = 'none';
-    document.getElementById('filterLabel').textContent = '';
-  }
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.stat-card').forEach(c => {
+    c.classList.remove('active','active-green','active-amber','active-orange','active-red','active-purple');
+  });
+  const map = { all:'', linked:'active-green', 'tw-only':'active-amber', missed:'active-orange', untagged:'active-red', action:'active-amber' };
+  const card = document.getElementById('stat-' + (f === 'action' ? 'action' : f));
+  if (card) { card.classList.add('active'); if (map[f]) card.classList.add(map[f]); }
+  document.getElementById('clearBtn').style.display = f === 'all' ? 'none' : '';
+  document.getElementById('filterLabel').textContent = f !== 'all' ? `Showing: ${f}` : '';
   renderTable();
 }
 
@@ -472,156 +554,167 @@ function setSortKey(key, el) {
 function getFiltered() {
   const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
   return allRows.filter(r => {
-    if (currentBucket !== 'all' && r.status !== currentBucket) return false;
+    if (currentFilter === 'linked' && r.status !== 'linked') return false;
+    if (currentFilter === 'tw-only' && r.status !== 'tw-only') return false;
+    if (currentFilter === 'missed' && r.status !== 'missed') return false;
+    if (currentFilter === 'untagged' && r.status !== 'untagged') return false;
+    if (currentFilter === 'action' && !['tw-only','missed','untagged'].includes(r.status)) return false;
     if (search && !r.name.toLowerCase().includes(search)) return false;
     return true;
-  }).sort((a, b) => {
+  }).sort((a,b) => {
     if (sortKey === 'count') return b.count - a.count;
     if (sortKey === 'name') return a.name.localeCompare(b.name);
-    if (sortKey === 'date') return (b.lastDate || '').localeCompare(a.lastDate || '');
+    if (sortKey === 'date') return (b.lastDate||'').localeCompare(a.lastDate||'');
     return 0;
   });
 }
 
 function renderTable() {
   const filtered = getFiltered();
-  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} attraction${filtered.length !== 1 ? 's' : ''}`;
+  document.getElementById('tableCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length!==1?'s':''}`;
   document.getElementById('emptyState').style.display = filtered.length === 0 && allRows.length > 0 ? 'block' : 'none';
 
   if (!filtered.length) { document.getElementById('tableBody').innerHTML = ''; return; }
 
   document.getElementById('tableBody').innerHTML = filtered.map(r => {
     const barPct = Math.round((r.count / maxCount) * 100);
-    const barColor = r.status === 'linked' ? 'var(--green)' : r.status === 'tw-only' ? 'var(--amber)' : 'var(--red)';
+    const barColor = r.status==='linked' ? 'var(--green)' : r.status==='tw-only' ? 'var(--amber)' : r.status==='missed' ? 'var(--orange)' : 'var(--red)';
 
-    let statusBadge;
-    if (r.junk) statusBadge = `<span class="status-badge badge-junk"><span class="dot"></span>junk/test</span>`;
-    else if (r.status === 'linked') statusBadge = `<span class="status-badge badge-linked"><span class="dot"></span>TM linked</span>`;
-    else if (r.status === 'tw-only') statusBadge = `<span class="status-badge badge-tw-only"><span class="dot"></span>TW-only</span>`;
-    else statusBadge = `<span class="status-badge badge-untagged"><span class="dot"></span>untagged</span>`;
+    // Status badge
+    let badge;
+    if (r.junk) badge = `<span class="status-pill pill-junk"><span class="dot"></span>junk</span>`;
+    else if (r.status==='linked') badge = `<span class="status-pill pill-linked"><span class="dot"></span>TM linked</span>`;
+    else if (r.status==='tw-only') badge = `<span class="status-pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
+    else if (r.status==='missed') badge = `<span class="status-pill pill-missed"><span class="dot"></span>not tagged</span>`;
+    else badge = `<span class="status-pill pill-untagged"><span class="dot"></span>untagged</span>`;
 
+    // TM attraction cell
     let tmCell;
     if (r.status === 'linked') {
-      tmCell = `<span class="tm-suggestion found" title="${r.tmName}">${r.tmName}</span>`;
-    } else if (r.junk) {
-      tmCell = `<span class="tm-suggestion none">—</span>`;
-    } else if (r.nonArtist) {
-      tmCell = `<span class="tm-suggestion none" title="Likely not an artist name">review manually</span>`;
+      tmCell = `<div class="suggestion-name" title="${r.tmName}">${r.tmName}</div><div class="suggestion-id">${r.tmId}</div>`;
+    } else if (r.status === 'missed') {
+      tmCell = `<div class="suggestion-name" style="color:var(--orange)" title="${r.missedAttractionName}">⚠ ${r.missedAttractionName}</div><div class="suggestion-id">${r.missedAttractionId}</div>`;
+    } else if (r.junk || r.nonArtist) {
+      tmCell = `<span class="suggestion-none">review manually</span>`;
     } else if (r.tmSuggestion === 'checking') {
-      tmCell = `<span class="tm-suggestion checking">checking...</span>`;
-    } else if (r.tmSuggestion && r.tmSuggestion.found) {
-      tmCell = `<span class="tm-suggestion found" title="TM: ${r.tmSuggestion.name}">${r.tmSuggestion.name} <span style="font-size:10px;color:var(--muted);">${r.tmSuggestion.id}</span></span>`;
+      tmCell = `<span class="suggestion-checking">checking...</span>`;
+    } else if (r.tmSuggestion?.found) {
+      tmCell = `<div class="suggestion-name" title="${r.tmSuggestion.name}">${r.tmSuggestion.name}</div><div class="suggestion-id">${r.tmSuggestion.id}</div>`;
     } else if (r.tmSuggestion && !r.tmSuggestion.found) {
-      tmCell = `<span class="tm-suggestion none">no TM match found</span>`;
+      tmCell = `<span class="suggestion-none">no TM match found</span>`;
     } else {
-      tmCell = `<span class="tm-suggestion none">—</span>`;
+      tmCell = `<span class="suggestion-none">—</span>`;
     }
 
-    const twSearchUrl = `https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}`;
-    const tmSearchUrl = r.tmUrl || `https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
+    // Flags
+    const flags = [];
+    if (r.status === 'missed') flags.push(`<span class="flag flag-warn">use ${r.missedAttractionId}</span>`);
+    if (r.attractionImages && allFallback(r.attractionImages)) flags.push(`<span class="flag flag-warn">no artist photo</span>`);
+    if (r.externalLinks && !hasSpotify(r.externalLinks)) flags.push(`<span class="flag">no spotify</span>`);
+    if (r.isCustomName && r.status !== 'linked') flags.push(`<span class="flag">custom name</span>`);
+    if (r.nonArtist) flags.push(`<span class="flag">non-artist</span>`);
 
-    const suggestBtn = (!r.junk && !r.nonArtist && r.status !== 'linked' && !r.suggestionChecked)
-      ? `<button class="icon-btn" title="Find TM match" onclick="checkOneSuggestion('${r.key.replace(/'/g,"\\'")}')">🔍</button>`
-      : '';
-    const tmLinkBtn = r.tmUrl
-      ? `<a class="icon-btn" href="${r.tmUrl}" target="_blank" title="View TM attraction">↗</a>`
-      : (r.tmSuggestion?.found ? `<a class="icon-btn" href="https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}" target="_blank" title="Search TM">↗</a>` : '');
-    const twBtn = `<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search TicketWeb">⊹</a>`;
+    // Actions
+    const twUrl = r.twUrl || `https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}`;
+    const tmUrl = r.tmUrl || (r.tmSuggestion?.url) || `https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
+    const twBtn = `<a class="icon-btn" href="${twUrl}" target="_blank" title="View on TicketWeb">TW</a>`;
+    const tmBtn = `<a class="icon-btn" href="${tmUrl}" target="_blank" title="View on Ticketmaster">TM</a>`;
+    const searchBtn = (!r.junk && !r.nonArtist && !r.suggestionChecked)
+      ? `<button class="icon-btn" title="Search TM for match" onclick="checkOne('${r.key.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">?</button>` : '';
+    const missedBtn = r.status === 'missed'
+      ? `<a class="icon-btn highlight" href="https://www.ticketmaster.com/artist/${r.missedAttractionId}" target="_blank" title="Tag this attraction: ${r.missedAttractionId}">⚠</a>` : '';
 
     const dateRange = r.firstDate && r.lastDate && r.firstDate !== r.lastDate
-      ? `${r.firstDate} → ${r.lastDate}`
-      : (r.firstDate || '—');
+      ? `${r.firstDate}<br>${r.lastDate}` : (r.firstDate || '—');
 
     return `<tr class="${r.junk ? 'junk-row' : ''}">
-      <td>
-        <div class="attraction-name" title="${r.name}">${r.name}</div>
-        ${r.attractionId ? `<div class="attraction-id">${r.attractionId}</div>` : ''}
+      <td class="name-cell">
+        <div class="name-primary" title="${r.name}">${r.name}</div>
+        ${r.attractionId ? `<div class="name-sub">${r.attractionId}</div>` : ''}
       </td>
       <td>
-        <div class="event-count">${r.count}</div>
+        <div class="count-cell">${r.count}</div>
         <div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%;background:${barColor};"></div></div>
       </td>
-      <td><div class="date-cell">${dateRange}</div></td>
-      <td>${statusBadge}</td>
-      <td>${tmCell}</td>
-      <td><div class="action-cell">${suggestBtn}${tmLinkBtn}${twBtn}</div></td>
+      <td><div class="date-cell" style="line-height:1.4;">${dateRange}</div></td>
+      <td>${badge}</td>
+      <td class="suggestion-cell">${tmCell}</td>
+      <td><div class="flags-cell">${flags.join('')}</div></td>
+      <td><div class="action-cell">${missedBtn}${searchBtn}${twBtn}${tmBtn}</div></td>
     </tr>`;
   }).join('');
 }
 
-async function checkOneSuggestion(key) {
-  const row = allRows.find(r => r.key === key);
-  if (!row) return;
-  row.tmSuggestion = 'checking';
-  row.suggestionChecked = true;
+// Manual TM search for one row
+async function checkOne(key) {
+  const r = allRows.find(x => x.key === key);
+  if (!r) return;
+  r.tmSuggestion = 'checking';
+  r.suggestionChecked = true;
   renderTable();
-  await fetchTMSuggestion(row);
+  await fetchTMSuggestion(r);
   renderTable();
 }
 
-async function fetchTMSuggestion(row) {
+async function fetchTMSuggestion(r) {
   try {
-    const res = await fetch(`https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(row.name)}&size=3&apikey=${API_KEY}`);
+    const res = await fetch(`https://app.ticketmaster.com/discovery/v2/attractions.json?keyword=${encodeURIComponent(r.name)}&size=3&apikey=${API_KEY}`);
     const data = await res.json();
     const matches = data?._embedded?.attractions || [];
     const match = matches.find(m => {
-      const t = m.name.toLowerCase().trim();
-      const n = row.name.toLowerCase().trim();
+      const t = normalizeName(m.name);
+      const n = normalizeName(r.name);
       return t === n || t.includes(n) || n.includes(t);
     });
-    if (match) {
-      row.tmSuggestion = { found: true, name: match.name, id: match.id, url: match.url || null };
-    } else {
-      row.tmSuggestion = { found: false };
-    }
-  } catch {
-    row.tmSuggestion = { found: false };
-  }
+    r.tmSuggestion = match
+      ? { found:true, name:match.name, id:match.id, url:match.url||null }
+      : { found:false };
+  } catch { r.tmSuggestion = { found:false }; }
 }
 
-async function suggestTMMatches() {
-  const toCheck = getFiltered().filter(r => !r.junk && !r.nonArtist && r.status !== 'linked' && !r.suggestionChecked);
-  if (!toCheck.length) { showToast('All visible attractions already checked'); return; }
-
+// Batch TM suggestions for all unmatched visible rows
+async function runTMSuggestions() {
+  const toCheck = getFiltered().filter(r => !r.junk && !r.nonArtist && !r.suggestionChecked && r.status !== 'linked' && r.status !== 'missed');
+  if (!toCheck.length) { showToast('All visible rows already checked'); return; }
   document.getElementById('suggestBtn').disabled = true;
-  document.getElementById('suggestBtn').textContent = `Checking ${toCheck.length} attractions...`;
-
-  for (let i = 0; i < toCheck.length; i++) {
-    const row = toCheck[i];
-    row.tmSuggestion = 'checking';
-    row.suggestionChecked = true;
+  document.getElementById('suggestBtn').textContent = `Checking ${toCheck.length}...`;
+  for (let i=0; i<toCheck.length; i++) {
+    toCheck[i].tmSuggestion = 'checking';
+    toCheck[i].suggestionChecked = true;
     if (i % 5 === 0) renderTable();
-    await fetchTMSuggestion(row);
-    await new Promise(r => setTimeout(r, 200));
+    await fetchTMSuggestion(toCheck[i]);
+    await new Promise(r => setTimeout(r, 220));
   }
-
   document.getElementById('suggestBtn').disabled = false;
-  document.getElementById('suggestBtn').textContent = 'Suggest TM matches for unlinked ↗';
+  document.getElementById('suggestBtn').textContent = 'Find TM matches ↗';
   renderTable();
   showToast(`Checked ${toCheck.length} attractions against TM`);
 }
 
 function resetTool() {
-  allRows = [];
-  currentBucket = 'all';
-  sortKey = 'count';
+  allRows = []; verifiedAttractionDict = {};
+  currentFilter = 'all'; sortKey = 'count';
   document.getElementById('setupPanel').style.display = 'block';
   document.getElementById('progressPanel').style.display = 'none';
   document.getElementById('resultsPanel').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resetBtn').style.display = 'none';
   document.getElementById('exportBtn').style.display = 'none';
+  document.getElementById('suggestBtn').style.display = 'none';
   document.getElementById('headerMeta').textContent = '';
+  document.getElementById('progressFill').style.width = '0%';
 }
 
 function exportCSV() {
   const filtered = getFiltered();
-  const header = 'Attraction Name,TW Attraction ID,Event Count,First Date,Last Date,Status,TM Attraction Name,TM Attraction ID,TM URL,TW Search URL,Notes';
+  const header = 'Name,TW Attraction ID,Event Count,First Date,Last Date,Status,TM Attraction Name,TM Attraction ID,TM URL,Missed Attraction ID,No Artist Photo,No Spotify,Custom Name,Non-Artist,TW Search URL';
   const rows = filtered.map(r => {
-    const status = r.junk ? 'Junk/Test' : r.status === 'linked' ? 'TM Linked' : r.status === 'tw-only' ? 'TW-Only (needs TM link)' : 'Untagged (needs attraction)';
-    const note = r.nonArtist ? 'Review manually — may not be an artist name' : r.tmSuggestion?.found ? `TM match found: ${r.tmSuggestion.name}` : '';
-    return `"${r.name.replace(/"/g,'""')}","${r.attractionId||''}",${r.count},"${r.firstDate||''}","${r.lastDate||''}","${status}","${(r.tmName||r.tmSuggestion?.name||'').replace(/"/g,'""')}","${r.tmId||r.tmSuggestion?.id||''}","${r.tmUrl||r.tmSuggestion?.url||''}","https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}","${note}"`;
+    const status = r.junk ? 'Junk' : r.status === 'linked' ? 'TM Linked' : r.status === 'tw-only' ? 'TW-Only' : r.status === 'missed' ? 'Missed Tagging' : 'Untagged';
+    const noPhoto = r.attractionImages ? allFallback(r.attractionImages) : '';
+    const noSpotify = r.externalLinks ? !hasSpotify(r.externalLinks) : '';
+    return `"${r.name.replace(/"/g,'""')}","${r.attractionId||''}",${r.count},"${r.firstDate||''}","${r.lastDate||''}","${status}","${(r.tmName||r.tmSuggestion?.name||'').replace(/"/g,'""')}","${r.tmId||r.tmSuggestion?.id||''}","${r.tmUrl||r.tmSuggestion?.url||''}","${r.missedAttractionId||''}","${noPhoto}","${noSpotify}","${r.isCustomName||''}","${r.nonArtist||''}","https://www.ticketweb.com/snl/Search.action?query=${encodeURIComponent(r.name)}"`;
   });
-  const blob = new Blob([[header,...rows].join('\n')], {type:'text/csv'});
+  const blob = new Blob([[header,...rows].join('\n')],{type:'text/csv'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = `tw-attraction-audit-${new Date().toISOString().slice(0,10)}.csv`;
@@ -631,9 +724,9 @@ function exportCSV() {
 
 function showToast(msg) {
   const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
+  t.className='toast'; t.textContent=msg;
   document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+  setTimeout(()=>t.remove(), 3500);
 }
 </script>
 </body>
