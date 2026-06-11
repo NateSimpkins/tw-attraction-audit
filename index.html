@@ -517,6 +517,7 @@ async function runAudit() {
   allRows = []; verifiedAttractionDict = {};
   const attractionMap = {};
   const orgEventMap = {};
+  const seenEventIds = new Set(); // dedup across segment pass + venue pass
 
   const list = document.getElementById('segProgressList');
   list.innerHTML = selectedSegs.map(s => `
@@ -548,6 +549,7 @@ async function runAudit() {
         segEvents += events.length;
 
         for (const evt of events) {
+          seenEventIds.add(evt.id);
           // Handle both _embedded.attractions (full objects) and _links.attractions (href-only refs)
           const embeddedAttractions = evt._embedded?.attractions || [];
           const linkedAttractionIds = (evt._links?.attractions || [])
@@ -618,9 +620,6 @@ async function runAudit() {
   // ===== PHASE 2: Venue ID pass =====
   document.getElementById('progressOverall').textContent = 'Fetching venue events… venue 0 of 67';
   const venueIds = EMBEDDED_VENUE_IDS.map(v => v.venueId);
-  const seenEventIds = new Set(); // for deduplication across both passes
-  // Collect event IDs already seen from segment pass (we track by attraction key, not event ID, so we dedupe below per-event)
-  // We'll use a separate raw event accumulator for the venue pass
   const venuePassEvents = [];
 
   for (let vi = 0; vi < venueIds.length; vi++) {
