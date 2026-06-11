@@ -346,6 +346,7 @@
         <button class="filter-btn" onclick="setOrgFilter('red',this)">Red</button>
       </div>
       <button class="btn btn-sm" onclick="exportOrgCSV()">↓ Export CSV</button>
+      <button class="btn btn-sm" onclick="exportActionNeededCSV()">↓ Action Needed CSV</button>
     </div>
     <div class="table-wrap">
       <div class="table-top">
@@ -362,7 +363,7 @@
             <th class="sortable" onclick="setOrgSort('actionNeeded')" id="orgth-actionNeeded" style="width:90px;">Action Needed</th>
             <th class="sortable" onclick="setOrgSort('eventCount')" id="orgth-eventCount" style="width:70px;">Events</th>
             <th class="sortable" onclick="setOrgSort('lastDate')" id="orgth-lastDate" style="width:120px;">Date Range</th>
-            <th style="width:110px;">Top Genre</th>
+            <th style="width:140px;">Venue ID</th>
             <th class="sortable" onclick="setOrgSort('pctLinked')" id="orgth-pctLinked" style="width:150px;">% Linked</th>
             <th class="sortable" onclick="setOrgSort('health')" id="orgth-health" style="width:80px;">Health</th>
             <th style="width:50px;">TW</th>
@@ -449,7 +450,10 @@
         <div class="modal-title" id="drillTitle"></div>
         <div class="modal-meta" id="drillMeta"></div>
       </div>
-      <button class="modal-close" onclick="closeDrillModal()">✕</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn btn-sm" id="drillCsvBtn" onclick="exportDrillCSV()" style="display:none;">↓ CSV</button>
+        <button class="modal-close" onclick="closeDrillModal()">✕</button>
+      </div>
     </div>
     <div class="modal-body" id="drillBody">
       <div class="modal-loading">Loading events...</div>
@@ -488,7 +492,8 @@ function switchTab(tab, btn) {
 // ===== AUDIT TAB =====
 let allRows = [], currentFilter = 'all', sortKey = 'count', sortDir = 'desc', maxCount = 1;
 let verifiedAttractionDict = {}, currentSegFilter = 'all', auditDone = false;
-let orgRows = [], orgFilter = 'all', orgSortKey = 'actionNeeded', orgSortDir = 'desc';
+let orgRows = [], orgFilter = 'all', orgSortKey = 'venueName', orgSortDir = 'asc';
+let drillEvents = [], currentDrillVenueEntry = null;
 
 function toggleSeg(el) { el.classList.toggle('selected'); }
 
@@ -836,6 +841,11 @@ function renderTable() {
     const flags=[];
     if (r.status==='missed') flags.push(`<span class="flag flag-warn">use ${r.missedAttractionId}</span>`);
     if (r.isCustomName&&r.status!=='linked') flags.push(`<span class="flag">custom name</span>`);
+    if ((r.status==='tw-only'||r.status==='untagged')&&!r.junk) {
+      const nk=normalizeName(r.name);
+      const vMatch=verifiedAttractionDict[nk]||Object.values(verifiedAttractionDict).find(v=>v.name.length>=3&&matchAttractionInEventName(r.name,v.name));
+      if (vMatch) flags.push(`<span class="flag flag-warn">verified available</span>`);
+    }
 
     const twSearchUrl=`https://www.ticketweb.com/search?q=${encodeURIComponent(r.name)}`;
     const tmUrl=r.tmUrl||r.tmSuggestion?.url||`https://www.ticketmaster.com/search?q=${encodeURIComponent(r.name)}`;
@@ -1205,11 +1215,10 @@ function buildOrgReport(orgEventMap, attractionMap) {
     const pctLinked = Math.round(linked / total * 100);
     const health = pctLinked >= 80 ? 'green' : pctLinked >= 50 ? 'yellow' : 'red';
     const sortedDates = [...orgData.dates].filter(Boolean).sort();
-    const topGenre = Object.entries(orgData.genres).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
-    rows.push({ venueName, total, linked, notTagged, untagged, actionNeeded, eventCount: orgData.eventCount, firstDate: sortedDates[0]||'', lastDate: sortedDates[sortedDates.length-1]||'', topGenre, pctLinked, health });
+    rows.push({ venueName, total, linked, notTagged, untagged, actionNeeded, eventCount: orgData.eventCount, firstDate: sortedDates[0]||'', lastDate: sortedDates[sortedDates.length-1]||'', pctLinked, health, attractionKeys: [...orgData.attractionKeys] });
   }
-  orgRows = rows.sort((a,b) => b.actionNeeded - a.actionNeeded);
-  orgFilter = 'all'; orgSortKey = 'actionNeeded'; orgSortDir = 'desc';
+  orgRows = rows.sort((a,b) => a.venueName.toLowerCase().localeCompare(b.venueName.toLowerCase()));
+  orgFilter = 'all'; orgSortKey = 'venueName'; orgSortDir = 'asc';
   document.getElementById('orgEmptyState').style.display = 'none';
   document.getElementById('orgReportContent').style.display = 'block';
   renderOrgStats();
@@ -1273,9 +1282,12 @@ function renderOrgTable() {
     const healthLabel = r.health==='green'?'Healthy':r.health==='yellow'?'Warning':'Critical';
     const dateRange = r.firstDate ? (r.lastDate && r.lastDate!==r.firstDate ? `${r.firstDate}<br>${r.lastDate}` : r.firstDate) : '—';
     const twUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.venueName)}`;
-    const hasMappedId = EMBEDDED_VENUE_IDS.some(v => normalizeName(v.venueName) === normalizeName(r.venueName));
+    const mappedEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(r.venueName));
+    const venueIdCell = mappedEntry
+      ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${mappedEntry.venueId}</span>`
+      : `<span class="health-badge health-red">NOT MAPPED</span>`;
     return `<tr class="clickable-row" onclick="openDrillDown('${r.venueName.replace(/'/g, "\\'")}')">
-      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span>${!hasMappedId ? '<span class="name-sub" style="color:var(--subtle);">no venue ID</span>' : ''}</td>
+      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
       <td><span class="count-num">${r.total}</span></td>
       <td><span class="count-num" style="color:var(--green)">${r.linked}</span></td>
       <td><span class="count-num" style="color:${r.notTagged>0?'var(--orange)':'var(--muted)'}">${r.notTagged}</span></td>
@@ -1283,7 +1295,7 @@ function renderOrgTable() {
       <td><span class="count-num" style="color:${r.actionNeeded>0?'var(--amber)':'var(--muted)'};font-weight:${r.actionNeeded>0?500:400}">${r.actionNeeded}</span></td>
       <td><span class="count-num">${r.eventCount}</span></td>
       <td><div class="date-cell">${dateRange}</div></td>
-      <td><div class="genre-cell" title="${r.topGenre}">${r.topGenre}</div></td>
+      <td>${venueIdCell}</td>
       <td><div style="display:flex;align-items:center;gap:6px;"><div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${r.pctLinked}%;background:${barColor};"></div></div><span style="font-family:var(--font-mono);font-size:12px;">${r.pctLinked}%</span></div></td>
       <td><span class="health-badge health-${r.health}">${healthLabel}</span></td>
       <td><a class="icon-btn" href="${twUrl}" target="_blank" title="Search TW" onclick="event.stopPropagation()">TW</a></td>
@@ -1293,8 +1305,11 @@ function renderOrgTable() {
 
 function exportOrgCSV() {
   if (!orgRows.length) { showToast('No data to export'); return; }
-  const headers = ['Org/Venue Name','Total Attractions','TM Linked','Not Tagged','No Attraction','Action Needed','Total Events','First Date','Last Date','Top Genre','% Linked','Health'];
-  const rows = orgRows.map(r => [r.venueName,r.total,r.linked,r.notTagged,r.untagged,r.actionNeeded,r.eventCount,r.firstDate,r.lastDate,r.topGenre,r.pctLinked+'%',r.health]);
+  const headers = ['Org/Venue Name','Venue ID','Total Attractions','TM Linked','Not Tagged','No Attraction','Action Needed','Total Events','First Date','Last Date','% Linked','Health'];
+  const rows = orgRows.map(r => {
+    const me = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(r.venueName));
+    return [r.venueName, me ? me.venueId : '', r.total, r.linked, r.notTagged, r.untagged, r.actionNeeded, r.eventCount, r.firstDate, r.lastDate, r.pctLinked+'%', r.health];
+  });
   const csv = [headers,...rows].map(row => row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv],{type:'text/csv'});
   const a = document.createElement('a');
@@ -1316,12 +1331,12 @@ async function openDrillDown(venueName) {
   const body = document.getElementById('drillBody');
   document.getElementById('drillTitle').textContent = venueName;
   document.getElementById('drillMeta').textContent = '';
+  document.getElementById('drillCsvBtn').style.display = 'none';
   body.innerHTML = '<div class="modal-loading">Fetching events...</div>';
   modal.classList.remove('hidden');
+  drillEvents = [];
+  currentDrillVenueEntry = null;
 
-  const seen = new Map(); // eventId → event obj
-
-  // Prefer venueId query (exact) over keyword search when venue is in the hardcoded list
   const venueEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(venueName));
 
   if (!venueEntry) {
@@ -1333,7 +1348,8 @@ async function openDrillDown(venueName) {
     return;
   }
 
-  // Use venueId — filters to exactly this venue, then keep only TW-sourced events
+  currentDrillVenueEntry = venueEntry;
+  const seen = new Map();
   try {
     let page = 0, keepGoing = true;
     while (keepGoing) {
@@ -1349,53 +1365,126 @@ async function openDrillDown(venueName) {
     }
   } catch(e) {}
 
-  const events = [...seen.values()].sort((a, b) => {
+  drillEvents = [...seen.values()].sort((a, b) => {
     const da = a.dates?.start?.localDate || '';
     const db = b.dates?.start?.localDate || '';
     return da < db ? -1 : da > db ? 1 : 0;
   });
 
-  document.getElementById('drillMeta').textContent = `${events.length} event${events.length !== 1 ? 's' : ''} · venue ID: ${venueEntry.venueId}`;
+  document.getElementById('drillMeta').textContent = `${drillEvents.length} event${drillEvents.length !== 1 ? 's' : ''} · venue ID: ${venueEntry.venueId}`;
 
-  if (!events.length) {
+  if (!drillEvents.length) {
     body.innerHTML = '<div class="modal-loading">No events found for this venue.</div>';
     return;
   }
 
-  const rows = events.map(evt => {
+  document.getElementById('drillCsvBtn').style.display = '';
+
+  const rows = drillEvents.map(evt => {
     const attractions = evt._embedded?.attractions || [];
     const linkedIds = (evt._links?.attractions || [])
       .map(l => { const m = (l.href||'').match(/\/attractions\/([^?]+)/); return m ? m[1] : null; })
       .filter(Boolean);
     const hasAttraction = attractions.length > 0 || linkedIds.length > 0;
     const tmLinked = attractions.some(a => isTMVerified(a.id)) || linkedIds.some(id => isTMVerified(id));
-    const attName = attractions[0]?.name || (linkedIds.length ? linkedIds[0] : '—');
+    const att = attractions[0] || null;
+    const attId = att?.id || (linkedIds[0] || null);
+    const attName = att?.name || (linkedIds.length ? linkedIds[0] : '—');
     const date = evt.dates?.start?.localDate || '—';
     const vName = evt._embedded?.venues?.[0]?.name || '—';
-    const evtUrl = evt.url || '#';
+    const evtUrl = evt.url || '';
 
     let statusPill;
     if (!hasAttraction) statusPill = `<span class="pill pill-untagged"><span class="dot"></span>no attraction</span>`;
     else if (tmLinked) statusPill = `<span class="pill pill-linked"><span class="dot"></span>TM linked</span>`;
     else statusPill = `<span class="pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
 
+    // TM attraction link — use attraction.url directly if available, else search fallback
+    let tmAttBtn = '';
+    if (hasAttraction && attId) {
+      const tmAttUrl = att?.url || `https://www.ticketmaster.com/search?q=${encodeURIComponent(attName)}`;
+      tmAttBtn = `<a class="icon-btn" href="${tmAttUrl}" target="_blank" title="View on TM" style="margin-left:4px;font-size:10px;">TM</a>`;
+    }
+
+    // TW consumer link
+    const twBtn = evtUrl ? `<a class="icon-btn" href="${evtUrl}" target="_blank" title="TW event page">TW</a>` : '';
+
+    // Admin link — only when orgId is present on the venue entry
+    const adminBtn = (venueEntry.orgId && evt.id)
+      ? `<a class="icon-btn" href="https://admin.ticketweb.com/web-client/org/${venueEntry.orgId}/event/${evt.id}/eventDashboard.tw" target="_blank" title="TW admin">Admin</a>`
+      : '';
+
     return `<tr>
-      <td><a href="${evtUrl}" target="_blank" style="color:var(--text);text-decoration:none;font-weight:500;">${evt.name || '—'}</a></td>
+      <td style="max-width:220px;"><span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;" title="${evt.name||''}">${evt.name || '—'}</span></td>
       <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${date}</span></td>
-      <td><span style="font-size:12px;color:var(--muted);">${vName}</span></td>
-      <td><span style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;" title="${attName}">${hasAttraction ? attName : '<em style="color:var(--muted)">none</em>'}</span></td>
+      <td><span style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:140px;" title="${vName}">${vName}</span></td>
+      <td><div style="display:flex;align-items:center;gap:2px;"><span style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;" title="${attName}">${hasAttraction ? attName : '<em style="color:var(--muted)">none</em>'}</span>${tmAttBtn}</div></td>
       <td>${statusPill}</td>
+      <td><div class="action-cell">${twBtn}${adminBtn}</div></td>
     </tr>`;
   }).join('');
 
   body.innerHTML = `<div class="drill-table-wrap">
     <table>
       <thead><tr>
-        <th>Event name</th><th>Date</th><th>Venue</th><th>Attraction</th><th>Status</th>
+        <th>Event name</th><th>Date</th><th>Venue</th><th>Attraction</th><th>Status</th><th>Links</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
   </div>`;
+}
+
+function exportDrillCSV() {
+  if (!drillEvents.length) { showToast('No events to export'); return; }
+  const ve = currentDrillVenueEntry;
+  const headers = ['Event Name','Date','Venue','Attraction','TM Attraction ID','Status','TW Event URL','Admin URL'];
+  const rows = drillEvents.map(evt => {
+    const attractions = evt._embedded?.attractions || [];
+    const linkedIds = (evt._links?.attractions || [])
+      .map(l => { const m = (l.href||'').match(/\/attractions\/([^?]+)/); return m ? m[1] : null; })
+      .filter(Boolean);
+    const hasAttraction = attractions.length > 0 || linkedIds.length > 0;
+    const tmLinked = attractions.some(a => isTMVerified(a.id)) || linkedIds.some(id => isTMVerified(id));
+    const att = attractions[0] || null;
+    const attId = att?.id || linkedIds[0] || '';
+    const attName = att?.name || (linkedIds.length ? linkedIds[0] : '');
+    const status = !hasAttraction ? 'no attraction' : tmLinked ? 'TM linked' : 'TW-only';
+    const evtUrl = evt.url || '';
+    const adminUrl = (ve?.orgId && evt.id) ? `https://admin.ticketweb.com/web-client/org/${ve.orgId}/event/${evt.id}/eventDashboard.tw` : '';
+    return [evt.name||'', evt.dates?.start?.localDate||'', evt._embedded?.venues?.[0]?.name||'', attName, attId, status, evtUrl, adminUrl];
+  });
+  const csv = [headers,...rows].map(r => r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safeName = (currentDrillVenueEntry?.venueName||'venue').replace(/[^a-z0-9]/gi,'-').toLowerCase();
+  a.download = `${safeName}-audit.csv`;
+  a.click();
+  showToast('CSV exported');
+}
+
+function exportActionNeededCSV() {
+  if (!orgRows.length) { showToast('No data to export'); return; }
+  const headers = ['Org Name','Venue ID','Attraction Name','Attraction ID','Status','Events','First Date','Last Date','% Linked','Health Score'];
+  const rows = [];
+  for (const org of orgRows) {
+    if (!org.actionNeeded) continue;
+    const me = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(org.venueName));
+    const venueId = me ? me.venueId : '';
+    for (const key of (org.attractionKeys || [])) {
+      const att = allRows.find(r => r.key === key);
+      if (!att || att.junk || att.status === 'linked') continue;
+      rows.push([org.venueName, venueId, att.name, att.attractionId||'', att.status, att.count, att.firstDate||'', att.lastDate||'', org.pctLinked+'%', org.health]);
+    }
+  }
+  if (!rows.length) { showToast('No action-needed attractions found'); return; }
+  const csv = [headers,...rows].map(r => r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tw-action-needed-full.csv';
+  a.click();
+  showToast(`Exported ${rows.length} action-needed attractions`);
 }
 
 function showToast(msg) {
