@@ -7,7 +7,11 @@ exports.handler = async (event) => {
     const res = await fetch(`https://api.ticketweb.com/reporting/v1/attraction/orgs/${orgId}`, {
       headers: { 'x-auth-token': apiKey }
     });
-    const data = await res.json();
+    const text = await res.text();
+    if (!res.ok) {
+      return { statusCode: res.status, body: JSON.stringify({ upstream_error: text }) };
+    }
+    const data = JSON.parse(text);
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },

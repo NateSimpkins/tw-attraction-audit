@@ -206,6 +206,26 @@
   .health-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
   .health-yellow { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
   .health-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* DRILL-DOWN MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-start; justify-content: center; padding: 3rem 1.5rem; overflow-y: auto; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); width: 100%; max-width: 1000px; display: flex; flex-direction: column; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+  .modal-title { font-size: 15px; font-weight: 500; }
+  .modal-meta { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
+  .modal-close { background: transparent; border: 1px solid var(--border2); border-radius: var(--radius); color: var(--muted); font-size: 14px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { color: var(--text); background: var(--surface2); }
+  .modal-body { padding: 1.25rem 1.5rem; }
+  .modal-loading { text-align: center; padding: 2.5rem; font-size: 13px; font-family: var(--font-mono); color: var(--muted); }
+  .drill-table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .drill-table-wrap table { width: 100%; border-collapse: collapse; }
+  .drill-table-wrap thead th { text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; border-bottom: 1px solid var(--border); font-weight: 400; white-space: nowrap; }
+  .drill-table-wrap tbody tr { border-bottom: 1px solid var(--border); }
+  .drill-table-wrap tbody tr:last-child { border-bottom: none; }
+  .drill-table-wrap tbody tr:hover { background: var(--surface2); }
+  .drill-table-wrap td { padding: 8px 12px; font-size: 13px; vertical-align: middle; }
+  tbody tr.clickable-row { cursor: pointer; }
 </style>
 </head>
 <body>
@@ -420,6 +440,22 @@
 </div>
 
 <div id="toastContainer"></div>
+
+<!-- DRILL-DOWN MODAL -->
+<div class="modal-overlay hidden" id="drillModal" onclick="closeDrillModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="drillTitle"></div>
+        <div class="modal-meta" id="drillMeta"></div>
+      </div>
+      <button class="modal-close" onclick="closeDrillModal()">✕</button>
+    </div>
+    <div class="modal-body" id="drillBody">
+      <div class="modal-loading">Loading events...</div>
+    </div>
+  </div>
+</div>
 
 <script>
 const API_KEY = 'YrzFaMA83jmEAY4tm0gQJz7SioutA1kU';
@@ -1238,7 +1274,7 @@ function renderOrgTable() {
     const healthLabel = r.health==='green'?'Healthy':r.health==='yellow'?'Warning':'Critical';
     const dateRange = r.firstDate ? (r.lastDate && r.lastDate!==r.firstDate ? `${r.firstDate}<br>${r.lastDate}` : r.firstDate) : '—';
     const twUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.venueName)}`;
-    return `<tr>
+    return `<tr class="clickable-row" onclick="openDrillDown('${r.venueName.replace(/'/g, "\\'")}')">
       <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
       <td><span class="count-num">${r.total}</span></td>
       <td><span class="count-num" style="color:var(--green)">${r.linked}</span></td>
@@ -1250,7 +1286,7 @@ function renderOrgTable() {
       <td><div class="genre-cell" title="${r.topGenre}">${r.topGenre}</div></td>
       <td><div style="display:flex;align-items:center;gap:6px;"><div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${r.pctLinked}%;background:${barColor};"></div></div><span style="font-family:var(--font-mono);font-size:12px;">${r.pctLinked}%</span></div></td>
       <td><span class="health-badge health-${r.health}">${healthLabel}</span></td>
-      <td><a class="icon-btn" href="${twUrl}" target="_blank" title="Search TW">TW</a></td>
+      <td><a class="icon-btn" href="${twUrl}" target="_blank" title="Search TW" onclick="event.stopPropagation()">TW</a></td>
     </tr>`;
   }).join('');
 }
@@ -1266,6 +1302,104 @@ function exportOrgCSV() {
   a.download = `org-report-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   showToast('CSV exported');
+}
+
+// ===== ORG DRILL-DOWN =====
+function closeDrillModal(e) {
+  if (e && e.target !== document.getElementById('drillModal')) return;
+  document.getElementById('drillModal').classList.add('hidden');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.getElementById('drillModal').classList.add('hidden'); });
+
+async function openDrillDown(venueName) {
+  const modal = document.getElementById('drillModal');
+  const body = document.getElementById('drillBody');
+  document.getElementById('drillTitle').textContent = venueName;
+  document.getElementById('drillMeta').textContent = '';
+  body.innerHTML = '<div class="modal-loading">Fetching events...</div>';
+  modal.classList.remove('hidden');
+
+  const seen = new Map(); // eventId → event obj
+
+  // Flow 1: keyword search with source=ticketweb
+  try {
+    let page = 0, keepGoing = true;
+    while (keepGoing) {
+      const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&keyword=${encodeURIComponent(venueName)}&size=200&page=${page}&apikey=${API_KEY}`);
+      const data = await res.json();
+      const events = data?._embedded?.events || [];
+      for (const evt of events) if (!seen.has(evt.id)) seen.set(evt.id, evt);
+      if (events.length < 200) keepGoing = false;
+      else { page++; await new Promise(r => setTimeout(r, 200)); }
+    }
+  } catch(e) {}
+
+  // Flow 2: venueId pass if this venue is in the hardcoded list
+  const venueEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(venueName));
+  if (venueEntry) {
+    try {
+      let page = 0, keepGoing = true;
+      while (keepGoing) {
+        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${venueEntry.venueId}&size=200&page=${page}&apikey=${API_KEY}`);
+        const data = await res.json();
+        const events = data?._embedded?.events || [];
+        for (const evt of events) {
+          if (!evt.url?.includes('ticketweb.com')) continue;
+          if (!seen.has(evt.id)) seen.set(evt.id, evt);
+        }
+        if (events.length < 200) keepGoing = false;
+        else { page++; await new Promise(r => setTimeout(r, 200)); }
+      }
+    } catch(e) {}
+  }
+
+  const events = [...seen.values()].sort((a, b) => {
+    const da = a.dates?.start?.localDate || '';
+    const db = b.dates?.start?.localDate || '';
+    return da < db ? -1 : da > db ? 1 : 0;
+  });
+
+  document.getElementById('drillMeta').textContent = `${events.length} event${events.length !== 1 ? 's' : ''}${venueEntry ? ' · Flow 1 + Flow 2' : ' · Flow 1 only'}`;
+
+  if (!events.length) {
+    body.innerHTML = '<div class="modal-loading">No events found for this venue.</div>';
+    return;
+  }
+
+  const rows = events.map(evt => {
+    const attractions = evt._embedded?.attractions || [];
+    const linkedIds = (evt._links?.attractions || [])
+      .map(l => { const m = (l.href||'').match(/\/attractions\/([^?]+)/); return m ? m[1] : null; })
+      .filter(Boolean);
+    const hasAttraction = attractions.length > 0 || linkedIds.length > 0;
+    const tmLinked = attractions.some(a => isTMVerified(a.id)) || linkedIds.some(id => isTMVerified(id));
+    const attName = attractions[0]?.name || (linkedIds.length ? linkedIds[0] : '—');
+    const date = evt.dates?.start?.localDate || '—';
+    const vName = evt._embedded?.venues?.[0]?.name || '—';
+    const evtUrl = evt.url || '#';
+
+    let statusPill;
+    if (!hasAttraction) statusPill = `<span class="pill pill-untagged"><span class="dot"></span>no attraction</span>`;
+    else if (tmLinked) statusPill = `<span class="pill pill-linked"><span class="dot"></span>TM linked</span>`;
+    else statusPill = `<span class="pill pill-tw-only"><span class="dot"></span>TW-only</span>`;
+
+    return `<tr>
+      <td><a href="${evtUrl}" target="_blank" style="color:var(--text);text-decoration:none;font-weight:500;">${evt.name || '—'}</a></td>
+      <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${date}</span></td>
+      <td><span style="font-size:12px;color:var(--muted);">${vName}</span></td>
+      <td><span style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;" title="${attName}">${hasAttraction ? attName : '<em style="color:var(--muted)">none</em>'}</span></td>
+      <td>${statusPill}</td>
+    </tr>`;
+  }).join('');
+
+  body.innerHTML = `<div class="drill-table-wrap">
+    <table>
+      <thead><tr>
+        <th>Event name</th><th>Date</th><th>Venue</th><th>Attraction</th><th>Status</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
 }
 
 function showToast(msg) {
