@@ -1273,8 +1273,9 @@ function renderOrgTable() {
     const healthLabel = r.health==='green'?'Healthy':r.health==='yellow'?'Warning':'Critical';
     const dateRange = r.firstDate ? (r.lastDate && r.lastDate!==r.firstDate ? `${r.firstDate}<br>${r.lastDate}` : r.firstDate) : '—';
     const twUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.venueName)}`;
+    const hasMappedId = EMBEDDED_VENUE_IDS.some(v => normalizeName(v.venueName) === normalizeName(r.venueName));
     return `<tr class="clickable-row" onclick="openDrillDown('${r.venueName.replace(/'/g, "\\'")}')">
-      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
+      <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span>${!hasMappedId ? '<span class="name-sub" style="color:var(--subtle);">no venue ID</span>' : ''}</td>
       <td><span class="count-num">${r.total}</span></td>
       <td><span class="count-num" style="color:var(--green)">${r.linked}</span></td>
       <td><span class="count-num" style="color:${r.notTagged>0?'var(--orange)':'var(--muted)'}">${r.notTagged}</span></td>
@@ -1323,36 +1324,30 @@ async function openDrillDown(venueName) {
   // Prefer venueId query (exact) over keyword search when venue is in the hardcoded list
   const venueEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(venueName));
 
-  if (venueEntry) {
-    // Use venueId — filters to exactly this venue, then keep only TW-sourced events
-    try {
-      let page = 0, keepGoing = true;
-      while (keepGoing) {
-        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${venueEntry.venueId}&size=200&page=${page}&apikey=${API_KEY}`);
-        const data = await res.json();
-        const events = data?._embedded?.events || [];
-        for (const evt of events) {
-          if (!evt.url?.includes('ticketweb.com')) continue;
-          if (!seen.has(evt.id)) seen.set(evt.id, evt);
-        }
-        if (events.length < 200) keepGoing = false;
-        else { page++; await new Promise(r => setTimeout(r, 200)); }
-      }
-    } catch(e) {}
-  } else {
-    // Fall back to keyword search with source=ticketweb when no venue ID is known
-    try {
-      let page = 0, keepGoing = true;
-      while (keepGoing) {
-        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?source=ticketweb&keyword=${encodeURIComponent(venueName)}&size=200&page=${page}&apikey=${API_KEY}`);
-        const data = await res.json();
-        const events = data?._embedded?.events || [];
-        for (const evt of events) if (!seen.has(evt.id)) seen.set(evt.id, evt);
-        if (events.length < 200) keepGoing = false;
-        else { page++; await new Promise(r => setTimeout(r, 200)); }
-      }
-    } catch(e) {}
+  if (!venueEntry) {
+    document.getElementById('drillMeta').textContent = 'no venue ID mapped';
+    body.innerHTML = `<div style="padding:2rem 0;text-align:center;">
+      <div style="font-size:13px;color:var(--muted);font-family:var(--font-mono);margin-bottom:8px;">No TM Venue ID mapped for this venue.</div>
+      <div style="font-size:13px;color:var(--muted);">Drill-down data is unavailable. Contact your admin to add this venue to the ID list.</div>
+    </div>`;
+    return;
   }
+
+  // Use venueId — filters to exactly this venue, then keep only TW-sourced events
+  try {
+    let page = 0, keepGoing = true;
+    while (keepGoing) {
+      const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?venueId=${venueEntry.venueId}&size=200&page=${page}&apikey=${API_KEY}`);
+      const data = await res.json();
+      const events = data?._embedded?.events || [];
+      for (const evt of events) {
+        if (!evt.url?.includes('ticketweb.com')) continue;
+        if (!seen.has(evt.id)) seen.set(evt.id, evt);
+      }
+      if (events.length < 200) keepGoing = false;
+      else { page++; await new Promise(r => setTimeout(r, 200)); }
+    }
+  } catch(e) {}
 
   const events = [...seen.values()].sort((a, b) => {
     const da = a.dates?.start?.localDate || '';
@@ -1360,7 +1355,7 @@ async function openDrillDown(venueName) {
     return da < db ? -1 : da > db ? 1 : 0;
   });
 
-  document.getElementById('drillMeta').textContent = `${events.length} event${events.length !== 1 ? 's' : ''} · ${venueEntry ? 'venue ID: ' + venueEntry.venueId : 'keyword search'}`;
+  document.getElementById('drillMeta').textContent = `${events.length} event${events.length !== 1 ? 's' : ''} · venue ID: ${venueEntry.venueId}`;
 
   if (!events.length) {
     body.innerHTML = '<div class="modal-loading">No events found for this venue.</div>';
