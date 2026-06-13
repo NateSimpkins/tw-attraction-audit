@@ -347,6 +347,7 @@
       </div>
       <button class="btn btn-sm" onclick="exportOrgCSV()">↓ Export CSV</button>
       <button class="btn btn-sm" onclick="exportActionNeededCSV()">↓ Action Needed CSV</button>
+      <span id="venueResolveStatus" style="display:none;font-size:11px;font-family:var(--font-mono);color:var(--muted);margin-left:4px;"></span>
     </div>
     <div class="table-wrap">
       <div class="table-top">
@@ -494,6 +495,7 @@ let allRows = [], currentFilter = 'all', sortKey = 'count', sortDir = 'desc', ma
 let verifiedAttractionDict = {}, currentSegFilter = 'all', auditDone = false;
 let orgRows = [], orgFilter = 'all', orgSortKey = 'venueName', orgSortDir = 'asc';
 let drillEvents = [], currentDrillVenueEntry = null;
+let resolvedVenueIds = {};
 
 function toggleSeg(el) { el.classList.toggle('selected'); }
 
@@ -729,6 +731,7 @@ async function runAudit() {
   await new Promise(r => setTimeout(r,400));
 
   buildOrgReport(orgEventMap, attractionMap);
+  resolveVenueIds();
   allRows = Object.values(attractionMap).sort((a,b) => b.count - a.count);
   maxCount = Math.max(...allRows.map(r => r.count), 1);
   auditDone = true;
@@ -1195,6 +1198,60 @@ window.addEventListener('load', () => {
   } catch(e) {}
 });
 
+// ===== VENUE ID AUTO-RESOLVE =====
+function venueStringSimilarity(a, b) {
+  if (a.includes(b) || b.includes(a)) return 1.0;
+  function bigrams(s) {
+    const set = new Set();
+    for (let i = 0; i < s.length - 1; i++) set.add(s.slice(i, i + 2));
+    return set;
+  }
+  const ba = bigrams(a), bb = bigrams(b);
+  let inter = 0;
+  for (const bg of ba) { if (bb.has(bg)) inter++; }
+  return (ba.size + bb.size) === 0 ? 0 : (2 * inter) / (ba.size + bb.size);
+}
+
+async function resolveVenueIds() {
+  const unmapped = orgRows.filter(r => {
+    const norm = normalizeName(r.venueName);
+    return !EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === norm) && !resolvedVenueIds[norm];
+  });
+  if (!unmapped.length) return;
+
+  const statusEl = document.getElementById('venueResolveStatus');
+  if (statusEl) { statusEl.style.display = ''; statusEl.textContent = `Resolving ${unmapped.length} venue ID${unmapped.length !== 1 ? 's' : ''}...`; }
+
+  let resolved = 0;
+  for (const org of unmapped) {
+    await new Promise(r => setTimeout(r, 200));
+    try {
+      const res = await fetch(`https://app.ticketmaster.com/discovery/v2/venues.json?keyword=${encodeURIComponent(org.venueName)}&countryCode=US&size=5&locale=*&apikey=${API_KEY}`);
+      const data = await res.json();
+      const venues = data?._embedded?.venues || [];
+      if (venues.length) {
+        const top = venues[0];
+        const normInput = normalizeName(org.venueName);
+        const normResult = normalizeName(top.name);
+        if (venueStringSimilarity(normInput, normResult) >= 0.80) {
+          resolvedVenueIds[normInput] = { venueId: top.id, venueName: top.name };
+          resolved++;
+          renderOrgTable();
+        }
+      }
+    } catch(e) {}
+  }
+
+  if (statusEl) {
+    if (resolved > 0) {
+      statusEl.textContent = `✓ Resolved ${resolved} venue ID${resolved !== 1 ? 's' : ''}`;
+      setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+    } else {
+      statusEl.style.display = 'none';
+    }
+  }
+}
+
 // ===== ORG REPORT =====
 function buildOrgReport(orgEventMap, attractionMap) {
   const rows = [];
@@ -1283,9 +1340,12 @@ function renderOrgTable() {
     const dateRange = r.firstDate ? (r.lastDate && r.lastDate!==r.firstDate ? `${r.firstDate}<br>${r.lastDate}` : r.firstDate) : '—';
     const twUrl = `https://www.ticketweb.com/search?q=${encodeURIComponent(r.venueName)}`;
     const mappedEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(r.venueName));
+    const resolvedEntry = resolvedVenueIds[normalizeName(r.venueName)];
     const venueIdCell = mappedEntry
       ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${mappedEntry.venueId}</span>`
-      : `<span class="health-badge health-red">NOT MAPPED</span>`;
+      : resolvedEntry
+        ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${resolvedEntry.venueId}</span>`
+        : `<span class="health-badge health-red">NOT MAPPED</span>`;
     return `<tr class="clickable-row" onclick="openDrillDown('${r.venueName.replace(/'/g, "\\'")}')">
       <td><span class="name-primary" title="${r.venueName}">${r.venueName}</span></td>
       <td><span class="count-num">${r.total}</span></td>
@@ -1308,7 +1368,8 @@ function exportOrgCSV() {
   const headers = ['Org/Venue Name','Venue ID','Total Attractions','TM Linked','Not Tagged','No Attraction','Action Needed','Total Events','First Date','Last Date','% Linked','Health'];
   const rows = orgRows.map(r => {
     const me = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(r.venueName));
-    return [r.venueName, me ? me.venueId : '', r.total, r.linked, r.notTagged, r.untagged, r.actionNeeded, r.eventCount, r.firstDate, r.lastDate, r.pctLinked+'%', r.health];
+    const re = resolvedVenueIds[normalizeName(r.venueName)];
+    return [r.venueName, me ? me.venueId : (re ? re.venueId : ''), r.total, r.linked, r.notTagged, r.untagged, r.actionNeeded, r.eventCount, r.firstDate, r.lastDate, r.pctLinked+'%', r.health];
   });
   const csv = [headers,...rows].map(row => row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv],{type:'text/csv'});
@@ -1470,7 +1531,8 @@ function exportActionNeededCSV() {
   for (const org of orgRows) {
     if (!org.actionNeeded) continue;
     const me = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(org.venueName));
-    const venueId = me ? me.venueId : '';
+    const re = resolvedVenueIds[normalizeName(org.venueName)];
+    const venueId = me ? me.venueId : (re ? re.venueId : '');
     for (const key of (org.attractionKeys || [])) {
       const att = allRows.find(r => r.key === key);
       if (!att || att.junk || att.status === 'linked') continue;
