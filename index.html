@@ -245,7 +245,6 @@
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('audit', this)">Attraction Audit</button>
   <button class="tab-btn" onclick="switchTab('orgreport', this)">Org Report</button>
-  <button class="tab-btn" onclick="switchTab('builder', this)">Venue ID Builder</button>
 </div>
 
 <!-- ===== TAB 1: ATTRACTION AUDIT ===== -->
@@ -285,13 +284,16 @@
   </div>
 
   <div id="resultsPanel" style="display:none;">
+    <div id="auditBanner" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.875rem 1.25rem;margin-bottom:1.25rem;font-size:12px;color:var(--muted);line-height:1.6;">
+      <span>Attraction data is sourced from the TM Discovery API using <code>source=ticketweb</code>. Summary counts reflect a segment-level audit and may understate total events due to a 1,000-event-per-segment API limit. Click any org in the Org Report to see a complete venue-scoped event breakdown. Venues without a mapped TM Venue ID (~5%) will not have drill-down data available.</span>
+      <button onclick="document.getElementById('auditBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0;flex-shrink:0;">✕</button>
+    </div>
     <div class="stats-grid" id="statsGrid"></div>
     <div class="toolbar">
       <input type="text" class="search-input" id="searchInput" placeholder="Search attraction or event name..." oninput="renderTable()">
       <div class="filter-group">
         <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
         <button class="filter-btn" onclick="setFilter('linked',this)">TM linked</button>
-        <button class="filter-btn" onclick="setFilter('tw-only',this)">TW-only</button>
         <button class="filter-btn" onclick="setFilter('missed',this)">Not tagged</button>
         <button class="filter-btn" onclick="setFilter('untagged',this)">No attraction</button>
         <button class="filter-btn" onclick="setFilter('action',this)">Action needed</button>
@@ -311,8 +313,6 @@
             <th class="sortable" onclick="sortBy('date')" id="th-date" style="width:120px;">Date range</th>
             <th class="sortable" onclick="sortBy('segment')" id="th-segment" style="width:130px;">Segment › genre</th>
             <th class="sortable" onclick="sortBy('status')" id="th-status" style="width:120px;">Status</th>
-            <th style="width:190px;">TM attraction</th>
-            <th style="width:110px;">Flags</th>
             <th style="width:80px;">Actions</th>
           </tr>
         </thead>
@@ -320,8 +320,7 @@
       </table>
       <div class="legend">
         <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>K8vZ linked</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>TW-only (needs TM link)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>Verified attraction exists — not tagged</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>TM Official Attraction exists — not tagged</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>No attraction at all</span>
       </div>
     </div>
@@ -378,7 +377,7 @@
 </div>
 
 <!-- ===== TAB 3: VENUE ID BUILDER ===== -->
-<div id="tab-builder" class="tab-content">
+<div id="tab-builder" class="tab-content" style="display:none!important;">
 <main>
 
   <div class="panel">
@@ -772,10 +771,9 @@ function renderStats() {
   document.getElementById('statsGrid').innerHTML = [
     {id:'all',label:'Total attractions',value:total,cls:'',sub:'click to show all',filter:'all',ac:''},
     {id:'linked',label:'TM linked',value:linked,cls:'green',sub:'K8vZ ID confirmed',filter:'linked',ac:'active-green'},
-    {id:'tw-only',label:'TW-only',value:twOnly,cls:'amber',sub:'needs TM link',filter:'tw-only',ac:'active-amber'},
-    {id:'missed',label:'Not tagged',value:missed,cls:'orange',sub:'attraction exists, unused',filter:'missed',ac:'active-orange'},
-    {id:'untagged',label:'No attraction',value:untagged,cls:'red',sub:'needs attraction created',filter:'untagged',ac:'active-red'},
-    {id:'action',label:'Action needed',value:actionNeeded,cls:'amber',sub:'TW-only + missed + untagged',filter:'action',ac:'active-amber'},
+    {id:'missed',label:'Not tagged',value:missed,cls:'orange',sub:'not linked to a TM Official Attraction',filter:'missed',ac:'active-orange'},
+    {id:'untagged',label:'No attraction',value:untagged,cls:'red',sub:'no attraction on the TicketWeb event build',filter:'untagged',ac:'active-red'},
+    {id:'action',label:'Action needed',value:actionNeeded,cls:'amber',sub:'missed + untagged',filter:'action',ac:'active-amber'},
   ].map(c=>`<div class="stat-card" id="stat-${c.id}" onclick="setFilter('${c.filter}',null)">
     <div class="stat-label">${c.label}</div><div class="stat-value ${c.cls}">${c.value.toLocaleString()}</div><div class="stat-sub">${c.sub}</div></div>`).join('');
 }
@@ -847,7 +845,7 @@ function renderTable() {
     if ((r.status==='tw-only'||r.status==='untagged')&&!r.junk) {
       const nk=normalizeName(r.name);
       const vMatch=verifiedAttractionDict[nk]||Object.values(verifiedAttractionDict).find(v=>v.name.length>=3&&matchAttractionInEventName(r.name,v.name));
-      if (vMatch) flags.push(`<span class="flag flag-warn">verified available</span>`);
+      if (vMatch) flags.push(`<span class="flag flag-warn">TM Official Attraction available</span>`);
     }
 
     const twSearchUrl=`https://www.ticketweb.com/search?q=${encodeURIComponent(r.name)}`;
@@ -862,9 +860,7 @@ function renderTable() {
       <td><div class="date-cell">${r.firstDate||'—'}<br>${r.lastDate&&r.lastDate!==r.firstDate?r.lastDate:''}</div></td>
       <td><div class="genre-cell" title="${genreDisplay}">${genreDisplay}</div></td>
       <td>${badge}</td>
-      <td class="tm-cell">${tmCell}</td>
-      <td><div class="flags-cell">${flags.join('')}</div></td>
-      <td><div class="action-cell">${missedBtn}${searchBtn}<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search on TW">TW</a><a class="icon-btn" href="${tmUrl}" target="_blank" title="View on TM">TM</a></div></td>
+      <td><div class="action-cell">${missedBtn}${searchBtn}<a class="icon-btn" href="${twSearchUrl}" target="_blank" title="Search on TW">TW</a></div></td>
     </tr>`;
   }).join('');
 }
@@ -1398,7 +1394,8 @@ async function openDrillDown(venueName) {
   drillEvents = [];
   currentDrillVenueEntry = null;
 
-  const venueEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(venueName));
+  const venueEntry = EMBEDDED_VENUE_IDS.find(v => normalizeName(v.venueName) === normalizeName(venueName))
+    || (resolvedVenueIds[normalizeName(venueName)] ? { venueId: resolvedVenueIds[normalizeName(venueName)].venueId, venueName } : null);
 
   if (!venueEntry) {
     document.getElementById('drillMeta').textContent = 'no venue ID mapped';
